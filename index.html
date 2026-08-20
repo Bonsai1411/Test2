@@ -1,1 +1,1606 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Mystery Master - Labor 3.0</title>
+
+
+<style>
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: #000;
+
+    overflow: hidden;
+
+    font-family: monospace;
+}
+
+
+/* =========================================
+   NOT-AUS-BEREICH
+   ========================================= */
+
+#emergency-exit {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 25%;
+    height: 25%;
+
+    z-index: 99999;
+}
+
+
+/* =========================================
+   DEBUG-KONSOLE
+   ========================================= */
+
+#debug-console {
+
+    display: block;
+
+    position: fixed;
+
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+
+    box-sizing: border-box;
+
+    background: #050505;
+
+    color: #00ff00;
+
+    font-family: monospace;
+
+    font-size: 12px;
+
+    line-height: 16px;
+
+    padding: 15px;
+
+    overflow-y: auto;
+
+    border: 2px solid #111;
+
+    z-index: 99999;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="emergency-exit"></div>
+
+
+<div id="debug-console">
+
+    ==================================================<br>
+
+    🚀 SYSTEM-LABOR 3.0: RETRO-FUNDAMENT AKTIV<br>
+
+    ==================================================<br>
+
+    [STATUS] Warte auf Phase 0: „zusammen“...
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   GRUNDVARIABLEN
+   ===================================================== */
+
+let phase = 0;
+
+let kartenFarbe = "";
+
+let kartenWert = 0;
+
+let zuschauerName = "";
+
+let geburtsTag = null;
+
+let geburtsMonat = null;
+
+let geburtsDatum = "";
+
+let istGeburtstag = false;
+
+
+/* =====================================================
+   SPRACHPUFFER
+   ===================================================== */
+
+let phase1Text = "";
+
+let phase2Text = "";
+
+let phase3Text = "";
+
+
+let verarbeitetesResultat = 0;
+
+let benutzerScrollt = false;
+
+
+/* =====================================================
+   SPEECH RECOGNITION
+   ===================================================== */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+const consoleDiv =
+    document.getElementById(
+        "debug-console"
+    );
+
+
+/* =====================================================
+   SCROLLVERHALTEN
+   ===================================================== */
+
+consoleDiv.addEventListener(
+    "scroll",
+    () => {
+
+        if (
+            consoleDiv.scrollHeight -
+            consoleDiv.scrollTop >
+            consoleDiv.clientHeight + 30
+        ) {
+
+            benutzerScrollt = true;
+
+        } else {
+
+            benutzerScrollt = false;
+        }
+
+    }
+);
+
+
+/* =====================================================
+   KONSOLE
+   ===================================================== */
+
+function logToConsole(text) {
+
+    if (consoleDiv) {
+
+        consoleDiv.innerHTML +=
+            "<br>" + text;
+
+
+        if (!benutzerScrollt) {
+
+            consoleDiv.scrollTop =
+                consoleDiv.scrollHeight;
+        }
+    }
+}
+
+
+/* =====================================================
+   DEUTSCHE ZAHLEN
+   ===================================================== */
+
+const deutscheZahlen = {
+
+    "null": 0,
+
+    "eins": 1,
+    "ein": 1,
+
+    "zwei": 2,
+
+    "drei": 3,
+
+    "vier": 4,
+
+    "fünf": 5,
+    "funf": 5,
+
+    "sechs": 6,
+
+    "sieben": 7,
+
+    "acht": 8,
+
+    "neun": 9,
+
+    "zehn": 10,
+
+    "elf": 11,
+
+    "zwölf": 12,
+    "zwolf": 12,
+
+    "dreizehn": 13,
+
+    "vierzehn": 14,
+
+    "fünfzehn": 15,
+    "funfzehn": 15,
+
+    "sechzehn": 16,
+
+    "siebzehn": 17,
+
+    "achtzehn": 18,
+
+    "neunzehn": 19,
+
+    "zwanzig": 20,
+
+    "einundzwanzig": 21,
+
+    "zweiundzwanzig": 22,
+
+    "dreiundzwanzig": 23,
+
+    "vierundzwanzig": 24,
+
+    "fünfundzwanzig": 25,
+    "funfundzwanzig": 25,
+
+    "sechsundzwanzig": 26,
+
+    "siebenundzwanzig": 27,
+
+    "achtundzwanzig": 28,
+
+    "neunundzwanzig": 29,
+
+    "dreißig": 30,
+    "dreissig": 30,
+
+    "einunddreißig": 31,
+    "einunddreissig": 31
+};
+
+
+/* =====================================================
+   ZAHLEN AUS TEXT HOLEN
+   ===================================================== */
+
+function findeZahlen(text) {
+
+    let zahlen = [];
+
+
+    let gesaeubert =
+        text.replace(
+            /\./g,
+            " "
+        );
+
+
+    /*
+    Ziffern wie 20 oder 06
+    */
+
+    const mitZiffern =
+        gesaeubert.match(
+            /\d+/g
+        );
+
+
+    if (mitZiffern) {
+
+        for (
+            const zahl of mitZiffern
+        ) {
+
+            const wert =
+                parseInt(
+                    zahl,
+                    10
+                );
+
+
+            if (!isNaN(wert)) {
+
+                zahlen.push(wert);
+            }
+        }
+    }
+
+
+    /*
+    Zahlwörter
+    */
+
+    const woerter =
+        gesaeubert
+            .toLowerCase()
+            .replace(
+                /[.,!?;:]/g,
+                " "
+            )
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    for (
+        const wort of woerter
+    ) {
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                deutscheZahlen,
+                wort
+            )
+        ) {
+
+            zahlen.push(
+                deutscheZahlen[wort]
+            );
+        }
+    }
+
+
+    return zahlen;
+}
+
+
+/* =====================================================
+   CODEWÖRTER ROBUST ERKENNEN
+   ===================================================== */
+
+function verarbeiteCodewoerter(text) {
+
+    let etwasGefunden = false;
+
+
+    /*
+    Leerzeichen zwischen Zahl und „mal“
+    normalisieren.
+
+    WICHTIG:
+    Nur Kombinationen mit „mal“ werden
+    als Kartenwert-Code erkannt.
+
+    „eins“ / „zwei“ / „drei“ / „vier“
+    allein zählen NICHT.
+    */
+
+    text = text
+        .toLowerCase()
+        .replace(
+            /\bein\s+mal\b/g,
+            "einmal"
+        )
+        .replace(
+            /\bzwei\s+mal\b/g,
+            "zweimal"
+        )
+        .replace(
+            /\bdrei\s+mal\b/g,
+            "dreimal"
+        )
+        .replace(
+            /\bvier\s+mal\b/g,
+            "viermal"
+        );
+
+
+    /* -----------------------------------------
+       HÄNDE = +10
+       ----------------------------------------- */
+
+    if (
+        /\bhänden\b/.test(text) ||
+        /\bhaenden\b/.test(text)
+    ) {
+
+        kartenWert += 10;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] HÄNDEN erkannt (+10)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       EINMAL = +1
+       ----------------------------------------- */
+
+    if (
+        /\beinmal\b/.test(text)
+    ) {
+
+        kartenWert += 1;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] EINMAL erkannt (+1)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       ZWEIMAL = +2
+       ----------------------------------------- */
+
+    if (
+        /\bzweimal\b/.test(text)
+    ) {
+
+        kartenWert += 2;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] ZWEIMAL erkannt (+2)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       DREIMAL = +3
+       ----------------------------------------- */
+
+    if (
+        /\bdreimal\b/.test(text)
+    ) {
+
+        kartenWert += 3;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] DREIMAL erkannt (+3)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       VIERMAL = +4
+       ----------------------------------------- */
+
+    if (
+        /\bviermal\b/.test(text)
+    ) {
+
+        kartenWert += 4;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] VIERMAL erkannt (+4)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       HAND = +5
+
+       HÄNDEN darf nicht zusätzlich
+       als HAND gezählt werden.
+       ----------------------------------------- */
+
+    if (
+        !/\bhänden\b/.test(text) &&
+        !/\bhaenden\b/.test(text) &&
+        /\bhand\b/.test(text)
+    ) {
+
+        kartenWert += 5;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] HAND erkannt (+5)"
+        );
+    }
+
+
+    if (etwasGefunden) {
+
+        logToConsole(
+            "📊 RECHENWERT AKTUELL: " +
+            kartenWert
+        );
+    }
+}
+
+
+/* =====================================================
+   BROWSERPRÜFUNG
+   ===================================================== */
+
+if (!SpeechRecognition) {
+
+    logToConsole(
+        "❌ FEHLER: Dieser Browser unterstützt webkitSpeechRecognition nicht!"
+    );
+
+} else {
+
+
+    /* =================================================
+       SPEECH RECOGNITION ERSTELLEN
+       ================================================= */
+
+    const recognition =
+        new SpeechRecognition();
+
+
+    recognition.lang =
+        "de-DE";
+
+
+    /*
+    Wichtig für Android:
+    continuous bleibt FALSE.
+    Der Neustart erfolgt kontrolliert
+    über onend.
+    */
+
+    recognition.continuous =
+        false;
+
+
+    recognition.interimResults =
+        false;
+
+
+    /* =================================================
+       STATUS-EVENTS
+       ================================================= */
+
+    recognition.onstart = () => {
+
+        logToConsole(
+            "🎤 SPRACHERKENNUNG GESTARTET"
+        );
+    };
+
+
+    recognition.onaudiostart = () => {
+
+        logToConsole(
+            "🎧 MIKROFON / AUDIO AKTIV"
+        );
+    };
+
+
+    recognition.onspeechstart = () => {
+
+        logToConsole(
+            "🗣️ SPRACHE ERKANNT"
+        );
+    };
+
+
+    /* =================================================
+       FEHLERBEHANDLUNG
+       ================================================= */
+
+    recognition.onerror =
+        (event) => {
+
+            logToConsole(
+                "⚠️ SPRACHERKENNUNGS-FEHLER: " +
+                event.error
+            );
+
+
+            if (
+                (
+                    event.error ===
+                    "no-speech"
+                ) ||
+                (
+                    event.error ===
+                    "aborted"
+                )
+            ) {
+
+                if (
+                    phase < 4
+                ) {
+
+                    setTimeout(
+                        () => {
+
+                            try {
+
+                                recognition.start();
+
+                            } catch (e) {
+
+                                /*
+                                onend übernimmt
+                                ebenfalls den
+                                normalen Neustart.
+                                */
+
+                            }
+
+                        },
+                        250
+                    );
+                }
+            }
+        };
+
+
+    /* =================================================
+       SPRACHERGEBNIS
+       ================================================= */
+
+    recognition.onresult =
+        (event) => {
+
+
+            for (
+                let i =
+                    verarbeitetesResultat;
+
+                i <
+                event.results.length;
+
+                i++
+            ) {
+
+
+                const result =
+                    event.results[i];
+
+
+                if (
+                    !result ||
+                    !result[0]
+                ) {
+
+                    continue;
+                }
+
+
+                let roherText =
+                    result[0].transcript;
+
+
+                if (!roherText) {
+
+                    continue;
+                }
+
+
+                roherText =
+                    roherText
+                        .toLowerCase()
+                        .trim();
+
+
+                verarbeitetesResultat =
+                    i + 1;
+
+
+                /* =====================================
+                   SPRACHAUFARBEITUNG
+                   ===================================== */
+
+                let text =
+                    roherText
+
+                        .replace(
+                            /ein\s+mal/g,
+                            "einmal"
+                        )
+
+                        .replace(
+                            /zwei\s+mal/g,
+                            "zweimal"
+                        )
+
+                        .replace(
+                            /drei\s+mal/g,
+                            "dreimal"
+                        )
+
+                        .replace(
+                            /vier\s+mal/g,
+                            "viermal"
+                        )
+
+                        .replace(
+                            /reihem\s+folge/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /reihen\s+folge/g,
+                            "reihenfolge"
+                        )
+
+                        /*
+                        Bereits getestete
+                        Hörfehler
+                        */
+
+                        .replace(
+                            /garten/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /kartendeckt/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /deckels/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /beachte/g,
+                            "14"
+                        )
+
+                        .replace(
+                            /achte/g,
+                            "8"
+                        )
+
+                        .replace(
+                            /ranz/g,
+                            "franz"
+                        )
+
+                        .replace(
+                            /wolf/g,
+                            "12"
+                        )
+
+                        .replace(
+                            /dein\s+datum/g,
+                            "dein datum"
+                        );
+
+
+                logToConsole(
+                    "<br>📢 [GEHÖRT] „" +
+                    roherText +
+                    "“"
+                );
+
+
+                if (
+                    roherText !== text
+                ) {
+
+                    logToConsole(
+                        "✨ [GEBÜGELT] „" +
+                        text +
+                        "“"
+                    );
+                }
+
+
+                verarbeiteSprache(
+                    text
+                );
+            }
+        };
+
+
+    /* =====================================================
+       HAUPTVERARBEITUNG DER PHASEN
+       ===================================================== */
+
+    function verarbeiteSprache(text) {
+
+
+        logToConsole(
+            "🔍 [ANALYSE] Prüfe Phase " +
+            phase +
+            "..."
+        );
+
+
+        /* ================================================
+           PHASE 0
+           ZUSAMMEN
+           ================================================ */
+
+        if (
+            phase === 0
+        ) {
+
+
+            if (
+                text.includes(
+                    "zusammen"
+                )
+            ) {
+
+                phase = 1;
+
+
+                phase1Text =
+                    "";
+
+
+                logToConsole(
+                    "▶️ „ZUSAMMEN“ ERKANNT"
+                );
+
+
+                logToConsole(
+                    "PHASE 1: SUCHE KARTENFARBE"
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* ================================================
+           PHASE 1
+           KARTENFARBE
+           ================================================ */
+
+        if (
+            phase === 1
+        ) {
+
+            /*
+            Sprachfragmente sammeln.
+            */
+
+            phase1Text +=
+                " " + text;
+
+
+            /*
+            REIHEN FOLGE
+            zusammenführen.
+            */
+
+            phase1Text =
+                phase1Text.replace(
+                    /reihen\s+folge/g,
+                    "reihenfolge"
+                );
+
+
+            /*
+            KARTENFARBE
+            */
+
+            if (
+                phase1Text.includes(
+                    "passiert"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Pik ♠";
+
+
+            } else if (
+                phase1Text.includes(
+                    "geschehen"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Herz ♥";
+
+
+            } else if (
+                phase1Text.includes(
+                    "gewesen"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Kreuz ♣";
+
+
+            } else if (
+                phase1Text.includes(
+                    "gehabt"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Karo ♦";
+            }
+
+
+            /*
+            Farbe gefunden
+            */
+
+            if (
+                kartenFarbe !== ""
+            ) {
+
+                logToConsole(
+                    "🃏 KARTENFARBE: " +
+                    kartenFarbe
+                );
+
+
+                phase = 2;
+
+
+                /*
+                Ganz wichtig:
+                Phase 2 bekommt einen
+                leeren Puffer.
+                */
+
+                phase2Text =
+                    "";
+
+
+                logToConsole(
+                    "PHASE 2: CODEWÖRTER ZÄHLEN"
+                );
+
+
+                return;
+            }
+
+
+            return;
+        }
+
+
+        /* ================================================
+           PHASE 2
+           CODEWÖRTER + REIHENFOLGE
+           ================================================ */
+
+        if (
+            phase === 2
+        ) {
+
+            /*
+            Alle Sprachfragmente sammeln.
+            */
+
+            phase2Text +=
+                " " + text;
+
+
+            /*
+            Getrennt gehörtes
+            REIHEN FOLGE zusammenführen.
+            */
+
+            phase2Text =
+                phase2Text.replace(
+                    /reihen\s+folge/g,
+                    "reihenfolge"
+                );
+
+
+            /*
+            AKTUELLES SPRACHFRAGMENT
+            nach Codewörtern durchsuchen.
+
+            Wichtig:
+            verarbeiteCodewoerter()
+            erkennt nur:
+
+            einmal
+            zweimal
+            dreimal
+            viermal
+            hand
+            händen
+
+            Reine Zahlen wie
+            „eins“, „zwei“, „drei“
+            werden hier NICHT gezählt.
+            */
+
+            verarbeiteCodewoerter(
+                text
+            );
+
+
+            /*
+            REIHENFOLGE / KARTENFOLGE
+            */
+
+            const reihenfolgeErkannt =
+                phase2Text.includes(
+                    "reihenfolge"
+                );
+
+
+            const folgeKartenErkannt =
+                phase2Text.includes("folge") &&
+                phase2Text.includes("karten") &&
+                phase2Text.includes("bestimmt");
+
+
+            const kartenDeckBestimmt =
+                phase2Text.includes("karten") &&
+                phase2Text.includes("deck") &&
+                phase2Text.includes("bestimmt");
+
+
+            if (
+                reihenfolgeErkannt ||
+                folgeKartenErkannt ||
+                kartenDeckBestimmt
+            ) {
+
+                phase = 3;
+
+                phase3Text = "";
+
+
+                logToConsole(
+                    "🔒 KARTENFOLGE / REIHENFOLGE ERKANNT"
+                );
+
+
+                logToConsole(
+                    "KARTENWERT FESTGESETZT: " +
+                    kartenWert
+                );
+
+
+                logToConsole(
+                    "PHASE 3: NAME / DATUM"
+                );
+
+
+                return;
+            }
+
+
+            return;
+        }
+
+
+        /* ================================================
+           PHASE 3
+           NAME / DATUM / HEUTE / VERDECKT
+           ================================================ */
+
+        if (
+            phase === 3
+        ) {
+
+
+            /*
+            Alle Sprachfragmente
+            aus Phase 3 sammeln.
+            */
+
+            phase3Text +=
+                " " + text;
+
+
+            /* --------------------------------------------
+               NAME
+               -------------------------------------------- */
+
+            const datumPosition =
+                phase3Text.indexOf(
+                    "dein datum"
+                );
+
+
+            if (
+                datumPosition > 0 &&
+                zuschauerName === ""
+            ) {
+
+
+                let nameTeil =
+                    phase3Text
+                        .substring(
+                            0,
+                            datumPosition
+                        )
+                        .trim();
+
+
+                const woerter =
+                    nameTeil.split(
+                        /\s+/
+                    );
+
+
+                if (
+                    woerter.length > 0
+                ) {
+
+
+                    nameTeil =
+                        woerter[
+                            woerter.length - 1
+                        ]
+                        .replace(
+                            /^[,.:;!? ]+|[,.:;!? ]+$/g,
+                            ""
+                        );
+
+
+                    if (
+                        nameTeil !== "" &&
+                        nameTeil.toLowerCase() !==
+                            "name"
+                    ) {
+
+
+                        zuschauerName =
+                            nameTeil
+                                .charAt(0)
+                                .toUpperCase() +
+                            nameTeil.slice(1);
+
+
+                        logToConsole(
+                            "👤 NAME: " +
+                            zuschauerName
+                        );
+                    }
+                }
+            }
+
+
+            /* --------------------------------------------
+               HEUTE
+               -------------------------------------------- */
+
+            if (
+                geburtsTag === null &&
+                phase3Text.includes(
+                    "heute"
+                )
+            ) {
+
+
+                const heute =
+                    new Date();
+
+
+                geburtsTag =
+                    heute.getDate();
+
+
+                geburtsMonat =
+                    heute.getMonth() + 1;
+
+
+                geburtsDatum =
+                    String(
+                        geburtsTag
+                    ).padStart(
+                        2,
+                        "0"
+                    ) +
+                    "." +
+                    String(
+                        geburtsMonat
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                logToConsole(
+                    "📅 DATUM: HEUTE → " +
+                    geburtsDatum
+                );
+            }
+
+
+            /* --------------------------------------------
+               DATUM NACH „ALSO“
+               -------------------------------------------- */
+
+            if (
+                geburtsTag === null
+            ) {
+
+
+                const alsoPosition =
+                    phase3Text.indexOf(
+                        "also"
+                    );
+
+
+                if (
+                    alsoPosition !== -1
+                ) {
+
+
+                    const nachAlso =
+                        phase3Text.substring(
+                            alsoPosition + 4
+                        );
+
+
+                    const zahlen =
+                        findeZahlen(
+                            nachAlso
+                        );
+
+
+                    if (
+                        zahlen.length >= 2
+                    ) {
+
+
+                        const tag =
+                            zahlen[0];
+
+
+                        const monat =
+                            zahlen[1];
+
+
+                        if (
+                            tag >= 1 &&
+                            tag <= 31 &&
+                            monat >= 1 &&
+                            monat <= 12
+                        ) {
+
+
+                            geburtsTag =
+                                tag;
+
+
+                            geburtsMonat =
+                                monat;
+
+
+                            geburtsDatum =
+                                String(
+                                    tag
+                                ).padStart(
+                                    2,
+                                    "0"
+                                ) +
+                                "." +
+                                String(
+                                    monat
+                                ).padStart(
+                                    2,
+                                    "0"
+                                );
+
+
+                            logToConsole(
+                                "📅 DATUM: " +
+                                geburtsDatum
+                            );
+                        }
+                    }
+                }
+            }
+
+
+            /* --------------------------------------------
+               VERDECKT = ABSCHLUSS
+               -------------------------------------------- */
+
+            if (
+                phase3Text.includes(
+                    "verdeckt"
+                )
+            ) {
+
+
+                phase = 4;
+
+
+                logToConsole(
+                    "🛑 „VERDECKT“ ERKANNT"
+                );
+
+
+                logToConsole(
+                    "🎤 SPRACHERKENNUNG WIRD BEENDET"
+                );
+
+
+                /*
+                Geburtstag prüfen
+                */
+
+                const heute =
+                    new Date();
+
+
+                const heuteTag =
+                    heute.getDate();
+
+
+                const heuteMonat =
+                    heute.getMonth() + 1;
+
+
+                istGeburtstag =
+                    geburtsTag ===
+                        heuteTag &&
+                    geburtsMonat ===
+                        heuteMonat;
+
+
+                /*
+                ERGEBNIS
+                */
+
+                logToConsole(
+                    "--------------------------------"
+                );
+
+
+                logToConsole(
+                    "ERGEBNIS"
+                );
+
+
+                logToConsole(
+                    "FARBE: " +
+                    kartenFarbe
+                );
+
+
+                logToConsole(
+                    "WERT: " +
+                    kartenWert
+                );
+
+
+                logToConsole(
+                    "NAME: " +
+                    (
+                        zuschauerName ||
+                        "(kein Name erkannt)"
+                    )
+                );
+
+
+                logToConsole(
+                    "DATUM: " +
+                    (
+                        geburtsDatum ||
+                        "(kein Datum erkannt)"
+                    )
+                );
+
+
+                logToConsole(
+                    "GEBURTSTAG: " +
+                    (
+                        istGeburtstag
+                            ? "JA 🎂"
+                            : "NEIN"
+                    )
+                );
+
+
+                logToConsole(
+                    "--------------------------------"
+                );
+
+
+                /*
+                Spracherkennung
+                endgültig beenden.
+                */
+
+                recognition.stop();
+
+
+                return;
+            }
+
+
+            return;
+        }
+    }
+
+
+    /* =====================================================
+       MIKROFON-RESTART
+       ===================================================== */
+
+    let neustartTimer = null;
+
+    let antiLoopSperre = false;
+
+
+    recognition.onend = () => {
+
+
+        /*
+        Nach „Verdeckt“
+        NICHT wieder starten.
+        */
+
+        if (
+            phase >= 4
+        ) {
+
+            return;
+        }
+
+
+        /*
+        Verhindert mehrere
+        gleichzeitige Neustarts.
+        */
+
+        if (
+            antiLoopSperre
+        ) {
+
+            return;
+        }
+
+
+        antiLoopSperre =
+            true;
+
+
+        if (
+            neustartTimer
+        ) {
+
+            clearTimeout(
+                neustartTimer
+            );
+        }
+
+
+        neustartTimer =
+            setTimeout(
+                () => {
+
+
+                    try {
+
+
+                        verarbeitetesResultat =
+                            0;
+
+
+                        recognition.start();
+
+
+                        setTimeout(
+                            () => {
+
+                                antiLoopSperre =
+                                    false;
+
+                            },
+                            1000
+                        );
+
+
+                    } catch (e) {
+
+
+                        antiLoopSperre =
+                            false;
+                    }
+
+
+                },
+                800
+            );
+    };
+
+
+    /* =====================================================
+       ERSTER START
+       ===================================================== */
+
+    try {
+
+        recognition.start();
+
+    } catch (e) {
+
+        logToConsole(
+            "❌ STARTFEHLER: " +
+            e.message
+        );
+    }
+
+}
+
+
+/* =====================================================
+   NOT-AUS
+   3 SEKUNDEN OBEN LINKS GEDRÜCKT HALTEN
+   ===================================================== */
+
+let exitTimer = null;
+
+
+document
+    .getElementById(
+        "emergency-exit"
+    )
+    .addEventListener(
+        "touchstart",
+        () => {
+
+
+            exitTimer =
+                setTimeout(
+                    () => {
+
+                        location.reload();
+
+                    },
+                    3000
+                );
+        }
+    );
+
+
+document
+    .getElementById(
+        "emergency-exit"
+    )
+    .addEventListener(
+        "touchend",
+        () => {
+
+            clearTimeout(
+                exitTimer
+            );
+
+        }
+    );
+
+</script>
+
+</body>
+
 
