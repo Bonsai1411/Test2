@@ -1,1 +1,1174 @@
+<!DOCTYPE html>
+<html lang="de">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>Mystery Master – Animation Test2</title>
+
+
+<style>
+
+/* =========================================================
+   GRUNDLAYOUT
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #000;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+}
+
+
+/* =========================================================
+   SHOW-BÜHNE
+   ========================================================= */
+
+#stage {
+
+    position: fixed;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   WALD / NEBEL GIF
+   ========================================================= */
+
+#forest {
+
+    position: absolute;
+
+    inset: -3%;
+
+    width: 106%;
+    height: 106%;
+
+    object-fit: cover;
+
+    opacity: 1;
+
+    transform:
+        scale(1.02);
+
+    transition:
+        opacity 2.5s ease,
+        transform 10s ease;
+}
+
+
+/* =========================================================
+   DUNKELHEIT
+   ========================================================= */
+
+#darkness {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,0.28);
+
+    opacity: 0;
+
+    transition:
+        opacity 3s ease;
+}
+
+
+/* =========================================================
+   VORHERSAGE-TEXT
+   ========================================================= */
+
+#prediction-wrap {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 12vw;
+
+    z-index: 20;
+
+    pointer-events: none;
+}
+
+
+#prediction {
+
+    max-width: 92%;
+
+    text-align: center;
+
+    color:
+        rgba(238,238,238,0);
+
+    font-size:
+        clamp(28px, 6vw, 64px);
+
+    line-height: 1.25;
+
+    letter-spacing:
+        0.025em;
+
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.35),
+        0 0 25px rgba(255,255,255,0.18);
+
+    filter:
+        blur(9px);
+
+    transform:
+        scale(0.97);
+
+    opacity: 0;
+
+    transition:
+        opacity 2.8s ease,
+        filter 3s ease,
+        transform 5s ease;
+
+    animation:
+        livingText 5.5s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   LEBENDIGE SCHRIFT
+   ========================================================= */
+
+@keyframes livingText {
+
+    0% {
+
+        transform:
+            translate3d(-1px,0,0)
+            scale(0.995);
+
+        letter-spacing:
+            0.022em;
+    }
+
+
+    50% {
+
+        transform:
+            translate3d(1px,-1px,0)
+            scale(1.005);
+
+        letter-spacing:
+            0.028em;
+    }
+
+
+    100% {
+
+        transform:
+            translate3d(0,1px,0)
+            scale(1.0);
+
+        letter-spacing:
+            0.024em;
+    }
+}
+
+
+/* =========================================================
+   VORDERGRUND-NEBEL
+   Das GIF liegt ein zweites Mal über dem Text.
+   ========================================================= */
+
+#fog-front {
+
+    position: absolute;
+
+    inset: -5%;
+
+    width: 110%;
+    height: 110%;
+
+    object-fit: cover;
+
+    z-index: 30;
+
+    opacity: 0;
+
+    filter:
+        blur(1px);
+
+    transform:
+        scale(1.08);
+
+    mix-blend-mode:
+        screen;
+
+    pointer-events:
+        none;
+
+    transition:
+        opacity 4s ease,
+        transform 8s ease;
+}
+
+
+/* =========================================================
+   ZUSÄTZLICHER WEICHER DUNST
+   ========================================================= */
+
+#mist {
+
+    position: absolute;
+
+    inset: -10%;
+
+    z-index: 25;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 58%,
+            rgba(235,235,235,0.20) 0%,
+            rgba(190,190,190,0.10) 20%,
+            rgba(100,100,100,0.04) 43%,
+            rgba(0,0,0,0) 70%
+        );
+
+    filter:
+        blur(22px);
+
+    transform:
+        scale(1);
+
+    transition:
+        opacity 4s ease,
+        transform 8s ease;
+}
+
+
+/* =========================================================
+   KARTEN-SILHOUETTE
+   ========================================================= */
+
+#silhouette {
+
+    position: absolute;
+
+    z-index: 40;
+
+    left: 50%;
+    top: 50%;
+
+    width:
+        min(42vw, 250px);
+
+    aspect-ratio:
+        2 / 3;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.68);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(8,8,8,0.82);
+
+    box-shadow:
+        0 0 35px rgba(255,255,255,0.08),
+        0 0 90px rgba(255,255,255,0.05);
+
+    opacity:
+        0;
+
+    filter:
+        blur(18px);
+
+    transition:
+        opacity 4s ease,
+        filter 5s ease,
+        transform 5s cubic-bezier(.2,.75,.2,1);
+
+    pointer-events:
+        none;
+}
+
+
+#silhouette::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 5%;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.10);
+
+    border-radius:
+        7px;
+}
+
+
+/* =========================================================
+   ECHTE KARTE
+   ========================================================= */
+
+#card {
+
+    position: absolute;
+
+    z-index: 50;
+
+    left: 50%;
+    top: 50%;
+
+    width:
+        min(42vw, 250px);
+
+    aspect-ratio:
+        2 / 3;
+
+    object-fit:
+        contain;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.88);
+
+    opacity:
+        0;
+
+    filter:
+        blur(12px)
+        brightness(0.75);
+
+    transition:
+        opacity 4.5s ease,
+        filter 4.5s ease,
+        transform 4.5s cubic-bezier(.2,.75,.2,1);
+
+    pointer-events:
+        none;
+}
+
+
+/* =========================================================
+   TEST-STEUERUNG
+   ========================================================= */
+
+#controls {
+
+    position: fixed;
+
+    z-index: 1000;
+
+    left: 10px;
+    right: 10px;
+
+    bottom: 10px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    justify-content: center;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(0,0,0,0.72);
+
+    backdrop-filter:
+        blur(8px);
+}
+
+
+button,
+select {
+
+    appearance: none;
+
+    border:
+        1px solid #555;
+
+    border-radius:
+        7px;
+
+    background:
+        #111;
+
+    color:
+        #eee;
+
+    padding:
+        9px 10px;
+
+    font:
+        14px monospace;
+}
+
+
+button:active {
+
+    transform:
+        scale(0.97);
+}
+
+
+#status {
+
+    width: 100%;
+
+    color:
+        #aaa;
+
+    text-align:
+        center;
+
+    font:
+        12px monospace;
+
+    min-height:
+        16px;
+}
+
+
+/* =========================================================
+   HANDY
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    #controls {
+
+        bottom: 5px;
+
+        left: 5px;
+        right: 5px;
+    }
+
+
+    #prediction-wrap {
+
+        padding:
+            10vw;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     SHOW
+     ======================================================= -->
+
+<div id="stage">
+
+
+    <!-- Originales animiertes GIF -->
+
+    <img
+        id="forest"
+        src="wals.gif"
+        alt=""
+    >
+
+
+    <!-- Dunkelheit -->
+
+    <div id="darkness"></div>
+
+
+    <!-- zusätzlicher Dunst -->
+
+    <div id="mist"></div>
+
+
+    <!-- Vorhersage -->
+
+    <div id="prediction-wrap">
+
+        <div id="prediction"></div>
+
+    </div>
+
+
+    <!--
+    Zweite GIF-Ebene.
+    Diese liegt später ÜBER dem Text.
+    -->
+
+    <img
+        id="fog-front"
+        src="wals.gif"
+        alt=""
+    >
+
+
+    <!-- Kartensilhouette -->
+
+    <div id="silhouette"></div>
+
+
+    <!-- tatsächliche Karte -->
+
+    <img
+        id="card"
+        src=""
+        alt="Vorhersagekarte"
+    >
+
+</div>
+
+
+
+<!-- =======================================================
+     TEST-STEUERUNG
+
+     WICHTIG:
+     Hier gibt es KEIN Mikrofon und KEINE Spracherkennung.
+     ======================================================= -->
+
+<div id="controls">
+
+
+    <select id="caseSelect">
+
+        <option value="nameDate">
+            Name + Datum
+        </option>
+
+        <option value="dateOnly">
+            Nur Datum
+        </option>
+
+        <option value="nameOnly">
+            Nur Name
+        </option>
+
+        <option value="none">
+            Weder Name noch Datum
+        </option>
+
+    </select>
+
+
+    <select id="cardSelect">
+
+        <option value="pik_7">
+            Pik 7
+        </option>
+
+        <option value="herz_12">
+            Herz Dame
+        </option>
+
+        <option value="karo_1">
+            Karo Ass
+        </option>
+
+        <option value="kreuz_13">
+            Kreuz König
+        </option>
+
+    </select>
+
+
+    <button id="startBtn">
+        FINALE TESTEN
+    </button>
+
+
+    <button id="resetBtn">
+        RESET
+    </button>
+
+
+    <div id="status">
+        Animationstest bereit.
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   ELEMENTE
+   ========================================================= */
+
+const forest =
+    document.getElementById(
+        "forest"
+    );
+
+
+const darkness =
+    document.getElementById(
+        "darkness"
+    );
+
+
+const mist =
+    document.getElementById(
+        "mist"
+    );
+
+
+const fogFront =
+    document.getElementById(
+        "fog-front"
+    );
+
+
+const prediction =
+    document.getElementById(
+        "prediction"
+    );
+
+
+const silhouette =
+    document.getElementById(
+        "silhouette"
+    );
+
+
+const card =
+    document.getElementById(
+        "card"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+const caseSelect =
+    document.getElementById(
+        "caseSelect"
+    );
+
+
+const cardSelect =
+    document.getElementById(
+        "cardSelect"
+    );
+
+
+const startBtn =
+    document.getElementById(
+        "startBtn"
+    );
+
+
+const resetBtn =
+    document.getElementById(
+        "resetBtn"
+    );
+
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+let timerIds = [];
+
+
+function wait(ms) {
+
+    return new Promise(
+        resolve => {
+
+            const id =
+                setTimeout(
+                    resolve,
+                    ms
+                );
+
+            timerIds.push(id);
+
+        }
+    );
+}
+
+
+
+function clearTimers() {
+
+    timerIds.forEach(
+        clearTimeout
+    );
+
+    timerIds = [];
+}
+
+
+
+function setStatus(text) {
+
+    status.textContent =
+        text;
+}
+
+
+
+/* =========================================================
+   TEST-TEXTE
+   ========================================================= */
+
+function predictionText(type) {
+
+    switch (type) {
+
+        case "nameDate":
+
+            return:
+                "Max, du wirst den 23. Juni als Datum nennen.";
+
+
+        case "dateOnly":
+
+            return:
+                "Du wirst den 23. Juni als Datum nennen.";
+
+
+        case "nameOnly":
+
+            return:
+                "Max, dies ist deine persönliche Vorhersage.";
+
+
+        default:
+
+            return:
+                "Dies ist deine persönliche Vorhersage.";
+    }
+}
+
+
+
+/* =========================================================
+   KARTENPFAD
+   ========================================================= */
+
+function cardPath(value) {
+
+    return:
+        "karten/" +
+        value +
+        ".png";
+}
+
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetAnimation() {
+
+    clearTimers();
+
+
+    forest.style.opacity =
+        "1";
+
+
+    forest.style.transform =
+        "scale(1.02)";
+
+
+    darkness.style.opacity =
+        "0";
+
+
+    mist.style.opacity =
+        "0";
+
+
+    mist.style.transform =
+        "scale(1)";
+
+
+    fogFront.style.opacity =
+        "0";
+
+
+    fogFront.style.transform =
+        "scale(1.08)";
+
+
+    prediction.style.opacity =
+        "0";
+
+
+    prediction.style.filter =
+        "blur(9px)";
+
+
+    prediction.style.transform =
+        "scale(0.97)";
+
+
+    silhouette.style.opacity =
+        "0";
+
+
+    silhouette.style.filter =
+        "blur(18px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.68)";
+
+
+    card.style.opacity =
+        "0";
+
+
+    card.style.filter =
+        "blur(12px) brightness(0.75)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(0.88)";
+
+
+    card.src =
+        "";
+
+
+    setStatus(
+        "Animationstest bereit."
+    );
+}
+
+
+
+/* =========================================================
+   HAUPTANIMATION
+   ========================================================= */
+
+async function startAnimation() {
+
+    clearTimers();
+
+    resetAnimation();
+
+
+    const type =
+        caseSelect.value;
+
+
+    const selectedCard =
+        cardSelect.value;
+
+
+    /*
+    Karte bereits laden.
+    Sie ist aber noch unsichtbar.
+    */
+
+    card.src =
+        cardPath(
+            selectedCard
+        );
+
+
+    /* -----------------------------------------------
+       1. VORHERSAGE
+       ----------------------------------------------- */
+
+    setStatus(
+        "1. Vorhersage erscheint ..."
+    );
+
+
+    prediction.textContent =
+        predictionText(
+            type
+        );
+
+
+    await wait(300);
+
+
+    prediction.style.opacity =
+        "1";
+
+
+    prediction.style.filter =
+        "blur(0px)";
+
+
+    prediction.style.transform =
+        "scale(1)";
+
+
+    /* -----------------------------------------------
+       Vorhersage bleibt eine Weile stehen.
+       ----------------------------------------------- */
+
+    await wait(4200);
+
+
+
+    /* -----------------------------------------------
+       2. NEBEL WIRD DICHTER
+       ----------------------------------------------- */
+
+    setStatus(
+        "2. Nebel verdichtet sich ..."
+    );
+
+
+    darkness.style.opacity =
+        "0.52";
+
+
+    mist.style.opacity =
+        "1";
+
+
+    mist.style.transform =
+        "scale(1.12)";
+
+
+    fogFront.style.opacity =
+        "0.42";
+
+
+    fogFront.style.transform =
+        "scale(1.16)";
+
+
+    prediction.style.opacity =
+        "0.35";
+
+
+    prediction.style.filter =
+        "blur(5px)";
+
+
+    await wait(3000);
+
+
+
+    /* -----------------------------------------------
+       3. VORHERSAGE VERSCHWINDET
+       ----------------------------------------------- */
+
+    setStatus(
+        "3. Vorhersage verschwindet ..."
+    );
+
+
+    prediction.style.opacity =
+        "0";
+
+
+    prediction.style.filter =
+        "blur(15px)";
+
+
+    forest.style.opacity =
+        "0.20";
+
+
+    forest.style.transform =
+        "scale(1.10)";
+
+
+    fogFront.style.opacity =
+        "0.68";
+
+
+    fogFront.style.transform =
+        "scale(1.22)";
+
+
+    await wait(2200);
+
+
+
+    /* -----------------------------------------------
+       4. SILHOUETTE
+       ----------------------------------------------- */
+
+    setStatus(
+        "4. Eine Form entsteht im Nebel ..."
+    );
+
+
+    silhouette.style.opacity =
+        "0.72";
+
+
+    silhouette.style.filter =
+        "blur(12px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.82)";
+
+
+    await wait(2800);
+
+
+
+    /* -----------------------------------------------
+       5. KARTE WIRD SICHTBAR
+       ----------------------------------------------- */
+
+    setStatus(
+        "5. Die Karte wird sichtbar ..."
+    );
+
+
+    silhouette.style.opacity =
+        "0.18";
+
+
+    silhouette.style.filter =
+        "blur(7px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.96)";
+
+
+    card.style.opacity =
+        "0.55";
+
+
+    card.style.filter =
+        "blur(7px) brightness(0.85)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(0.94)";
+
+
+    await wait(2800);
+
+
+    card.style.opacity =
+        "1";
+
+
+    card.style.filter =
+        "blur(0px) brightness(1)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(1)";
+
+
+    fogFront.style.opacity =
+        "0.30";
+
+
+    forest.style.opacity =
+        "0.08";
+
+
+    darkness.style.opacity =
+        "0.72";
+
+
+    await wait(2500);
+
+
+    /* -----------------------------------------------
+       FERTIG
+       ----------------------------------------------- */
+
+    setStatus(
+        "VORHERSAGE STEHT. Jetzt die echte verdeckte Karte umdrehen."
+    );
+}
+
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+startBtn.addEventListener(
+    "click",
+    startAnimation
+);
+
+
+resetBtn.addEventListener(
+    "click",
+    resetAnimation
+);
+
+
+
+/* =========================================================
+   STARTZUSTAND
+   ========================================================= */
+
+resetAnimation();
+
+</script>
+
+</body>
+
+</html>
