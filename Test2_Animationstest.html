@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Mystery Master – Animation Test2</title>
+<title>Mystery Master – Animation Test 2.2</title>
 
 
 <style>
@@ -22,7 +22,6 @@
 * {
     box-sizing: border-box;
 }
-
 
 html,
 body {
@@ -44,10 +43,6 @@ body {
 }
 
 
-/* =========================================================
-   SHOW-BÜHNE
-   ========================================================= */
-
 #stage {
 
     position: fixed;
@@ -61,7 +56,7 @@ body {
 
 
 /* =========================================================
-   WALD / NEBEL GIF
+   WALD
    ========================================================= */
 
 #forest {
@@ -80,7 +75,7 @@ body {
     transform: scale(1.02);
 
     transition:
-        opacity 3s ease,
+        opacity 4s ease,
         transform 10s ease;
 }
 
@@ -101,12 +96,14 @@ body {
     opacity: 0;
 
     transition:
-        opacity 3s ease;
+        opacity 4s ease;
+
+    z-index: 10;
 }
 
 
 /* =========================================================
-   VORHERSAGE-TEXT
+   VORHERSAGE
    ========================================================= */
 
 #prediction-wrap {
@@ -161,8 +158,8 @@ body {
         0;
 
     transition:
-        opacity 2.3s ease,
-        filter 2.5s ease,
+        opacity 2.5s ease,
+        filter 2.8s ease,
         transform 3s ease;
 }
 
@@ -174,7 +171,7 @@ body {
 #prediction.alive {
 
     animation:
-        livingText 4.2s ease-in-out infinite alternate;
+        livingText 4.8s ease-in-out infinite alternate;
 }
 
 
@@ -187,22 +184,20 @@ body {
             scale(1.000);
 
         text-shadow:
-            0 0 7px rgba(232, 211, 143, 0.28),
-            0 0 20px rgba(210, 185, 100, 0.16);
+            0 0 7px rgba(232, 211, 143, 0.26),
+            0 0 20px rgba(210, 185, 100, 0.15);
     }
-
 
     50% {
 
         transform:
             translate3d(1px, -1px, 0)
-            scale(1.006);
+            scale(1.007);
 
         text-shadow:
-            0 0 10px rgba(232, 211, 143, 0.34),
-            0 0 25px rgba(210, 185, 100, 0.20);
+            0 0 11px rgba(232, 211, 143, 0.38),
+            0 0 28px rgba(210, 185, 100, 0.21);
     }
-
 
     100% {
 
@@ -211,21 +206,67 @@ body {
             scale(0.998);
 
         text-shadow:
-            0 0 6px rgba(232, 211, 143, 0.25),
-            0 0 18px rgba(210, 185, 100, 0.14);
+            0 0 6px rgba(232, 211, 143, 0.23),
+            0 0 18px rgba(210, 185, 100, 0.13);
     }
 }
 
 
 /* =========================================================
-   DEZENTER NEBELSCHLEIER
+   EINZELNE BUCHSTABEN
+   ========================================================= */
 
-   Dieser Effekt beginnt bereits während
-   der Zuschauer den Text liest.
+.magic-letter {
 
-   Er liegt ÜBER der Schrift.
+    display: inline-block;
 
-   Noch sehr schwach.
+    animation:
+        letterBreath var(--delay) ease-in-out infinite alternate;
+
+    opacity:
+        var(--opacity);
+
+    transform:
+        translateY(0);
+}
+
+
+@keyframes letterBreath {
+
+    0% {
+
+        opacity:
+            var(--opacity);
+
+        transform:
+            translateY(0px)
+            scale(1);
+    }
+
+    50% {
+
+        opacity:
+            calc(var(--opacity) + 0.12);
+
+        transform:
+            translateY(-1px)
+            scale(1.008);
+    }
+
+    100% {
+
+        opacity:
+            calc(var(--opacity) - 0.08);
+
+        transform:
+            translateY(1px)
+            scale(0.996);
+    }
+}
+
+
+/* =========================================================
+   LESENEBEL
    ========================================================= */
 
 #reading-fog {
@@ -246,13 +287,9 @@ body {
         blur(18px);
 
     transition:
-        opacity 3s ease;
+        opacity 3.5s ease;
 }
 
-
-/* ---------------------------------------------------------
-   Einzelne weiche Nebelfelder
-   --------------------------------------------------------- */
 
 .fog-cloud {
 
@@ -266,7 +303,7 @@ body {
     background:
         radial-gradient(
             ellipse,
-            rgba(225, 225, 225, 0.14) 0%,
+            rgba(225, 225, 225, 0.15) 0%,
             rgba(210, 210, 210, 0.08) 28%,
             rgba(180, 180, 180, 0.03) 55%,
             rgba(180, 180, 180, 0) 75%
@@ -279,10 +316,6 @@ body {
         0.75;
 }
 
-
-/* ---------------------------------------------------------
-   Nebelbewegung 1
-   --------------------------------------------------------- */
 
 .fog-cloud.one {
 
@@ -321,10 +354,6 @@ body {
     }
 }
 
-
-/* ---------------------------------------------------------
-   Nebelbewegung 2
-   --------------------------------------------------------- */
 
 .fog-cloud.two {
 
@@ -369,10 +398,6 @@ body {
     }
 }
 
-
-/* ---------------------------------------------------------
-   Nebelbewegung 3
-   --------------------------------------------------------- */
 
 .fog-cloud.three {
 
@@ -419,9 +444,7 @@ body {
 
 
 /* =========================================================
-   FINALER VORDERGRUND-NEBEL
-
-   Dieser kommt erst ab Sekunde 7.
+   FINALER NEBEL
    ========================================================= */
 
 #fog-front {
@@ -452,13 +475,13 @@ body {
         none;
 
     transition:
-        opacity 4s ease,
-        transform 8s ease;
+        opacity 5s ease,
+        transform 9s ease;
 }
 
 
 /* =========================================================
-   ZUSÄTZLICHER FINAL-DUNST
+   FINALER DUNST
    ========================================================= */
 
 #mist {
@@ -467,7 +490,7 @@ body {
 
     inset: -10%;
 
-    z-index: 26;
+    z-index: 27;
 
     opacity: 0;
 
@@ -476,26 +499,26 @@ body {
     background:
         radial-gradient(
             ellipse at 50% 58%,
-            rgba(235, 235, 235, 0.20) 0%,
-            rgba(190, 190, 190, 0.10) 20%,
-            rgba(100, 100, 100, 0.04) 43%,
-            rgba(0, 0, 0, 0) 70%
+            rgba(235, 235, 235, 0.22) 0%,
+            rgba(190, 190, 190, 0.12) 20%,
+            rgba(100, 100, 100, 0.05) 43%,
+            rgba(0, 0, 0, 0) 72%
         );
 
     filter:
-        blur(22px);
+        blur(25px);
 
     transform:
         scale(1);
 
     transition:
-        opacity 4s ease,
-        transform 8s ease;
+        opacity 5s ease,
+        transform 9s ease;
 }
 
 
 /* =========================================================
-   KARTEN-SILHOUETTE
+   SILHOUETTE
    ========================================================= */
 
 #silhouette {
@@ -515,28 +538,28 @@ body {
 
     transform:
         translate(-50%, -50%)
-        scale(0.62);
+        scale(0.58);
 
     border-radius:
         10px;
 
     background:
-        rgba(5, 5, 5, 0.88);
+        rgba(5, 5, 5, 0.90);
 
     box-shadow:
         0 0 35px rgba(255, 255, 255, 0.07),
-        0 0 90px rgba(255, 255, 255, 0.04);
+        0 0 100px rgba(255, 255, 255, 0.05);
 
     opacity:
         0;
 
     filter:
-        blur(20px);
+        blur(22px);
 
     transition:
-        opacity 3.5s ease,
-        filter 3.5s ease,
-        transform 4s cubic-bezier(.2, .75, .2, 1);
+        opacity 4s ease,
+        filter 4s ease,
+        transform 4.5s cubic-bezier(.2, .75, .2, 1);
 
     pointer-events:
         none;
@@ -561,7 +584,7 @@ body {
 
 
 /* =========================================================
-   ECHTE KARTE
+   KARTE
    ========================================================= */
 
 #card {
@@ -584,19 +607,19 @@ body {
 
     transform:
         translate(-50%, -50%)
-        scale(0.88);
+        scale(0.84);
 
     opacity:
         0;
 
     filter:
-        blur(14px)
-        brightness(0.70);
+        blur(20px)
+        brightness(0.50);
 
     transition:
-        opacity 2.8s ease,
-        filter 3s ease,
-        transform 3s cubic-bezier(.2, .75, .2, 1);
+        opacity 4s ease,
+        filter 4.5s ease,
+        transform 4.5s cubic-bezier(.2, .75, .2, 1);
 
     pointer-events:
         none;
@@ -688,10 +711,6 @@ button:active {
 }
 
 
-/* =========================================================
-   HANDY
-   ========================================================= */
-
 @media (max-width: 600px) {
 
     #controls {
@@ -718,17 +737,12 @@ button:active {
 <body>
 
 
-<!-- =======================================================
-     SHOW
-     ======================================================= -->
-
 <div id="stage">
 
 
-    <!--
-    RICHTIGER DATEINAME:
-    wald.gif
-    -->
+    <!-- =====================================================
+         WALD
+         ===================================================== -->
 
     <img
         id="forest"
@@ -737,15 +751,16 @@ button:active {
     >
 
 
-    <!-- Dunkelheit -->
+    <!-- =====================================================
+         DUNKELHEIT
+         ===================================================== -->
 
     <div id="darkness"></div>
 
 
-    <!--
-    Dezenter Nebel für die Lesephase.
-    Dieser liegt ÜBER der Schrift.
-    -->
+    <!-- =====================================================
+         LESE-NEBEL
+         ===================================================== -->
 
     <div id="reading-fog">
 
@@ -758,12 +773,16 @@ button:active {
     </div>
 
 
-    <!-- zusätzlicher Final-Dunst -->
+    <!-- =====================================================
+         FINALER DUNST
+         ===================================================== -->
 
     <div id="mist"></div>
 
 
-    <!-- Vorhersage -->
+    <!-- =====================================================
+         VORHERSAGE
+         ===================================================== -->
 
     <div id="prediction-wrap">
 
@@ -772,9 +791,9 @@ button:active {
     </div>
 
 
-    <!--
-    Finaler Nebel liegt über der Schrift.
-    -->
+    <!-- =====================================================
+         FINALER NEBEL
+         ===================================================== -->
 
     <img
         id="fog-front"
@@ -783,12 +802,16 @@ button:active {
     >
 
 
-    <!-- Kartensilhouette -->
+    <!-- =====================================================
+         SILHOUETTE
+         ===================================================== -->
 
     <div id="silhouette"></div>
 
 
-    <!-- tatsächliche Karte -->
+    <!-- =====================================================
+         KARTE
+         ===================================================== -->
 
     <img
         id="card"
@@ -800,12 +823,9 @@ button:active {
 
 
 
-<!-- =======================================================
-     TEST-STEUERUNG
-
-     KEIN MIKROFON
-     KEINE SPRACHERKENNUNG
-     ======================================================= -->
+<!-- =========================================================
+     TESTSTEUERUNG
+     ========================================================= -->
 
 <div id="controls">
 
@@ -872,7 +892,6 @@ button:active {
 
 <script>
 
-
 /* =========================================================
    ELEMENTE
    ========================================================= */
@@ -882,72 +901,60 @@ const forest =
         "forest"
     );
 
-
 const darkness =
     document.getElementById(
         "darkness"
     );
-
 
 const readingFog =
     document.getElementById(
         "reading-fog"
     );
 
-
 const mist =
     document.getElementById(
         "mist"
     );
-
 
 const fogFront =
     document.getElementById(
         "fog-front"
     );
 
-
 const prediction =
     document.getElementById(
         "prediction"
     );
-
 
 const silhouette =
     document.getElementById(
         "silhouette"
     );
 
-
 const card =
     document.getElementById(
         "card"
     );
-
 
 const status =
     document.getElementById(
         "status"
     );
 
-
 const caseSelect =
     document.getElementById(
         "caseSelect"
     );
-
 
 const cardSelect =
     document.getElementById(
         "cardSelect"
     );
 
-
 const startBtn =
     document.getElementById(
         "startBtn"
     );
-
 
 const resetBtn =
     document.getElementById(
@@ -998,7 +1005,7 @@ function setStatus(text) {
 
 
 /* =========================================================
-   TEST-TEXTE
+   TEXTE
    ========================================================= */
 
 function predictionText(type) {
@@ -1025,12 +1032,98 @@ function predictionText(type) {
 
 
 /* =========================================================
+   TEXT IN EINZELNE BUCHSTABEN AUFTEILEN
+   ========================================================= */
+
+function createLivingText(text) {
+
+    prediction.innerHTML = "";
+
+
+    for (
+        let i = 0;
+        i < text.length;
+        i++
+    ) {
+
+        const char =
+            text[i];
+
+
+        if (
+            char === " "
+        ) {
+
+            prediction.appendChild(
+                document.createTextNode(" ")
+            );
+
+            continue;
+        }
+
+
+        const span =
+            document.createElement(
+                "span"
+            );
+
+
+        span.className =
+            "magic-letter";
+
+
+        span.textContent =
+            char;
+
+
+        /*
+        Kleine Unterschiede zwischen
+        den Buchstaben.
+
+        Keine hektische Bewegung.
+        */
+
+        const delay =
+            (3.2 + Math.random() * 2.5)
+            .toFixed(2) +
+            "s";
+
+
+        const opacity =
+            (
+                0.84 +
+                Math.random() * 0.16
+            ).toFixed(2);
+
+
+        span.style.setProperty(
+            "--delay",
+            delay
+        );
+
+
+        span.style.setProperty(
+            "--opacity",
+            opacity
+        );
+
+
+        prediction.appendChild(
+            span
+        );
+    }
+}
+
+
+/* =========================================================
    KARTENPFAD
    ========================================================= */
 
 function cardPath(value) {
 
-    return "karten/" + value + ".png";
+    return "karten/" +
+        value +
+        ".png";
 }
 
 
@@ -1076,14 +1169,22 @@ function resetAnimation() {
         "alive"
     );
 
+
+    prediction.innerHTML =
+        "";
+
+
     prediction.style.opacity =
         "0";
+
 
     prediction.style.color =
         "rgba(232, 211, 143, 0)";
 
+
     prediction.style.filter =
         "blur(12px)";
+
 
     prediction.style.transform =
         "scale(0.97)";
@@ -1092,21 +1193,26 @@ function resetAnimation() {
     silhouette.style.opacity =
         "0";
 
+
     silhouette.style.filter =
-        "blur(20px)";
+        "blur(22px)";
+
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.62)";
+        "translate(-50%, -50%) scale(0.58)";
 
 
     card.style.opacity =
         "0";
 
+
     card.style.filter =
-        "blur(14px) brightness(0.70)";
+        "blur(20px) brightness(0.50)";
+
 
     card.style.transform =
-        "translate(-50%, -50%) scale(0.88)";
+        "translate(-50%, -50%) scale(0.84)";
+
 
     card.src =
         "";
@@ -1120,17 +1226,6 @@ function resetAnimation() {
 
 /* =========================================================
    HAUPTANIMATION
-
-   ZEITPLAN:
-
-   0.0    Wald
-   1.0    Text beginnt
-   2.5    Text lebt
-   3.0    dezenter Nebel beginnt
-   7.0    finaler Nebel
-   8.0    Silhouette
-   9.0    Silhouette deutlicher
-   10.0   Karte
    ========================================================= */
 
 async function startAnimation() {
@@ -1148,12 +1243,6 @@ async function startAnimation() {
         cardSelect.value;
 
 
-    /*
-    Karte laden.
-
-    Sie bleibt vollständig unsichtbar.
-    */
-
     card.src =
         cardPath(
             selectedCard
@@ -1161,7 +1250,7 @@ async function startAnimation() {
 
 
     /* =====================================================
-       SEKUNDE 0
+       0 SEKUNDEN
        ===================================================== */
 
     setStatus(
@@ -1173,8 +1262,8 @@ async function startAnimation() {
 
 
     /* =====================================================
-       SEKUNDE 1
-       TEXT BEGINNT
+       1 SEKUNDE
+       TEXT
        ===================================================== */
 
     setStatus(
@@ -1182,10 +1271,9 @@ async function startAnimation() {
     );
 
 
-    prediction.textContent =
-        predictionText(
-            type
-        );
+    createLivingText(
+        predictionText(type)
+    );
 
 
     prediction.style.color =
@@ -1208,12 +1296,12 @@ async function startAnimation() {
 
 
     /* =====================================================
-       SEKUNDE 2.5
-       TEXT BEGINNT ZU LEBEN
+       2.5 SEKUNDEN
+       LEBENDIGE SCHRIFT
        ===================================================== */
 
     setStatus(
-        "2.5 s – Schrift lebt ..."
+        "2.5 s – Schrift beginnt zu atmen ..."
     );
 
 
@@ -1226,12 +1314,12 @@ async function startAnimation() {
 
 
     /* =====================================================
-       SEKUNDE 3
-       DEZENTER NEBELSCHLEIER
+       3 SEKUNDEN
+       LESE-NEBEL
        ===================================================== */
 
     setStatus(
-        "3.0 s – Nebel zieht langsam durch die Schrift ..."
+        "3.0 s – Nebel zieht durch die Schrift ..."
     );
 
 
@@ -1240,21 +1328,20 @@ async function startAnimation() {
 
 
     /*
-    Der Schleier ist absichtlich schwach.
-    Der Zuschauer soll die Schrift weiterhin
-    problemlos lesen können.
+    Jetzt bleiben rund 5 Sekunden
+    zum Lesen.
     */
 
     await wait(4000);
 
 
     /* =====================================================
-       SEKUNDE 7
-       FINALER NEBEL
+       7 SEKUNDEN
+       NEBEL WIRD STÄRKER
        ===================================================== */
 
     setStatus(
-        "7.0 s – Der Nebel verdichtet sich ..."
+        "7.0 s – Der Nebel wird dichter ..."
     );
 
 
@@ -1263,32 +1350,37 @@ async function startAnimation() {
     );
 
 
+    /*
+    Schrift beginnt langsam
+    zu verschwinden.
+    */
+
     prediction.style.opacity =
-        "0.15";
+        "0.25";
 
 
     prediction.style.filter =
-        "blur(8px)";
+        "blur(10px)";
 
 
     readingFog.style.opacity =
-        "0.35";
+        "0.55";
 
 
     forest.style.opacity =
-        "0.40";
+        "0.42";
 
 
     forest.style.transform =
-        "scale(1.08)";
+        "scale(1.10)";
 
 
     darkness.style.opacity =
-        "0.45";
+        "0.48";
 
 
     mist.style.opacity =
-        "0.95";
+        "0.82";
 
 
     mist.style.transform =
@@ -1296,78 +1388,139 @@ async function startAnimation() {
 
 
     fogFront.style.opacity =
-        "0.62";
+        "0.48";
 
 
     fogFront.style.transform =
-        "scale(1.17)";
+        "scale(1.15)";
 
 
     await wait(1000);
 
 
     /* =====================================================
-       SEKUNDE 8
-       SILHOUETTE
+       8 SEKUNDEN
+       TEXT IST WEG
        ===================================================== */
 
     setStatus(
-        "8.0 s – Etwas zeichnet sich im Nebel ab ..."
+        "8.0 s – Die Vorhersage verschwindet ..."
+    );
+
+
+    /*
+    WICHTIG:
+
+    Nicht 0.15.
+    Nicht 0.05.
+
+    Wirklich vollständig weg.
+    */
+
+    prediction.style.opacity =
+        "0";
+
+
+    prediction.style.filter =
+        "blur(18px)";
+
+
+    readingFog.style.opacity =
+        "0.75";
+
+
+    forest.style.opacity =
+        "0.24";
+
+
+    darkness.style.opacity =
+        "0.58";
+
+
+    mist.style.opacity =
+        "1";
+
+
+    fogFront.style.opacity =
+        "0.72";
+
+
+    fogFront.style.transform =
+        "scale(1.20)";
+
+
+    /* =====================================================
+       8–11 SEKUNDEN
+       NUR NEBEL
+
+       Bewusste Pause.
+       ===================================================== */
+
+    await wait(3000);
+
+
+    /* =====================================================
+       11 SEKUNDEN
+       ERSTE SILHOUETTE
+       ===================================================== */
+
+    setStatus(
+        "11.0 s – Etwas zeichnet sich ab ..."
     );
 
 
     silhouette.style.opacity =
-        "0.42";
+        "0.25";
 
 
     silhouette.style.filter =
-        "blur(13px)";
+        "blur(18px)";
 
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.76)";
+        "translate(-50%, -50%) scale(0.66)";
 
 
-    await wait(1000);
+    await wait(1500);
 
 
     /* =====================================================
-       SEKUNDE 9
-       SILHOUETTE WIRD DEUTLICHER
+       12.5 SEKUNDEN
+       SILHOUETTE WIRD ERKENNBAR
        ===================================================== */
 
     setStatus(
-        "9.0 s – Die Form wird erkennbar ..."
+        "12.5 s – Die Form wird deutlicher ..."
     );
 
 
     silhouette.style.opacity =
-        "0.78";
+        "0.58";
 
 
     silhouette.style.filter =
-        "blur(7px)";
+        "blur(9px)";
 
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.92)";
+        "translate(-50%, -50%) scale(0.82)";
 
 
     await wait(1000);
 
 
     /* =====================================================
-       SEKUNDE 10
-       KARTE
+       13.5 SEKUNDEN
+       SILHOUETTE FAST DA
        ===================================================== */
 
     setStatus(
-        "10.0 s – Die Vorhersage wird sichtbar ..."
+        "13.5 s – Die Karte zeichnet sich ab ..."
     );
 
 
     silhouette.style.opacity =
-        "0.12";
+        "0.82";
 
 
     silhouette.style.filter =
@@ -1375,15 +1528,82 @@ async function startAnimation() {
 
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.98)";
+        "translate(-50%, -50%) scale(0.94)";
+
+
+    /*
+    Noch einmal dichter Nebel.
+    */
+
+    fogFront.style.opacity =
+        "0.86";
+
+
+    mist.style.opacity =
+        "1";
+
+
+    await wait(1500);
+
+
+    /* =====================================================
+       15 SEKUNDEN
+       SILHOUETTE → KARTE
+       ===================================================== */
+
+    setStatus(
+        "15.0 s – Die Vorhersage wird sichtbar ..."
+    );
+
+
+    /*
+    Silhouette verschmilzt mit
+    der Karte.
+    */
+
+    silhouette.style.opacity =
+        "0.25";
+
+
+    silhouette.style.filter =
+        "blur(10px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(1.0)";
 
 
     card.style.opacity =
-        "0.65";
+        "0.25";
 
 
     card.style.filter =
-        "blur(6px) brightness(0.88)";
+        "blur(15px) brightness(0.55)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(0.90)";
+
+
+    await wait(1500);
+
+
+    /* =====================================================
+       16.5 SEKUNDEN
+       KARTE WIRD SICHTBAR
+       ===================================================== */
+
+    setStatus(
+        "16.5 s – Die Karte erscheint ..."
+    );
+
+
+    card.style.opacity =
+        "0.70";
+
+
+    card.style.filter =
+        "blur(6px) brightness(0.80)";
 
 
     card.style.transform =
@@ -1394,8 +1614,14 @@ async function startAnimation() {
 
 
     /* =====================================================
-       KARTE WIRD SCHARF
+       18 SEKUNDEN
+       KARTE KLAR
        ===================================================== */
+
+    setStatus(
+        "18.0 s – Karte vollständig sichtbar."
+    );
+
 
     card.style.opacity =
         "1";
@@ -1409,27 +1635,27 @@ async function startAnimation() {
         "translate(-50%, -50%) scale(1)";
 
 
+    /*
+    Nebel bleibt noch leicht davor.
+    */
+
     fogFront.style.opacity =
-        "0.30";
+        "0.36";
 
 
     forest.style.opacity =
-        "0.12";
+        "0.10";
 
 
     darkness.style.opacity =
-        "0.65";
+        "0.70";
 
 
-    /* =====================================================
-       RUHE
-       ===================================================== */
-
-    await wait(2500);
+    await wait(3000);
 
 
     setStatus(
-        "FERTIG – Die Vorhersage steht."
+        "FERTIG – Vorhersagekarte steht."
     );
 }
 
@@ -1451,7 +1677,7 @@ resetBtn.addEventListener(
 
 
 /* =========================================================
-   STARTZUSTAND
+   START
    ========================================================= */
 
 resetAnimation();
