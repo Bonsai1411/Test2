@@ -77,8 +77,7 @@ body {
 
     opacity: 1;
 
-    transform:
-        scale(1.02);
+    transform: scale(1.02);
 
     transition:
         opacity 2.5s ease,
@@ -97,7 +96,7 @@ body {
     inset: 0;
 
     background:
-        rgba(0,0,0,0.28);
+        rgba(0, 0, 0, 0.28);
 
     opacity: 0;
 
@@ -121,7 +120,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    padding: 12vw;
+    padding: 10vw;
 
     z-index: 20;
 
@@ -135,82 +134,105 @@ body {
 
     text-align: center;
 
+    /*
+    Gedämpftes warmes Gold.
+    Nicht knallgelb.
+    */
+
     color:
-        rgba(238,238,238,0);
+        rgba(232, 211, 143, 0);
 
     font-size:
         clamp(28px, 6vw, 64px);
 
-    line-height: 1.25;
+    line-height: 1.28;
 
     letter-spacing:
         0.025em;
 
     text-shadow:
-        0 0 8px rgba(255,255,255,0.35),
-        0 0 25px rgba(255,255,255,0.18);
+        0 0 7px rgba(232, 211, 143, 0.30),
+        0 0 22px rgba(210, 185, 100, 0.18);
 
     filter:
-        blur(9px);
+        blur(12px);
 
     transform:
         scale(0.97);
 
     opacity: 0;
 
-    transition:
-        opacity 2.8s ease,
-        filter 3s ease,
-        transform 5s ease;
+    /*
+    Das eigentliche Auftauchen wird
+    über JavaScript gesteuert.
+    */
 
-    animation:
-        livingText 5.5s ease-in-out infinite alternate;
+    transition:
+        opacity 2.0s ease,
+        filter 2.2s ease,
+        transform 3.0s ease;
 }
 
 
 /* =========================================================
    LEBENDIGE SCHRIFT
+
+   Sehr subtile Bewegung.
+   Der Text soll nicht "animiert aussehen".
+
+   Er soll nur leicht lebendig wirken.
    ========================================================= */
+
+#prediction.alive {
+
+    animation:
+        livingText 4.2s ease-in-out infinite alternate;
+}
+
 
 @keyframes livingText {
 
     0% {
 
         transform:
-            translate3d(-1px,0,0)
-            scale(0.995);
+            translate3d(-1px, 0px, 0)
+            scale(1.000);
 
-        letter-spacing:
-            0.022em;
+        text-shadow:
+            0 0 7px rgba(232, 211, 143, 0.28),
+            0 0 20px rgba(210, 185, 100, 0.16);
     }
 
 
     50% {
 
         transform:
-            translate3d(1px,-1px,0)
-            scale(1.005);
+            translate3d(1px, -1px, 0)
+            scale(1.006);
 
-        letter-spacing:
-            0.028em;
+        text-shadow:
+            0 0 10px rgba(232, 211, 143, 0.34),
+            0 0 25px rgba(210, 185, 100, 0.20);
     }
 
 
     100% {
 
         transform:
-            translate3d(0,1px,0)
-            scale(1.0);
+            translate3d(0px, 1px, 0)
+            scale(0.998);
 
-        letter-spacing:
-            0.024em;
+        text-shadow:
+            0 0 6px rgba(232, 211, 143, 0.25),
+            0 0 18px rgba(210, 185, 100, 0.14);
     }
 }
 
 
 /* =========================================================
    VORDERGRUND-NEBEL
-   Das GIF liegt ein zweites Mal über dem Text.
+
+   Das gleiche GIF liegt später über der Schrift.
    ========================================================= */
 
 #fog-front {
@@ -247,7 +269,7 @@ body {
 
 
 /* =========================================================
-   ZUSÄTZLICHER WEICHER DUNST
+   ZUSÄTZLICHER DUNST
    ========================================================= */
 
 #mist {
@@ -265,10 +287,10 @@ body {
     background:
         radial-gradient(
             ellipse at 50% 58%,
-            rgba(235,235,235,0.20) 0%,
-            rgba(190,190,190,0.10) 20%,
-            rgba(100,100,100,0.04) 43%,
-            rgba(0,0,0,0) 70%
+            rgba(235, 235, 235, 0.20) 0%,
+            rgba(190, 190, 190, 0.10) 20%,
+            rgba(100, 100, 100, 0.04) 43%,
+            rgba(0, 0, 0, 0) 70%
         );
 
     filter:
@@ -304,28 +326,28 @@ body {
 
     transform:
         translate(-50%, -50%)
-        scale(0.68);
+        scale(0.62);
 
     border-radius:
         10px;
 
     background:
-        rgba(8,8,8,0.82);
+        rgba(5, 5, 5, 0.88);
 
     box-shadow:
-        0 0 35px rgba(255,255,255,0.08),
-        0 0 90px rgba(255,255,255,0.05);
+        0 0 35px rgba(255, 255, 255, 0.07),
+        0 0 90px rgba(255, 255, 255, 0.04);
 
     opacity:
         0;
 
     filter:
-        blur(18px);
+        blur(20px);
 
     transition:
-        opacity 4s ease,
-        filter 5s ease,
-        transform 5s cubic-bezier(.2,.75,.2,1);
+        opacity 3.5s ease,
+        filter 3.5s ease,
+        transform 4s cubic-bezier(.2, .75, .2, 1);
 
     pointer-events:
         none;
@@ -342,7 +364,7 @@ body {
 
     border:
         1px solid
-        rgba(255,255,255,0.10);
+        rgba(255, 255, 255, 0.08);
 
     border-radius:
         7px;
@@ -379,13 +401,13 @@ body {
         0;
 
     filter:
-        blur(12px)
-        brightness(0.75);
+        blur(14px)
+        brightness(0.70);
 
     transition:
-        opacity 4.5s ease,
-        filter 4.5s ease,
-        transform 4.5s cubic-bezier(.2,.75,.2,1);
+        opacity 2.8s ease,
+        filter 3s ease,
+        transform 3s cubic-bezier(.2, .75, .2, 1);
 
     pointer-events:
         none;
@@ -420,7 +442,7 @@ body {
     border-radius: 12px;
 
     background:
-        rgba(0,0,0,0.72);
+        rgba(0, 0, 0, 0.72);
 
     backdrop-filter:
         blur(8px);
@@ -495,7 +517,7 @@ button:active {
     #prediction-wrap {
 
         padding:
-            10vw;
+            9vw;
     }
 }
 
@@ -514,11 +536,14 @@ button:active {
 <div id="stage">
 
 
-    <!-- Originales animiertes GIF -->
+    <!--
+    WICHTIG:
+    Der Dateiname ist WALS.GIF
+    -->
 
     <img
         id="forest"
-        src="wald.gif"
+        src="wals.gif"
         alt=""
     >
 
@@ -543,13 +568,13 @@ button:active {
 
 
     <!--
-    Zweite GIF-Ebene.
-    Diese liegt später ÜBER dem Text.
+    Zweite Nebel-Ebene.
+    Sie liegt später über der Schrift.
     -->
 
     <img
         id="fog-front"
-        src="wald.gif"
+        src="wals.gif"
         alt=""
     >
 
@@ -574,8 +599,8 @@ button:active {
 <!-- =======================================================
      TEST-STEUERUNG
 
-     WICHTIG:
-     Hier gibt es KEIN Mikrofon und KEINE Spracherkennung.
+     KEIN MIKROFON
+     KEINE SPRACHERKENNUNG
      ======================================================= -->
 
 <div id="controls">
@@ -746,7 +771,6 @@ function wait(ms) {
 }
 
 
-
 function clearTimers() {
 
     timerIds.forEach(
@@ -755,7 +779,6 @@ function clearTimers() {
 
     timerIds = [];
 }
-
 
 
 function setStatus(text) {
@@ -778,16 +801,13 @@ function predictionText(type) {
 
             return "Max, du wirst den 23. Juni als Datum nennen.";
 
-
         case "dateOnly":
 
             return "Du wirst den 23. Juni als Datum nennen.";
 
-
         case "nameOnly":
 
             return "Max, dies ist deine persönliche Vorhersage.";
-
 
         default:
 
@@ -803,10 +823,7 @@ function predictionText(type) {
 
 function cardPath(value) {
 
- 
-   return "karten/" +
-        value +
-        ".png";
+    return "karten/" + value + ".png";
 }
 
 
@@ -823,7 +840,6 @@ function resetAnimation() {
     forest.style.opacity =
         "1";
 
-
     forest.style.transform =
         "scale(1.02)";
 
@@ -835,7 +851,6 @@ function resetAnimation() {
     mist.style.opacity =
         "0";
 
-
     mist.style.transform =
         "scale(1)";
 
@@ -843,18 +858,22 @@ function resetAnimation() {
     fogFront.style.opacity =
         "0";
 
-
     fogFront.style.transform =
         "scale(1.08)";
 
 
+    prediction.classList.remove(
+        "alive"
+    );
+
     prediction.style.opacity =
         "0";
 
+    prediction.style.color =
+        "rgba(232, 211, 143, 0)";
 
     prediction.style.filter =
-        "blur(9px)";
-
+        "blur(12px)";
 
     prediction.style.transform =
         "scale(0.97)";
@@ -863,26 +882,21 @@ function resetAnimation() {
     silhouette.style.opacity =
         "0";
 
-
     silhouette.style.filter =
-        "blur(18px)";
-
+        "blur(20px)";
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.68)";
+        "translate(-50%, -50%) scale(0.62)";
 
 
     card.style.opacity =
         "0";
 
-
     card.style.filter =
-        "blur(12px) brightness(0.75)";
-
+        "blur(14px) brightness(0.70)";
 
     card.style.transform =
         "translate(-50%, -50%) scale(0.88)";
-
 
     card.src =
         "";
@@ -897,6 +911,16 @@ function resetAnimation() {
 
 /* =========================================================
    HAUPTANIMATION
+
+   ZEITPLAN:
+
+   0.0    Wald
+   1.0    Text beginnt
+   2.5    Text lebt
+   7.0    Nebel verdichtet sich
+   8.0    Silhouette
+   9.0    Silhouette deutlicher
+   10.0   Karte
    ========================================================= */
 
 async function startAnimation() {
@@ -915,8 +939,10 @@ async function startAnimation() {
 
 
     /*
-    Karte bereits laden.
-    Sie ist aber noch unsichtbar.
+    Karte laden.
+
+    Sie bleibt vollständig unsichtbar,
+    bis sie gebraucht wird.
     */
 
     card.src =
@@ -925,12 +951,26 @@ async function startAnimation() {
         );
 
 
-    /* -----------------------------------------------
-       1. VORHERSAGE
-       ----------------------------------------------- */
+    /* =====================================================
+       SEKUNDE 0
+       ===================================================== */
 
     setStatus(
-        "1. Vorhersage erscheint ..."
+        "0.0 s – Wald erwacht ..."
+    );
+
+
+    await wait(1000);
+
+
+
+    /* =====================================================
+       SEKUNDE 1
+       TEXT BEGINNT
+       ===================================================== */
+
+    setStatus(
+        "1.0 s – Vorhersage erscheint ..."
     );
 
 
@@ -940,7 +980,8 @@ async function startAnimation() {
         );
 
 
-    await wait(300);
+    prediction.style.color =
+        "rgba(232, 211, 143, 1)";
 
 
     prediction.style.opacity =
@@ -955,128 +996,136 @@ async function startAnimation() {
         "scale(1)";
 
 
-    /* -----------------------------------------------
-       Vorhersage bleibt eine Weile stehen.
-       ----------------------------------------------- */
-
-    await wait(4200);
+    await wait(1500);
 
 
 
-    /* -----------------------------------------------
-       2. NEBEL WIRD DICHTER
-       ----------------------------------------------- */
+    /* =====================================================
+       SEKUNDE 2.5
+       TEXT BEGINNT ZU LEBEN
+       ===================================================== */
 
     setStatus(
-        "2. Nebel verdichtet sich ..."
+        "2.5 s – Schrift lebt ..."
     );
 
 
+    prediction.classList.add(
+        "alive"
+    );
+
+
+    /*
+    Jetzt bleiben wir lange genug stehen,
+    damit der Zuschauer wirklich lesen kann.
+
+    Von 2.5 s bis 7.0 s = 4.5 Sekunden.
+    */
+
+    await wait(4500);
+
+
+
+    /* =====================================================
+       SEKUNDE 7
+       NEBEL WIRD DICHT
+       ===================================================== */
+
+    setStatus(
+        "7.0 s – Der Nebel verdichtet sich ..."
+    );
+
+
+    /*
+    Schrift wird nicht einfach schlagartig
+    gelöscht.
+
+    Der Nebel soll sie verschlucken.
+    */
+
+    prediction.classList.remove(
+        "alive"
+    );
+
+
+    prediction.style.opacity =
+        "0.18";
+
+
+    prediction.style.filter =
+        "blur(7px)";
+
+
+    forest.style.opacity =
+        "0.45";
+
+
+    forest.style.transform =
+        "scale(1.08)";
+
+
     darkness.style.opacity =
-        "0.52";
+        "0.42";
 
 
     mist.style.opacity =
-        "1";
+        "0.95";
 
 
     mist.style.transform =
-        "scale(1.12)";
+        "scale(1.10)";
 
 
     fogFront.style.opacity =
-        "0.42";
+        "0.58";
 
 
     fogFront.style.transform =
         "scale(1.16)";
 
 
-    prediction.style.opacity =
-        "0.35";
-
-
-    prediction.style.filter =
-        "blur(5px)";
-
-
-    await wait(3000);
+    await wait(1000);
 
 
 
-    /* -----------------------------------------------
-       3. VORHERSAGE VERSCHWINDET
-       ----------------------------------------------- */
+    /* =====================================================
+       SEKUNDE 8
+       SILHOUETTE
+       ===================================================== */
 
     setStatus(
-        "3. Vorhersage verschwindet ..."
-    );
-
-
-    prediction.style.opacity =
-        "0";
-
-
-    prediction.style.filter =
-        "blur(15px)";
-
-
-    forest.style.opacity =
-        "0.20";
-
-
-    forest.style.transform =
-        "scale(1.10)";
-
-
-    fogFront.style.opacity =
-        "0.68";
-
-
-    fogFront.style.transform =
-        "scale(1.22)";
-
-
-    await wait(2200);
-
-
-
-    /* -----------------------------------------------
-       4. SILHOUETTE
-       ----------------------------------------------- */
-
-    setStatus(
-        "4. Eine Form entsteht im Nebel ..."
+        "8.0 s – Etwas zeichnet sich im Nebel ab ..."
     );
 
 
     silhouette.style.opacity =
-        "0.72";
+        "0.42";
 
 
     silhouette.style.filter =
-        "blur(12px)";
+        "blur(13px)";
 
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.82)";
+        "translate(-50%, -50%) scale(0.76)";
 
 
-    await wait(2800);
+    await wait(1000);
 
 
 
-    /* -----------------------------------------------
-       5. KARTE WIRD SICHTBAR
-       ----------------------------------------------- */
+    /* =====================================================
+       SEKUNDE 9
+       SILHOUETTE WIRD DEUTLICHER
+       ===================================================== */
 
     setStatus(
-        "5. Die Karte wird sichtbar ..."
+        "9.0 s – Die Form wird erkennbar ..."
     );
 
 
     silhouette.style.opacity =
-        "0.18";
+        "0.78";
 
 
     silhouette.style.filter =
@@ -1084,23 +1133,53 @@ async function startAnimation() {
 
 
     silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.96)";
+        "translate(-50%, -50%) scale(0.92)";
+
+
+    await wait(1000);
+
+
+
+    /* =====================================================
+       SEKUNDE 10
+       KARTE
+       ===================================================== */
+
+    setStatus(
+        "10.0 s – Die Vorhersage wird sichtbar ..."
+    );
+
+
+    silhouette.style.opacity =
+        "0.12";
+
+
+    silhouette.style.filter =
+        "blur(5px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.98)";
 
 
     card.style.opacity =
-        "0.55";
+        "0.65";
 
 
     card.style.filter =
-        "blur(7px) brightness(0.85)";
+        "blur(6px) brightness(0.88)";
 
 
     card.style.transform =
-        "translate(-50%, -50%) scale(0.94)";
+        "translate(-50%, -50%) scale(0.96)";
 
 
-    await wait(2800);
+    await wait(1500);
 
+
+    /*
+    Karte wird jetzt endgültig scharf.
+    */
 
     card.style.opacity =
         "1";
@@ -1119,22 +1198,22 @@ async function startAnimation() {
 
 
     forest.style.opacity =
-        "0.08";
+        "0.12";
 
 
     darkness.style.opacity =
-        "0.72";
+        "0.65";
 
+
+    /* =====================================================
+       RUHE
+       ===================================================== */
 
     await wait(2500);
 
 
-    /* -----------------------------------------------
-       FERTIG
-       ----------------------------------------------- */
-
     setStatus(
-        "VORHERSAGE STEHT. Jetzt die echte verdeckte Karte umdrehen."
+        "FERTIG – Die Vorhersage steht."
     );
 }
 
