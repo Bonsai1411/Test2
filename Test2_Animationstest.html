@@ -80,7 +80,7 @@ body {
     transform: scale(1.02);
 
     transition:
-        opacity 2.5s ease,
+        opacity 3s ease,
         transform 10s ease;
 }
 
@@ -118,6 +118,7 @@ body {
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     padding: 10vw;
@@ -134,18 +135,14 @@ body {
 
     text-align: center;
 
-    /*
-    Gedämpftes warmes Gold.
-    Nicht knallgelb.
-    */
-
     color:
         rgba(232, 211, 143, 0);
 
     font-size:
         clamp(28px, 6vw, 64px);
 
-    line-height: 1.28;
+    line-height:
+        1.28;
 
     letter-spacing:
         0.025em;
@@ -160,27 +157,18 @@ body {
     transform:
         scale(0.97);
 
-    opacity: 0;
-
-    /*
-    Das eigentliche Auftauchen wird
-    über JavaScript gesteuert.
-    */
+    opacity:
+        0;
 
     transition:
-        opacity 2.0s ease,
-        filter 2.2s ease,
-        transform 3.0s ease;
+        opacity 2.3s ease,
+        filter 2.5s ease,
+        transform 3s ease;
 }
 
 
 /* =========================================================
    LEBENDIGE SCHRIFT
-
-   Sehr subtile Bewegung.
-   Der Text soll nicht "animiert aussehen".
-
-   Er soll nur leicht lebendig wirken.
    ========================================================= */
 
 #prediction.alive {
@@ -230,9 +218,210 @@ body {
 
 
 /* =========================================================
-   VORDERGRUND-NEBEL
+   DEZENTER NEBELSCHLEIER
 
-   Das gleiche GIF liegt später über der Schrift.
+   Dieser Effekt beginnt bereits während
+   der Zuschauer den Text liest.
+
+   Er liegt ÜBER der Schrift.
+
+   Noch sehr schwach.
+   ========================================================= */
+
+#reading-fog {
+
+    position: absolute;
+
+    inset: -20%;
+
+    z-index: 25;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    filter:
+        blur(18px);
+
+    transition:
+        opacity 3s ease;
+}
+
+
+/* ---------------------------------------------------------
+   Einzelne weiche Nebelfelder
+   --------------------------------------------------------- */
+
+.fog-cloud {
+
+    position: absolute;
+
+    width: 55%;
+    height: 22%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(225, 225, 225, 0.14) 0%,
+            rgba(210, 210, 210, 0.08) 28%,
+            rgba(180, 180, 180, 0.03) 55%,
+            rgba(180, 180, 180, 0) 75%
+        );
+
+    filter:
+        blur(16px);
+
+    opacity:
+        0.75;
+}
+
+
+/* ---------------------------------------------------------
+   Nebelbewegung 1
+   --------------------------------------------------------- */
+
+.fog-cloud.one {
+
+    left: -20%;
+    top: 35%;
+
+    animation:
+        fogMoveOne 11s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveOne {
+
+    0% {
+
+        transform:
+            translateX(0)
+            translateY(0)
+            scale(1);
+    }
+
+    50% {
+
+        transform:
+            translateX(55vw)
+            translateY(-3vh)
+            scale(1.15);
+    }
+
+    100% {
+
+        transform:
+            translateX(110vw)
+            translateY(2vh)
+            scale(1.05);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   Nebelbewegung 2
+   --------------------------------------------------------- */
+
+.fog-cloud.two {
+
+    right: -25%;
+    top: 48%;
+
+    width: 65%;
+    height: 26%;
+
+    opacity:
+        0.55;
+
+    animation:
+        fogMoveTwo 14s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveTwo {
+
+    0% {
+
+        transform:
+            translateX(0)
+            translateY(2vh)
+            scale(1);
+    }
+
+    50% {
+
+        transform:
+            translateX(-48vw)
+            translateY(-2vh)
+            scale(1.18);
+    }
+
+    100% {
+
+        transform:
+            translateX(-105vw)
+            translateY(3vh)
+            scale(1.08);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   Nebelbewegung 3
+   --------------------------------------------------------- */
+
+.fog-cloud.three {
+
+    left: 15%;
+    top: 62%;
+
+    width: 70%;
+    height: 18%;
+
+    opacity:
+        0.40;
+
+    animation:
+        fogMoveThree 16s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveThree {
+
+    0% {
+
+        transform:
+            translateX(-10vw)
+            translateY(0)
+            scale(1);
+    }
+
+    50% {
+
+        transform:
+            translateX(15vw)
+            translateY(-4vh)
+            scale(1.20);
+    }
+
+    100% {
+
+        transform:
+            translateX(-8vw)
+            translateY(2vh)
+            scale(1.05);
+    }
+}
+
+
+/* =========================================================
+   FINALER VORDERGRUND-NEBEL
+
+   Dieser kommt erst ab Sekunde 7.
    ========================================================= */
 
 #fog-front {
@@ -269,7 +458,7 @@ body {
 
 
 /* =========================================================
-   ZUSÄTZLICHER DUNST
+   ZUSÄTZLICHER FINAL-DUNST
    ========================================================= */
 
 #mist {
@@ -278,7 +467,7 @@ body {
 
     inset: -10%;
 
-    z-index: 25;
+    z-index: 26;
 
     opacity: 0;
 
@@ -537,8 +726,8 @@ button:active {
 
 
     <!--
-    WICHTIG:
-    Der Dateiname ist WALD.GIF
+    RICHTIGER DATEINAME:
+    wald.gif
     -->
 
     <img
@@ -553,7 +742,23 @@ button:active {
     <div id="darkness"></div>
 
 
-    <!-- zusätzlicher Dunst -->
+    <!--
+    Dezenter Nebel für die Lesephase.
+    Dieser liegt ÜBER der Schrift.
+    -->
+
+    <div id="reading-fog">
+
+        <div class="fog-cloud one"></div>
+
+        <div class="fog-cloud two"></div>
+
+        <div class="fog-cloud three"></div>
+
+    </div>
+
+
+    <!-- zusätzlicher Final-Dunst -->
 
     <div id="mist"></div>
 
@@ -568,8 +773,7 @@ button:active {
 
 
     <!--
-    Zweite Nebel-Ebene.
-    Sie liegt später über der Schrift.
+    Finaler Nebel liegt über der Schrift.
     -->
 
     <img
@@ -685,6 +889,12 @@ const darkness =
     );
 
 
+const readingFog =
+    document.getElementById(
+        "reading-fog"
+    );
+
+
 const mist =
     document.getElementById(
         "mist"
@@ -745,7 +955,6 @@ const resetBtn =
     );
 
 
-
 /* =========================================================
    TIMER
    ========================================================= */
@@ -788,7 +997,6 @@ function setStatus(text) {
 }
 
 
-
 /* =========================================================
    TEST-TEXTE
    ========================================================= */
@@ -816,7 +1024,6 @@ function predictionText(type) {
 }
 
 
-
 /* =========================================================
    KARTENPFAD
    ========================================================= */
@@ -825,7 +1032,6 @@ function cardPath(value) {
 
     return "karten/" + value + ".png";
 }
-
 
 
 /* =========================================================
@@ -845,6 +1051,10 @@ function resetAnimation() {
 
 
     darkness.style.opacity =
+        "0";
+
+
+    readingFog.style.opacity =
         "0";
 
 
@@ -908,7 +1118,6 @@ function resetAnimation() {
 }
 
 
-
 /* =========================================================
    HAUPTANIMATION
 
@@ -917,7 +1126,8 @@ function resetAnimation() {
    0.0    Wald
    1.0    Text beginnt
    2.5    Text lebt
-   7.0    Nebel verdichtet sich
+   3.0    dezenter Nebel beginnt
+   7.0    finaler Nebel
    8.0    Silhouette
    9.0    Silhouette deutlicher
    10.0   Karte
@@ -941,8 +1151,7 @@ async function startAnimation() {
     /*
     Karte laden.
 
-    Sie bleibt vollständig unsichtbar,
-    bis sie gebraucht wird.
+    Sie bleibt vollständig unsichtbar.
     */
 
     card.src =
@@ -961,7 +1170,6 @@ async function startAnimation() {
 
 
     await wait(1000);
-
 
 
     /* =====================================================
@@ -999,7 +1207,6 @@ async function startAnimation() {
     await wait(1500);
 
 
-
     /* =====================================================
        SEKUNDE 2.5
        TEXT BEGINNT ZU LEBEN
@@ -1015,20 +1222,35 @@ async function startAnimation() {
     );
 
 
-    /*
-    Jetzt bleiben wir lange genug stehen,
-    damit der Zuschauer wirklich lesen kann.
+    await wait(500);
 
-    Von 2.5 s bis 7.0 s = 4.5 Sekunden.
+
+    /* =====================================================
+       SEKUNDE 3
+       DEZENTER NEBELSCHLEIER
+       ===================================================== */
+
+    setStatus(
+        "3.0 s – Nebel zieht langsam durch die Schrift ..."
+    );
+
+
+    readingFog.style.opacity =
+        "1";
+
+
+    /*
+    Der Schleier ist absichtlich schwach.
+    Der Zuschauer soll die Schrift weiterhin
+    problemlos lesen können.
     */
 
-    await wait(4500);
-
+    await wait(4000);
 
 
     /* =====================================================
        SEKUNDE 7
-       NEBEL WIRD DICHT
+       FINALER NEBEL
        ===================================================== */
 
     setStatus(
@@ -1036,28 +1258,25 @@ async function startAnimation() {
     );
 
 
-    /*
-    Schrift wird nicht einfach schlagartig
-    gelöscht.
-
-    Der Nebel soll sie verschlucken.
-    */
-
     prediction.classList.remove(
         "alive"
     );
 
 
     prediction.style.opacity =
-        "0.18";
+        "0.15";
 
 
     prediction.style.filter =
-        "blur(7px)";
+        "blur(8px)";
+
+
+    readingFog.style.opacity =
+        "0.35";
 
 
     forest.style.opacity =
-        "0.45";
+        "0.40";
 
 
     forest.style.transform =
@@ -1065,7 +1284,7 @@ async function startAnimation() {
 
 
     darkness.style.opacity =
-        "0.42";
+        "0.45";
 
 
     mist.style.opacity =
@@ -1073,19 +1292,18 @@ async function startAnimation() {
 
 
     mist.style.transform =
-        "scale(1.10)";
+        "scale(1.12)";
 
 
     fogFront.style.opacity =
-        "0.58";
+        "0.62";
 
 
     fogFront.style.transform =
-        "scale(1.16)";
+        "scale(1.17)";
 
 
     await wait(1000);
-
 
 
     /* =====================================================
@@ -1113,7 +1331,6 @@ async function startAnimation() {
     await wait(1000);
 
 
-
     /* =====================================================
        SEKUNDE 9
        SILHOUETTE WIRD DEUTLICHER
@@ -1137,7 +1354,6 @@ async function startAnimation() {
 
 
     await wait(1000);
-
 
 
     /* =====================================================
@@ -1177,9 +1393,9 @@ async function startAnimation() {
     await wait(1500);
 
 
-    /*
-    Karte wird jetzt endgültig scharf.
-    */
+    /* =====================================================
+       KARTE WIRD SCHARF
+       ===================================================== */
 
     card.style.opacity =
         "1";
@@ -1218,7 +1434,6 @@ async function startAnimation() {
 }
 
 
-
 /* =========================================================
    BUTTONS
    ========================================================= */
@@ -1233,7 +1448,6 @@ resetBtn.addEventListener(
     "click",
     resetAnimation
 );
-
 
 
 /* =========================================================
