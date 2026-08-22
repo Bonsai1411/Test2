@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Mystery Master – Animation Test 2.2</title>
+<title>Mystery Master – Animation Test 2.3</title>
 
 
 <style>
@@ -37,8 +37,9 @@ body {
     background: #000;
 
     font-family:
+        "Palatino Linotype",
+        "Book Antiqua",
         Georgia,
-        "Times New Roman",
         serif;
 }
 
@@ -75,8 +76,10 @@ body {
     transform: scale(1.02);
 
     transition:
-        opacity 4s ease,
+        opacity 5s ease,
         transform 10s ease;
+
+    z-index: 1;
 }
 
 
@@ -91,14 +94,16 @@ body {
     inset: 0;
 
     background:
-        rgba(0, 0, 0, 0.28);
+        rgba(0, 0, 0, 0.30);
 
     opacity: 0;
 
     transition:
-        opacity 4s ease;
+        opacity 5s ease;
 
     z-index: 10;
+
+    pointer-events: none;
 }
 
 
@@ -118,7 +123,7 @@ body {
 
     justify-content: center;
 
-    padding: 10vw;
+    padding: 8vw;
 
     z-index: 20;
 
@@ -128,7 +133,7 @@ body {
 
 #prediction {
 
-    max-width: 92%;
+    max-width: 94%;
 
     text-align: center;
 
@@ -136,23 +141,27 @@ body {
         rgba(232, 211, 143, 0);
 
     font-size:
-        clamp(28px, 6vw, 64px);
+        clamp(28px, 6vw, 66px);
 
     line-height:
-        1.28;
+        1.30;
 
     letter-spacing:
-        0.025em;
+        0.035em;
+
+    font-weight:
+        500;
 
     text-shadow:
         0 0 7px rgba(232, 211, 143, 0.30),
-        0 0 22px rgba(210, 185, 100, 0.18);
+        0 0 18px rgba(210, 185, 100, 0.22),
+        0 0 38px rgba(190, 160, 80, 0.10);
 
     filter:
         blur(12px);
 
     transform:
-        scale(0.97);
+        scale(0.96);
 
     opacity:
         0;
@@ -165,13 +174,13 @@ body {
 
 
 /* =========================================================
-   LEBENDIGE SCHRIFT
+   LEBENDIGE GESAMTSCHRIFT
    ========================================================= */
 
 #prediction.alive {
 
     animation:
-        livingText 4.8s ease-in-out infinite alternate;
+        livingText 5.2s ease-in-out infinite alternate;
 }
 
 
@@ -184,30 +193,43 @@ body {
             scale(1.000);
 
         text-shadow:
-            0 0 7px rgba(232, 211, 143, 0.26),
-            0 0 20px rgba(210, 185, 100, 0.15);
+            0 0 7px rgba(232, 211, 143, 0.25),
+            0 0 18px rgba(210, 185, 100, 0.16),
+            0 0 34px rgba(190, 160, 80, 0.08);
     }
 
-    50% {
+    35% {
 
         transform:
             translate3d(1px, -1px, 0)
-            scale(1.007);
+            scale(1.008);
 
         text-shadow:
-            0 0 11px rgba(232, 211, 143, 0.38),
-            0 0 28px rgba(210, 185, 100, 0.21);
+            0 0 10px rgba(232, 211, 143, 0.39),
+            0 0 25px rgba(210, 185, 100, 0.23),
+            0 0 45px rgba(190, 160, 80, 0.12);
+    }
+
+    70% {
+
+        transform:
+            translate3d(-1px, 1px, 0)
+            scale(1.004);
+
+        text-shadow:
+            0 0 8px rgba(232, 211, 143, 0.32),
+            0 0 22px rgba(210, 185, 100, 0.19);
     }
 
     100% {
 
         transform:
-            translate3d(0px, 1px, 0)
+            translate3d(1px, 0px, 0)
             scale(0.998);
 
         text-shadow:
             0 0 6px rgba(232, 211, 143, 0.23),
-            0 0 18px rgba(210, 185, 100, 0.13);
+            0 0 17px rgba(210, 185, 100, 0.12);
     }
 }
 
@@ -227,7 +249,11 @@ body {
         var(--opacity);
 
     transform:
-        translateY(0);
+        translateY(0)
+        scale(1);
+
+    text-shadow:
+        inherit;
 }
 
 
@@ -239,34 +265,60 @@ body {
             var(--opacity);
 
         transform:
-            translateY(0px)
-            scale(1);
+            translate3d(
+                var(--x1),
+                1px,
+                0
+            )
+            scale(0.998);
     }
 
-    50% {
+    30% {
 
         opacity:
-            calc(var(--opacity) + 0.12);
+            calc(var(--opacity) + 0.07);
 
         transform:
-            translateY(-1px)
-            scale(1.008);
+            translate3d(
+                var(--x2),
+                -1px,
+                0
+            )
+            scale(1.006);
+    }
+
+    65% {
+
+        opacity:
+            calc(var(--opacity) - 0.06);
+
+        transform:
+            translate3d(
+                var(--x3),
+                1px,
+                0
+            )
+            scale(0.997);
     }
 
     100% {
 
         opacity:
-            calc(var(--opacity) - 0.08);
+            var(--opacity);
 
         transform:
-            translateY(1px)
-            scale(0.996);
+            translate3d(
+                var(--x4),
+                0px,
+                0
+            )
+            scale(1.004);
     }
 }
 
 
 /* =========================================================
-   LESENEBEL
+   LESE-NEBEL
    ========================================================= */
 
 #reading-fog {
@@ -295,18 +347,18 @@ body {
 
     position: absolute;
 
-    width: 55%;
-    height: 22%;
+    width: 58%;
+    height: 23%;
 
     border-radius: 50%;
 
     background:
         radial-gradient(
             ellipse,
-            rgba(225, 225, 225, 0.15) 0%,
-            rgba(210, 210, 210, 0.08) 28%,
-            rgba(180, 180, 180, 0.03) 55%,
-            rgba(180, 180, 180, 0) 75%
+            rgba(235, 235, 235, 0.17) 0%,
+            rgba(215, 215, 215, 0.09) 28%,
+            rgba(180, 180, 180, 0.035) 55%,
+            rgba(180, 180, 180, 0) 76%
         );
 
     filter:
@@ -320,7 +372,7 @@ body {
 .fog-cloud.one {
 
     left: -20%;
-    top: 35%;
+    top: 30%;
 
     animation:
         fogMoveOne 11s ease-in-out infinite;
@@ -358,13 +410,13 @@ body {
 .fog-cloud.two {
 
     right: -25%;
-    top: 48%;
+    top: 45%;
 
-    width: 65%;
-    height: 26%;
+    width: 68%;
+    height: 27%;
 
     opacity:
-        0.55;
+        0.60;
 
     animation:
         fogMoveTwo 14s ease-in-out infinite;
@@ -444,6 +496,164 @@ body {
 
 
 /* =========================================================
+   NEUER VORDERGRUND-NEBEL
+   Läuft über das gesamte Bild.
+   Besonders wichtig für die obere Bildhälfte.
+   ========================================================= */
+
+#front-mist {
+
+    position: absolute;
+
+    inset: -12%;
+
+    z-index: 32;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background:
+
+        radial-gradient(
+            ellipse at 20% 15%,
+            rgba(225, 225, 225, 0.16) 0%,
+            rgba(200, 200, 200, 0.07) 28%,
+            rgba(200, 200, 200, 0) 58%
+        ),
+
+        radial-gradient(
+            ellipse at 78% 18%,
+            rgba(235, 235, 235, 0.14) 0%,
+            rgba(205, 205, 205, 0.06) 27%,
+            rgba(205, 205, 205, 0) 60%
+        ),
+
+        radial-gradient(
+            ellipse at 52% 45%,
+            rgba(235, 235, 235, 0.18) 0%,
+            rgba(210, 210, 210, 0.08) 30%,
+            rgba(210, 210, 210, 0) 68%
+        ),
+
+        radial-gradient(
+            ellipse at 35% 80%,
+            rgba(225, 225, 225, 0.16) 0%,
+            rgba(200, 200, 200, 0.06) 30%,
+            rgba(200, 200, 200, 0) 65%
+        );
+
+    filter:
+        blur(24px);
+
+    transform:
+        scale(1.05);
+
+    transition:
+        opacity 5s ease,
+        transform 12s ease;
+}
+
+
+/* =========================================================
+   LANGSAMER NEBELDRIFT
+   ========================================================= */
+
+#front-mist::before,
+#front-mist::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -15%;
+
+    background:
+
+        radial-gradient(
+            ellipse at 40% 30%,
+            rgba(245, 245, 245, 0.11) 0%,
+            rgba(220, 220, 220, 0.035) 30%,
+            transparent 65%
+        ),
+
+        radial-gradient(
+            ellipse at 70% 70%,
+            rgba(230, 230, 230, 0.09) 0%,
+            rgba(210, 210, 210, 0.03) 32%,
+            transparent 65%
+        );
+
+    filter:
+        blur(28px);
+}
+
+
+#front-mist::before {
+
+    animation:
+        mistDriftA 18s ease-in-out infinite alternate;
+}
+
+
+#front-mist::after {
+
+    animation:
+        mistDriftB 23s ease-in-out infinite alternate;
+}
+
+
+@keyframes mistDriftA {
+
+    0% {
+
+        transform:
+            translate3d(-5%, 2%, 0)
+            scale(1);
+    }
+
+    50% {
+
+        transform:
+            translate3d(4%, -2%, 0)
+            scale(1.08);
+    }
+
+    100% {
+
+        transform:
+            translate3d(-2%, 4%, 0)
+            scale(1.04);
+    }
+}
+
+
+@keyframes mistDriftB {
+
+    0% {
+
+        transform:
+            translate3d(5%, -2%, 0)
+            scale(1.04);
+    }
+
+    50% {
+
+        transform:
+            translate3d(-4%, 3%, 0)
+            scale(1.10);
+    }
+
+    100% {
+
+        transform:
+            translate3d(3%, -3%, 0)
+            scale(1.02);
+    }
+}
+
+
+/* =========================================================
    FINALER NEBEL
    ========================================================= */
 
@@ -458,7 +668,7 @@ body {
 
     object-fit: cover;
 
-    z-index: 30;
+    z-index: 34;
 
     opacity: 0;
 
@@ -500,8 +710,8 @@ body {
         radial-gradient(
             ellipse at 50% 58%,
             rgba(235, 235, 235, 0.22) 0%,
-            rgba(190, 190, 190, 0.12) 20%,
-            rgba(100, 100, 100, 0.05) 43%,
+            rgba(190, 190, 190, 0.13) 20%,
+            rgba(100, 100, 100, 0.06) 43%,
             rgba(0, 0, 0, 0) 72%
         );
 
@@ -531,7 +741,7 @@ body {
     top: 50%;
 
     width:
-        min(42vw, 250px);
+        min(44vw, 270px);
 
     aspect-ratio:
         2 / 3;
@@ -547,8 +757,8 @@ body {
         rgba(5, 5, 5, 0.90);
 
     box-shadow:
-        0 0 35px rgba(255, 255, 255, 0.07),
-        0 0 100px rgba(255, 255, 255, 0.05);
+        0 0 35px rgba(255, 255, 255, 0.08),
+        0 0 100px rgba(255, 255, 255, 0.06);
 
     opacity:
         0;
@@ -596,8 +806,12 @@ body {
     left: 50%;
     top: 50%;
 
+    /*
+    Etwas größer als vorher.
+    */
+
     width:
-        min(42vw, 250px);
+        min(50vw, 310px);
 
     aspect-ratio:
         2 / 3;
@@ -607,7 +821,7 @@ body {
 
     transform:
         translate(-50%, -50%)
-        scale(0.84);
+        scale(0.76);
 
     opacity:
         0;
@@ -617,9 +831,9 @@ body {
         brightness(0.50);
 
     transition:
-        opacity 4s ease,
+        opacity 4.5s ease,
         filter 4.5s ease,
-        transform 4.5s cubic-bezier(.2, .75, .2, 1);
+        transform 5s cubic-bezier(.2, .75, .2, 1);
 
     pointer-events:
         none;
@@ -627,7 +841,7 @@ body {
 
 
 /* =========================================================
-   TEST-STEUERUNG
+   TESTSTEUERUNG
    ========================================================= */
 
 #controls {
@@ -725,7 +939,7 @@ button:active {
     #prediction-wrap {
 
         padding:
-            9vw;
+            8vw;
     }
 }
 
@@ -781,6 +995,13 @@ button:active {
 
 
     <!-- =====================================================
+         NEUER VORDERGRUNDNEBEL
+         ===================================================== -->
+
+    <div id="front-mist"></div>
+
+
+    <!-- =====================================================
          VORHERSAGE
          ===================================================== -->
 
@@ -792,7 +1013,7 @@ button:active {
 
 
     <!-- =====================================================
-         FINALER NEBEL
+         FINALER GIF-NEBEL
          ===================================================== -->
 
     <img
@@ -916,6 +1137,11 @@ const mist =
         "mist"
     );
 
+const frontMist =
+    document.getElementById(
+        "front-mist"
+    );
+
 const fogFront =
     document.getElementById(
         "fog-front"
@@ -1005,7 +1231,7 @@ function setStatus(text) {
 
 
 /* =========================================================
-   TEXTE
+   TESTTEXTE
    ========================================================= */
 
 function predictionText(type) {
@@ -1032,7 +1258,7 @@ function predictionText(type) {
 
 
 /* =========================================================
-   TEXT IN EINZELNE BUCHSTABEN AUFTEILEN
+   LEBENDIGE BUCHSTABEN
    ========================================================= */
 
 function createLivingText(text) {
@@ -1077,23 +1303,59 @@ function createLivingText(text) {
 
 
         /*
-        Kleine Unterschiede zwischen
-        den Buchstaben.
+        Jeder Buchstabe bekommt
+        seine eigene kleine Bewegung.
 
-        Keine hektische Bewegung.
+        Dadurch wirkt die Schrift
+        nicht wie ein einzelnes
+        animiertes Objekt.
         */
 
         const delay =
-            (3.2 + Math.random() * 2.5)
-            .toFixed(2) +
+            (
+                3.0 +
+                Math.random() * 3.0
+            ).toFixed(2) +
             "s";
 
 
         const opacity =
             (
-                0.84 +
-                Math.random() * 0.16
+                0.82 +
+                Math.random() * 0.18
             ).toFixed(2);
+
+
+        const x1 =
+            (
+                -1 +
+                Math.random() * 2
+            ).toFixed(1) +
+            "px";
+
+
+        const x2 =
+            (
+                -2 +
+                Math.random() * 4
+            ).toFixed(1) +
+            "px";
+
+
+        const x3 =
+            (
+                -2 +
+                Math.random() * 4
+            ).toFixed(1) +
+            "px";
+
+
+        const x4 =
+            (
+                -1 +
+                Math.random() * 2
+            ).toFixed(1) +
+            "px";
 
 
         span.style.setProperty(
@@ -1105,6 +1367,30 @@ function createLivingText(text) {
         span.style.setProperty(
             "--opacity",
             opacity
+        );
+
+
+        span.style.setProperty(
+            "--x1",
+            x1
+        );
+
+
+        span.style.setProperty(
+            "--x2",
+            x2
+        );
+
+
+        span.style.setProperty(
+            "--x3",
+            x3
+        );
+
+
+        span.style.setProperty(
+            "--x4",
+            x4
         );
 
 
@@ -1158,6 +1444,13 @@ function resetAnimation() {
         "scale(1)";
 
 
+    frontMist.style.opacity =
+        "0";
+
+    frontMist.style.transform =
+        "scale(1.05)";
+
+
     fogFront.style.opacity =
         "0";
 
@@ -1187,7 +1480,7 @@ function resetAnimation() {
 
 
     prediction.style.transform =
-        "scale(0.97)";
+        "scale(0.96)";
 
 
     silhouette.style.opacity =
@@ -1211,7 +1504,7 @@ function resetAnimation() {
 
 
     card.style.transform =
-        "translate(-50%, -50%) scale(0.84)";
+        "translate(-50%, -50%) scale(0.76)";
 
 
     card.src =
@@ -1263,7 +1556,6 @@ async function startAnimation() {
 
     /* =====================================================
        1 SEKUNDE
-       TEXT
        ===================================================== */
 
     setStatus(
@@ -1297,11 +1589,10 @@ async function startAnimation() {
 
     /* =====================================================
        2.5 SEKUNDEN
-       LEBENDIGE SCHRIFT
        ===================================================== */
 
     setStatus(
-        "2.5 s – Schrift beginnt zu atmen ..."
+        "2.5 s – Schrift beginnt zu leben ..."
     );
 
 
@@ -1315,7 +1606,6 @@ async function startAnimation() {
 
     /* =====================================================
        3 SEKUNDEN
-       LESE-NEBEL
        ===================================================== */
 
     setStatus(
@@ -1327,17 +1617,11 @@ async function startAnimation() {
         "1";
 
 
-    /*
-    Jetzt bleiben rund 5 Sekunden
-    zum Lesen.
-    */
-
     await wait(4000);
 
 
     /* =====================================================
        7 SEKUNDEN
-       NEBEL WIRD STÄRKER
        ===================================================== */
 
     setStatus(
@@ -1349,11 +1633,6 @@ async function startAnimation() {
         "alive"
     );
 
-
-    /*
-    Schrift beginnt langsam
-    zu verschwinden.
-    */
 
     prediction.style.opacity =
         "0.25";
@@ -1395,27 +1674,25 @@ async function startAnimation() {
         "scale(1.15)";
 
 
+    frontMist.style.opacity =
+        "0.55";
+
+
+    frontMist.style.transform =
+        "scale(1.10)";
+
+
     await wait(1000);
 
 
     /* =====================================================
        8 SEKUNDEN
-       TEXT IST WEG
        ===================================================== */
 
     setStatus(
         "8.0 s – Die Vorhersage verschwindet ..."
     );
 
-
-    /*
-    WICHTIG:
-
-    Nicht 0.15.
-    Nicht 0.05.
-
-    Wirklich vollständig weg.
-    */
 
     prediction.style.opacity =
         "0";
@@ -1449,11 +1726,22 @@ async function startAnimation() {
         "scale(1.20)";
 
 
+    /*
+    Vordergrundnebel bleibt jetzt
+    auch oben deutlich sichtbar.
+    */
+
+    frontMist.style.opacity =
+        "0.82";
+
+
+    frontMist.style.transform =
+        "scale(1.14)";
+
+
     /* =====================================================
        8–11 SEKUNDEN
-       NUR NEBEL
-
-       Bewusste Pause.
+       SPANNUNG
        ===================================================== */
 
     await wait(3000);
@@ -1461,7 +1749,7 @@ async function startAnimation() {
 
     /* =====================================================
        11 SEKUNDEN
-       ERSTE SILHOUETTE
+       SILHOUETTE
        ===================================================== */
 
     setStatus(
@@ -1486,7 +1774,6 @@ async function startAnimation() {
 
     /* =====================================================
        12.5 SEKUNDEN
-       SILHOUETTE WIRD ERKENNBAR
        ===================================================== */
 
     setStatus(
@@ -1511,7 +1798,6 @@ async function startAnimation() {
 
     /* =====================================================
        13.5 SEKUNDEN
-       SILHOUETTE FAST DA
        ===================================================== */
 
     setStatus(
@@ -1531,12 +1817,12 @@ async function startAnimation() {
         "translate(-50%, -50%) scale(0.94)";
 
 
-    /*
-    Noch einmal dichter Nebel.
-    */
-
     fogFront.style.opacity =
-        "0.86";
+        "0.90";
+
+
+    frontMist.style.opacity =
+        "0.95";
 
 
     mist.style.opacity =
@@ -1555,11 +1841,6 @@ async function startAnimation() {
         "15.0 s – Die Vorhersage wird sichtbar ..."
     );
 
-
-    /*
-    Silhouette verschmilzt mit
-    der Karte.
-    */
 
     silhouette.style.opacity =
         "0.25";
@@ -1582,7 +1863,7 @@ async function startAnimation() {
 
 
     card.style.transform =
-        "translate(-50%, -50%) scale(0.90)";
+        "translate(-50%, -50%) scale(0.88)";
 
 
     await wait(1500);
@@ -1590,7 +1871,6 @@ async function startAnimation() {
 
     /* =====================================================
        16.5 SEKUNDEN
-       KARTE WIRD SICHTBAR
        ===================================================== */
 
     setStatus(
@@ -1599,15 +1879,15 @@ async function startAnimation() {
 
 
     card.style.opacity =
-        "0.70";
+        "0.72";
 
 
     card.style.filter =
-        "blur(6px) brightness(0.80)";
+        "blur(6px) brightness(0.82)";
 
 
     card.style.transform =
-        "translate(-50%, -50%) scale(0.96)";
+        "translate(-50%, -50%) scale(1.02)";
 
 
     await wait(1500);
@@ -1615,7 +1895,7 @@ async function startAnimation() {
 
     /* =====================================================
        18 SEKUNDEN
-       KARTE KLAR
+       KARTE GROSS UND KLAR
        ===================================================== */
 
     setStatus(
@@ -1631,16 +1911,31 @@ async function startAnimation() {
         "blur(0px) brightness(1)";
 
 
+    /*
+    Endgröße bewusst größer
+    als in Version 2.2.
+    */
+
     card.style.transform =
-        "translate(-50%, -50%) scale(1)";
+        "translate(-50%, -50%) scale(1.10)";
 
 
     /*
-    Nebel bleibt noch leicht davor.
+    Der Nebel bleibt erhalten.
+    Vor allem die obere Bildhälfte
+    wird nicht wieder freigegeben.
     */
 
     fogFront.style.opacity =
-        "0.36";
+        "0.42";
+
+
+    frontMist.style.opacity =
+        "0.78";
+
+
+    mist.style.opacity =
+        "0.92";
 
 
     forest.style.opacity =
