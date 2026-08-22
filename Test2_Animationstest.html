@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Mystery Master – Animation Test 2.3</title>
+<title>Mystery Master – Animation Test 2.4</title>
 
 <link
     href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"
@@ -262,6 +262,20 @@ body {
 /* =========================================================
    EINZELNE BUCHSTABEN
    ========================================================= */
+
+.magic-word {
+
+    display: inline-block;
+
+    white-space: nowrap;
+
+    /*
+    Verhindert insbesondere auf Android,
+    dass Cinzel Decorative innerhalb
+    eines Wortes umgebrochen wird.
+    */
+}
+
 
 .magic-letter {
 
@@ -753,6 +767,138 @@ body {
 
 
 /* =========================================================
+   DICHTER ABSCHLUSSNEBEL
+   Liegt vor Wald/GIF-Nebel, aber hinter Karte.
+   Dadurch bleibt die Karte im Nebel eingebettet,
+   während der Wald fast vollständig verschwindet.
+   ========================================================= */
+
+#dense-fog {
+
+    position: absolute;
+
+    inset: -12%;
+
+    z-index: 45;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 48%,
+            rgba(220, 220, 220, 0.56) 0%,
+            rgba(190, 190, 190, 0.40) 24%,
+            rgba(150, 150, 150, 0.25) 48%,
+            rgba(90, 90, 90, 0.16) 72%,
+            rgba(0, 0, 0, 0.04) 100%
+        ),
+
+        radial-gradient(
+            ellipse at 18% 18%,
+            rgba(230, 230, 230, 0.42) 0%,
+            rgba(190, 190, 190, 0.18) 35%,
+            rgba(0, 0, 0, 0) 70%
+        ),
+
+        radial-gradient(
+            ellipse at 82% 20%,
+            rgba(230, 230, 230, 0.40) 0%,
+            rgba(190, 190, 190, 0.17) 35%,
+            rgba(0, 0, 0, 0) 70%
+        );
+
+    filter:
+        blur(18px);
+
+    transform:
+        scale(1.08);
+
+    transition:
+        opacity 4.5s ease,
+        transform 8s ease;
+}
+
+
+#dense-fog::before,
+#dense-fog::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -15%;
+
+    background:
+
+        radial-gradient(
+            ellipse at 35% 55%,
+            rgba(245, 245, 245, 0.22) 0%,
+            rgba(215, 215, 215, 0.10) 32%,
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse at 72% 42%,
+            rgba(235, 235, 235, 0.20) 0%,
+            rgba(205, 205, 205, 0.08) 34%,
+            transparent 70%
+        );
+
+    filter:
+        blur(25px);
+}
+
+
+#dense-fog::before {
+
+    animation:
+        denseFogDriftA 14s ease-in-out infinite alternate;
+}
+
+
+#dense-fog::after {
+
+    animation:
+        denseFogDriftB 18s ease-in-out infinite alternate;
+}
+
+
+@keyframes denseFogDriftA {
+
+    0% {
+        transform:
+            translate3d(-4%, 2%, 0)
+            scale(1);
+    }
+
+    100% {
+        transform:
+            translate3d(5%, -3%, 0)
+            scale(1.08);
+    }
+}
+
+
+@keyframes denseFogDriftB {
+
+    0% {
+        transform:
+            translate3d(4%, -2%, 0)
+            scale(1.04);
+    }
+
+    100% {
+        transform:
+            translate3d(-5%, 3%, 0)
+            scale(1.10);
+    }
+}
+
+
+/* =========================================================
    SILHOUETTE
    ========================================================= */
 
@@ -1047,6 +1193,13 @@ button:active {
         alt=""
     >
 
+    <!-- =====================================================
+         DICHTER NEBEL VOR DER KARTE
+         Dieser Layer liegt vor dem Wald und dem GIF-Nebel,
+         aber hinter Silhouette und Karte.
+         ===================================================== -->
+    <div id="dense-fog"></div>
+
 
     <!-- =====================================================
          SILHOUETTE
@@ -1290,139 +1443,158 @@ function createLivingText(text) {
 
     prediction.innerHTML = "";
 
+    /*
+    Jedes Wort wird zu einem eigenen, untrennbaren Block.
 
-    for (
-        let i = 0;
-        i < text.length;
-        i++
-    ) {
+    Der Browser darf zwischen Wörtern umbrechen,
+    aber niemals mitten in einem Wort.
+    */
 
-        const char =
-            text[i];
+    const words =
+        text.trim().split(/\s+/);
 
+    words.forEach(
+        (word, wordIndex) => {
 
-        if (
-            char === " "
-        ) {
+            const wordSpan =
+                document.createElement(
+                    "span"
+                );
+
+            wordSpan.className =
+                "magic-word";
+
+            /*
+            Das Wort selbst bleibt zusammen.
+            */
+
+            wordSpan.style.whiteSpace =
+                "nowrap";
+
+            for (
+                let i = 0;
+                i < word.length;
+                i++
+            ) {
+
+                const char =
+                    word[i];
+
+                const span =
+                    document.createElement(
+                        "span"
+                    );
+
+                span.className =
+                    "magic-letter";
+
+                span.textContent =
+                    char;
+
+                /*
+                Jeder Buchstabe bekommt
+                eine leicht andere Bewegung
+                und Transparenz.
+                */
+
+                const delay =
+                    (
+                        3.0 +
+                        Math.random() * 3.0
+                    ).toFixed(2) +
+                    "s";
+
+                const opacity =
+                    (
+                        0.78 +
+                        Math.random() * 0.22
+                    ).toFixed(2);
+
+                const x1 =
+                    (
+                        -1.5 +
+                        Math.random() * 3
+                    ).toFixed(1) +
+                    "px";
+
+                const x2 =
+                    (
+                        -2.5 +
+                        Math.random() * 5
+                    ).toFixed(1) +
+                    "px";
+
+                const x3 =
+                    (
+                        -2.5 +
+                        Math.random() * 5
+                    ).toFixed(1) +
+                    "px";
+
+                const x4 =
+                    (
+                        -1.5 +
+                        Math.random() * 3
+                    ).toFixed(1) +
+                    "px";
+
+                span.style.setProperty(
+                    "--delay",
+                    delay
+                );
+
+                span.style.setProperty(
+                    "--opacity",
+                    opacity
+                );
+
+                span.style.setProperty(
+                    "--x1",
+                    x1
+                );
+
+                span.style.setProperty(
+                    "--x2",
+                    x2
+                );
+
+                span.style.setProperty(
+                    "--x3",
+                    x3
+                );
+
+                span.style.setProperty(
+                    "--x4",
+                    x4
+                );
+
+                wordSpan.appendChild(
+                    span
+                );
+            }
 
             prediction.appendChild(
-                document.createTextNode(" ")
+                wordSpan
             );
 
-            continue;
+            /*
+            Normales Leerzeichen zwischen
+            den untrennbaren Wortblöcken.
+            */
+
+            if (
+                wordIndex <
+                words.length - 1
+            ) {
+
+                prediction.appendChild(
+                    document.createTextNode(
+                        " "
+                    )
+                );
+            }
         }
-
-
-        const span =
-            document.createElement(
-                "span"
-            );
-
-
-        span.className =
-            "magic-letter";
-
-
-        span.textContent =
-            char;
-
-
-        /*
-        Jeder Buchstabe bekommt
-        seine eigene kleine Bewegung.
-
-        Dadurch wirkt die Schrift
-        nicht wie ein einzelnes
-        animiertes Objekt.
-        */
-
-        const delay =
-            (
-                3.0 +
-                Math.random() * 3.0
-            ).toFixed(2) +
-            "s";
-
-
-        const opacity =
-            (
-                0.82 +
-                Math.random() * 0.18
-            ).toFixed(2);
-
-
-        const x1 =
-            (
-                -1 +
-                Math.random() * 2
-            ).toFixed(1) +
-            "px";
-
-
-        const x2 =
-            (
-                -2 +
-                Math.random() * 4
-            ).toFixed(1) +
-            "px";
-
-
-        const x3 =
-            (
-                -2 +
-                Math.random() * 4
-            ).toFixed(1) +
-            "px";
-
-
-        const x4 =
-            (
-                -1 +
-                Math.random() * 2
-            ).toFixed(1) +
-            "px";
-
-
-        span.style.setProperty(
-            "--delay",
-            delay
-        );
-
-
-        span.style.setProperty(
-            "--opacity",
-            opacity
-        );
-
-
-        span.style.setProperty(
-            "--x1",
-            x1
-        );
-
-
-        span.style.setProperty(
-            "--x2",
-            x2
-        );
-
-
-        span.style.setProperty(
-            "--x3",
-            x3
-        );
-
-
-        span.style.setProperty(
-            "--x4",
-            x4
-        );
-
-
-        prediction.appendChild(
-            span
-        );
-    }
+    );
 }
 
 
@@ -1480,6 +1652,13 @@ function resetAnimation() {
         "0";
 
     fogFront.style.transform =
+        "scale(1.08)";
+
+
+    denseFog.style.opacity =
+        "0";
+
+    denseFog.style.transform =
         "scale(1.08)";
 
 
@@ -1707,6 +1886,13 @@ async function startAnimation() {
         "scale(1.10)";
 
 
+    denseFog.style.opacity =
+        "0.30";
+
+    denseFog.style.transform =
+        "scale(1.10)";
+
+
     await wait(1000);
 
 
@@ -1762,6 +1948,13 @@ async function startAnimation() {
 
     frontMist.style.transform =
         "scale(1.14)";
+
+
+    denseFog.style.opacity =
+        "0.58";
+
+    denseFog.style.transform =
+        "scale(1.12)";
 
 
     /* =====================================================
@@ -1854,6 +2047,13 @@ async function startAnimation() {
         "1";
 
 
+    denseFog.style.opacity =
+        "0.76";
+
+    denseFog.style.transform =
+        "scale(1.15)";
+
+
     await wait(1500);
 
 
@@ -1933,7 +2133,7 @@ async function startAnimation() {
 
 
     card.style.filter =
-        "blur(0px) brightness(1)";
+        "blur(1.2px) brightness(0.94)";
 
 
     /*
@@ -1961,13 +2161,20 @@ wieder sichtbar werden.
 */
 
 fogFront.style.opacity =
-    "0.82";
+    "0.96";
 
 frontMist.style.opacity =
-    "0.92";
+    "0.98";
 
 mist.style.opacity =
     "1";
+
+
+denseFog.style.opacity =
+    "0.88";
+
+denseFog.style.transform =
+    "scale(1.18)";
 
 forest.style.opacity =
     "0.04";
