@@ -12,7 +12,10 @@
 
 <title>Mystery Master – Animation Test 2.3</title>
 
-
+<link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"
+    rel="stylesheet"
+>
 <style>
 
 /* =========================================================
@@ -37,10 +40,11 @@ body {
     background: #000;
 
     font-family:
-        "Palatino Linotype",
-        "Book Antiqua",
-        Georgia,
-        serif;
+    "Cinzel Decorative",
+    "Palatino Linotype",
+    "Book Antiqua",
+    Georgia,
+    serif;
 }
 
 
@@ -140,17 +144,38 @@ body {
     color:
         rgba(232, 211, 143, 0);
 
+    font-family:
+        "Cinzel Decorative",
+        "Palatino Linotype",
+        Georgia,
+        serif;
+
     font-size:
-        clamp(28px, 6vw, 66px);
+        clamp(24px, 5.2vw, 62px);
 
     line-height:
-        1.30;
+        1.35;
 
     letter-spacing:
-        0.035em;
+        0.025em;
 
     font-weight:
-        500;
+        400;
+
+    /* Wörter dürfen umbrechen,
+       einzelne Wörter aber nicht */
+
+    white-space:
+        normal;
+
+    word-break:
+        normal;
+
+    overflow-wrap:
+        normal;
+
+    hyphens:
+        none;
 
     text-shadow:
         0 0 7px rgba(232, 211, 143, 0.30),
@@ -1920,30 +1945,35 @@ async function startAnimation() {
         "translate(-50%, -50%) scale(1.10)";
 
 
-    /*
-    Der Nebel bleibt erhalten.
-    Vor allem die obere Bildhälfte
-    wird nicht wieder freigegeben.
-    */
+/*
+=========================================================
+ENDZUSTAND
 
-    fogFront.style.opacity =
-        "0.42";
+Der Nebel bleibt jetzt dicht.
 
+Die Karte liegt mit z-index 50
+bewusst VOR dem Nebel.
 
-    frontMist.style.opacity =
-        "0.78";
+Der Wald wird praktisch vollständig
+verschluckt und darf am Ende nicht
+wieder sichtbar werden.
+=========================================================
+*/
 
+fogFront.style.opacity =
+    "0.82";
 
-    mist.style.opacity =
-        "0.92";
+frontMist.style.opacity =
+    "0.92";
 
+mist.style.opacity =
+    "1";
 
-    forest.style.opacity =
-        "0.10";
+forest.style.opacity =
+    "0.04";
 
-
-    darkness.style.opacity =
-        "0.70";
+darkness.style.opacity =
+    "0.74";
 
 
     await wait(3000);
