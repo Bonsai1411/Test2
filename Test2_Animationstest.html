@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Mystery Master – Animation Test 2.5.1</title>
+<title>Mystery Master – Animation Test 2.5.2</title>
 
 <link
     href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"
@@ -356,7 +356,7 @@ body {
 
     position: absolute;
 
-    inset: -20%;
+    inset: -12%;
 
     z-index: 25;
 
@@ -366,8 +366,10 @@ body {
 
     overflow: hidden;
 
-    filter:
-        blur(18px);
+    /*
+    Weniger Blur auf dem gesamten Container.
+    Die einzelnen Wolken besitzen ihren eigenen Blur.
+    */
 
     transition:
         opacity 3.5s ease;
@@ -393,10 +395,13 @@ body {
         );
 
     filter:
-        blur(16px);
+        blur(14px);
 
     opacity:
         0.75;
+
+    will-change:
+        transform;
 }
 
 
@@ -406,7 +411,7 @@ body {
     top: 30%;
 
     animation:
-        fogMoveOne 11s ease-in-out infinite;
+        fogMoveOne 10s ease-in-out infinite;
 }
 
 
@@ -414,23 +419,20 @@ body {
 
     0% {
         transform:
-            translateX(0)
-            translateY(0)
+            translate3d(0, 0, 0)
             scale(1);
     }
 
     50% {
         transform:
-            translateX(55vw)
-            translateY(-3vh)
-            scale(1.15);
+            translate3d(55vw, -3vh, 0)
+            scale(1.12);
     }
 
     100% {
         transform:
-            translateX(110vw)
-            translateY(2vh)
-            scale(1.05);
+            translate3d(110vw, 2vh, 0)
+            scale(1.04);
     }
 }
 
@@ -447,7 +449,7 @@ body {
         0.60;
 
     animation:
-        fogMoveTwo 14s ease-in-out infinite;
+        fogMoveTwo 13s ease-in-out infinite;
 }
 
 
@@ -455,23 +457,20 @@ body {
 
     0% {
         transform:
-            translateX(0)
-            translateY(2vh)
+            translate3d(0, 2vh, 0)
             scale(1);
     }
 
     50% {
         transform:
-            translateX(-48vw)
-            translateY(-2vh)
-            scale(1.18);
+            translate3d(-48vw, -2vh, 0)
+            scale(1.15);
     }
 
     100% {
         transform:
-            translateX(-105vw)
-            translateY(3vh)
-            scale(1.08);
+            translate3d(-105vw, 3vh, 0)
+            scale(1.06);
     }
 }
 
@@ -487,8 +486,14 @@ body {
     opacity:
         0.40;
 
+    /*
+    Diese Wolke bewegt sich langsamer,
+    damit nicht zu viele große Layer
+    gleichzeitig stark animiert werden.
+    */
+
     animation:
-        fogMoveThree 16s ease-in-out infinite;
+        fogMoveThree 18s ease-in-out infinite;
 }
 
 
@@ -496,23 +501,20 @@ body {
 
     0% {
         transform:
-            translateX(-10vw)
-            translateY(0)
+            translate3d(-8vw, 0, 0)
             scale(1);
     }
 
     50% {
         transform:
-            translateX(15vw)
-            translateY(-4vh)
-            scale(1.20);
+            translate3d(12vw, -3vh, 0)
+            scale(1.14);
     }
 
     100% {
         transform:
-            translateX(-8vw)
-            translateY(2vh)
-            scale(1.05);
+            translate3d(-6vw, 2vh, 0)
+            scale(1.04);
     }
 }
 
@@ -564,13 +566,20 @@ body {
         );
 
     filter:
-        blur(24px);
+        blur(22px);
 
     transform:
         scale(1.02);
 
     transition:
         opacity 5s ease;
+
+    /*
+    Nur ein Layer wird bewegt.
+    */
+
+    will-change:
+        opacity;
 }
 
 
@@ -587,34 +596,31 @@ body {
 
         radial-gradient(
             ellipse at 40% 30%,
-            rgba(245, 245, 245, 0.11) 0%,
-            rgba(220, 220, 220, 0.035) 30%,
+            rgba(245, 245, 245, 0.10) 0%,
+            rgba(220, 220, 220, 0.03) 30%,
             transparent 65%
         ),
 
         radial-gradient(
             ellipse at 70% 70%,
-            rgba(230, 230, 230, 0.09) 0%,
-            rgba(210, 210, 210, 0.03) 32%,
+            rgba(230, 230, 230, 0.08) 0%,
+            rgba(210, 210, 210, 0.025) 32%,
             transparent 65%
         );
-
-    filter:
-        blur(28px);
 }
 
 
 #front-mist::before {
 
     animation:
-        mistDriftA 18s ease-in-out infinite alternate;
+        mistDriftA 24s ease-in-out infinite alternate;
 }
 
 
 #front-mist::after {
 
     animation:
-        mistDriftB 23s ease-in-out infinite alternate;
+        mistDriftB 29s ease-in-out infinite alternate;
 }
 
 
@@ -622,20 +628,14 @@ body {
 
     0% {
         transform:
-            translate3d(-5%, 2%, 0)
+            translate3d(-3%, 1%, 0)
             scale(1);
-    }
-
-    50% {
-        transform:
-            translate3d(4%, -2%, 0)
-            scale(1.08);
     }
 
     100% {
         transform:
-            translate3d(-2%, 4%, 0)
-            scale(1.04);
+            translate3d(3%, -2%, 0)
+            scale(1.05);
     }
 }
 
@@ -644,20 +644,14 @@ body {
 
     0% {
         transform:
-            translate3d(5%, -2%, 0)
-            scale(1.04);
-    }
-
-    50% {
-        transform:
-            translate3d(-4%, 3%, 0)
-            scale(1.10);
+            translate3d(3%, -1%, 0)
+            scale(1.02);
     }
 
     100% {
         transform:
-            translate3d(3%, -3%, 0)
-            scale(1.02);
+            translate3d(-3%, 2%, 0)
+            scale(1.06);
     }
 }
 
@@ -680,6 +674,10 @@ body {
     z-index: 34;
 
     opacity: 0;
+
+    /*
+    Nur sehr leichter Blur.
+    */
 
     filter:
         blur(1px);
@@ -718,14 +716,14 @@ body {
 
         radial-gradient(
             ellipse at 50% 58%,
-            rgba(245, 245, 245, 0.27) 0%,
-            rgba(200, 200, 200, 0.16) 20%,
-            rgba(110, 110, 110, 0.07) 43%,
+            rgba(245, 245, 245, 0.25) 0%,
+            rgba(200, 200, 200, 0.14) 20%,
+            rgba(110, 110, 110, 0.06) 43%,
             rgba(0, 0, 0, 0) 72%
         );
 
     filter:
-        blur(25px);
+        blur(22px);
 
     transition:
         opacity 4.5s ease;
@@ -748,45 +746,54 @@ body {
 
     pointer-events: none;
 
+    /*
+    Mehr Tiefe statt einfach nur mehr Weiß.
+    */
+
     background:
 
         radial-gradient(
-            ellipse at 50% 45%,
-            rgba(230, 230, 230, 0.56) 0%,
-            rgba(195, 195, 195, 0.38) 25%,
-            rgba(145, 145, 145, 0.22) 50%,
-            rgba(75, 75, 75, 0.12) 72%,
-            rgba(0, 0, 0, 0.02) 100%
+            ellipse at 50% 43%,
+            rgba(235, 235, 235, 0.50) 0%,
+            rgba(205, 205, 205, 0.34) 24%,
+            rgba(160, 160, 160, 0.18) 48%,
+            rgba(95, 95, 95, 0.09) 72%,
+            rgba(0, 0, 0, 0.015) 100%
         ),
 
         radial-gradient(
-            ellipse at 15% 20%,
-            rgba(240, 240, 240, 0.38) 0%,
-            rgba(190, 190, 190, 0.15) 35%,
+            ellipse at 12% 22%,
+            rgba(240, 240, 240, 0.30) 0%,
+            rgba(190, 190, 190, 0.12) 36%,
             transparent 70%
         ),
 
         radial-gradient(
-            ellipse at 85% 22%,
-            rgba(240, 240, 240, 0.36) 0%,
-            rgba(190, 190, 190, 0.14) 35%,
+            ellipse at 88% 25%,
+            rgba(240, 240, 240, 0.28) 0%,
+            rgba(190, 190, 190, 0.11) 36%,
             transparent 70%
         ),
 
         radial-gradient(
-            ellipse at 28% 82%,
-            rgba(225, 225, 225, 0.25) 0%,
-            rgba(180, 180, 180, 0.09) 35%,
+            ellipse at 30% 82%,
+            rgba(225, 225, 225, 0.22) 0%,
+            rgba(180, 180, 180, 0.08) 36%,
             transparent 70%
         );
 
     filter:
-        blur(16px);
+        blur(14px);
 
     transition:
         opacity 4.5s ease;
 }
 
+
+/*
+Die zusätzlichen Nebelstrukturen bleiben,
+bewegen sich aber wesentlich langsamer.
+*/
 
 #dense-fog::before,
 #dense-fog::after {
@@ -801,34 +808,31 @@ body {
 
         radial-gradient(
             ellipse at 35% 55%,
-            rgba(245, 245, 245, 0.20) 0%,
-            rgba(215, 215, 215, 0.08) 34%,
+            rgba(245, 245, 245, 0.17) 0%,
+            rgba(215, 215, 215, 0.07) 34%,
             transparent 68%
         ),
 
         radial-gradient(
             ellipse at 72% 42%,
-            rgba(235, 235, 235, 0.18) 0%,
-            rgba(205, 205, 205, 0.07) 34%,
+            rgba(235, 235, 235, 0.15) 0%,
+            rgba(205, 205, 205, 0.06) 34%,
             transparent 70%
         );
-
-    filter:
-        blur(22px);
 }
 
 
 #dense-fog::before {
 
     animation:
-        denseFogDriftA 16s ease-in-out infinite alternate;
+        denseFogDriftA 22s ease-in-out infinite alternate;
 }
 
 
 #dense-fog::after {
 
     animation:
-        denseFogDriftB 20s ease-in-out infinite alternate;
+        denseFogDriftB 27s ease-in-out infinite alternate;
 }
 
 
@@ -836,12 +840,12 @@ body {
 
     0% {
         transform:
-            translate3d(-3%, 2%, 0);
+            translate3d(-2%, 1%, 0);
     }
 
     100% {
         transform:
-            translate3d(4%, -3%, 0);
+            translate3d(3%, -2%, 0);
     }
 }
 
@@ -850,12 +854,12 @@ body {
 
     0% {
         transform:
-            translate3d(3%, -2%, 0);
+            translate3d(2%, -1%, 0);
     }
 
     100% {
         transform:
-            translate3d(-4%, 3%, 0);
+            translate3d(-3%, 2%, 0);
     }
 }
 
@@ -903,11 +907,24 @@ body {
 
     opacity: 0;
 
+    /*
+    Leichte Unschärfe.
+    Nicht stärker machen, sonst werden die Blätter
+    auf kleinen Displays zu matschig.
+    */
+
+    filter:
+        blur(1px);
+
     will-change:
         transform,
         opacity;
 }
 
+
+/* =========================================================
+   BLATTDETAIL
+   ========================================================= */
 
 .leaf::after {
 
@@ -922,7 +939,7 @@ body {
     height: 1px;
 
     background:
-        rgba(35, 22, 10, 0.45);
+        rgba(35, 22, 10, 0.40);
 
     transform:
         rotate(-12deg);
@@ -934,7 +951,6 @@ body {
 
 /* =========================================================
    BLATT 1
-   Start: ca. 8.5 s
    ========================================================= */
 
 .leaf.one {
@@ -949,7 +965,6 @@ body {
 
 /* =========================================================
    BLATT 2
-   Start: ca. 10.2 s
    ========================================================= */
 
 .leaf.two {
@@ -964,7 +979,6 @@ body {
 
 /* =========================================================
    BLATT 3
-   Start: ca. 11.7 s
    ========================================================= */
 
 .leaf.three {
@@ -979,26 +993,27 @@ body {
 
 /* =========================================================
    BLATT-ANIMATIONEN
+   Schneller als vorher.
    ========================================================= */
 
 .leaf.one.run {
 
     animation:
-        leafOne 6.5s ease-in-out forwards;
+        leafOne 4.4s ease-in-out forwards;
 }
 
 
 .leaf.two.run {
 
     animation:
-        leafTwo 7.2s ease-in-out forwards;
+        leafTwo 4.8s ease-in-out forwards;
 }
 
 
 .leaf.three.run {
 
     animation:
-        leafThree 6.8s ease-in-out forwards;
+        leafThree 4.6s ease-in-out forwards;
 }
 
 
@@ -1014,30 +1029,30 @@ body {
     }
 
     8% {
-        opacity: 0.85;
+        opacity: 0.82;
     }
 
-    35% {
+    32% {
         transform:
-            translate3d(28vw, 13vh, 0)
-            rotate(125deg)
+            translate3d(30vw, 13vh, 0)
+            rotate(145deg)
             scale(1);
     }
 
-    65% {
+    60% {
         transform:
-            translate3d(58vw, 25vh, 0)
-            rotate(235deg)
-            scale(0.92);
+            translate3d(64vw, 27vh, 0)
+            rotate(275deg)
+            scale(0.94);
     }
 
     100% {
         opacity: 0;
 
         transform:
-            translate3d(112vw, 44vh, 0)
-            rotate(390deg)
-            scale(0.72);
+            translate3d(112vw, 46vh, 0)
+            rotate(430deg)
+            scale(0.68);
     }
 }
 
@@ -1053,31 +1068,31 @@ body {
             scale(0.75);
     }
 
-    10% {
+    8% {
         opacity: 0.78;
     }
 
     30% {
         transform:
-            translate3d(-23vw, 7vh, 0)
-            rotate(-70deg)
+            translate3d(-25vw, 8vh, 0)
+            rotate(-90deg)
             scale(1.05);
     }
 
-    62% {
+    60% {
         transform:
-            translate3d(-55vw, 24vh, 0)
-            rotate(-190deg)
-            scale(0.94);
+            translate3d(-60vw, 26vh, 0)
+            rotate(-220deg)
+            scale(0.92);
     }
 
     100% {
         opacity: 0;
 
         transform:
-            translate3d(-116vw, 50vh, 0)
-            rotate(-360deg)
-            scale(0.70);
+            translate3d(-116vw, 52vh, 0)
+            rotate(-420deg)
+            scale(0.66);
     }
 }
 
@@ -1093,31 +1108,31 @@ body {
             scale(0.70);
     }
 
-    10% {
+    8% {
         opacity: 0.82;
     }
 
-    35% {
+    32% {
         transform:
-            translate3d(13vw, 18vh, 0)
-            rotate(155deg)
+            translate3d(15vw, 20vh, 0)
+            rotate(180deg)
             scale(1.08);
     }
 
-    68% {
+    62% {
         transform:
-            translate3d(-5vw, 44vh, 0)
-            rotate(285deg)
-            scale(0.92);
+            translate3d(-8vw, 48vh, 0)
+            rotate(325deg)
+            scale(0.90);
     }
 
     100% {
         opacity: 0;
 
         transform:
-            translate3d(-28vw, 112vh, 0)
-            rotate(450deg)
-            scale(0.68);
+            translate3d(-30vw, 112vh, 0)
+            rotate(500deg)
+            scale(0.64);
     }
 }
 
@@ -1216,6 +1231,11 @@ body {
 
     opacity:
         0;
+
+    /*
+    Blur nur für das Einblenden.
+    Danach wird er nicht mehr animiert.
+    */
 
     filter:
         blur(20px)
@@ -1332,6 +1352,42 @@ button:active {
         padding:
             8vw;
     }
+
+}
+
+
+/* =========================================================
+   MOBILE PERFORMANCE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    /*
+    Auf dem Handy etwas weniger Blur.
+    Die optische Wirkung bleibt erhalten,
+    aber die GPU bekommt weniger Arbeit.
+    */
+
+    .fog-cloud {
+        filter: blur(11px);
+    }
+
+    #front-mist {
+        filter: blur(17px);
+    }
+
+    #mist {
+        filter: blur(17px);
+    }
+
+    #dense-fog {
+        filter: blur(11px);
+    }
+
+    .leaf {
+        filter: blur(0.8px);
+    }
+
 }
 
 </style>
@@ -1770,11 +1826,6 @@ function runLeaf(leaf) {
 
     leaf.classList.remove("run");
 
-    /*
-    Reflow erzwingen, damit ein neuer Test
-    zuverlässig wieder startet.
-    */
-
     void leaf.offsetWidth;
 
     leaf.classList.add("run");
@@ -1786,17 +1837,18 @@ function showLeaves() {
     leaves.style.opacity =
         "1";
 
+
     /*
-    NICHT gleichzeitig.
+    Weiterhin einzeln.
 
     Blatt 1:
     sofort
 
     Blatt 2:
-    +1.7 Sekunden
+    +1.25 Sekunden
 
     Blatt 3:
-    +3.2 Sekunden
+    +2.45 Sekunden
     */
 
     runLeaf(leafOne);
@@ -1805,7 +1857,7 @@ function showLeaves() {
     const id1 =
         setTimeout(
             () => runLeaf(leafTwo),
-            1700
+            1250
         );
 
     timerIds.push(id1);
@@ -1814,7 +1866,7 @@ function showLeaves() {
     const id2 =
         setTimeout(
             () => runLeaf(leafThree),
-            3200
+            2450
         );
 
     timerIds.push(id2);
@@ -2023,16 +2075,12 @@ async function startAnimation() {
         "1";
 
 
-    /*
-    Textphase verlängert.
-    */
-
     await wait(5000);
 
 
     /* =====================================================
        8.5 SEKUNDEN
-       BEGINN DER NEBELVERDICHTUNG
+       BEGINN NEBELVERDICHTUNG
        ===================================================== */
 
     setStatus(
@@ -2053,40 +2101,29 @@ async function startAnimation() {
         "blur(10px)";
 
 
-    /*
-    PHASE 1
-
-    Nur die bereits vorhandenen
-    Nebelkomponenten leicht erhöhen.
-    */
-
     readingFog.style.opacity =
         "0.62";
 
 
+    /*
+    Wald schon deutlich zurücknehmen.
+    */
+
     forest.style.opacity =
-        "0.38";
+        "0.34";
 
 
     darkness.style.opacity =
-        "0.48";
+        "0.44";
 
-
-    /*
-    Noch NICHT alles gleichzeitig.
-    */
 
     mist.style.opacity =
-        "0.45";
+        "0.50";
 
 
     fogFront.style.opacity =
-        "0.32";
+        "0.34";
 
-
-    /*
-    Erste Blattbewegung.
-    */
 
     showLeaves();
 
@@ -2105,23 +2142,23 @@ async function startAnimation() {
 
 
     mist.style.opacity =
-        "0.72";
+        "0.76";
 
 
     fogFront.style.opacity =
-        "0.52";
+        "0.54";
 
 
     frontMist.style.opacity =
-        "0.42";
+        "0.40";
 
 
     denseFog.style.opacity =
-        "0.22";
+        "0.26";
 
 
     forest.style.opacity =
-        "0.28";
+        "0.22";
 
 
     await wait(1000);
@@ -2138,7 +2175,7 @@ async function startAnimation() {
 
 
     readingFog.style.opacity =
-        "0.72";
+        "0.68";
 
 
     mist.style.opacity =
@@ -2146,23 +2183,23 @@ async function startAnimation() {
 
 
     fogFront.style.opacity =
-        "0.68";
+        "0.70";
 
 
     frontMist.style.opacity =
-        "0.64";
+        "0.58";
 
 
     denseFog.style.opacity =
-        "0.42";
+        "0.48";
 
 
     forest.style.opacity =
-        "0.16";
+        "0.08";
 
 
     darkness.style.opacity =
-        "0.56";
+        "0.55";
 
 
     await wait(1000);
@@ -2174,12 +2211,12 @@ async function startAnimation() {
        ===================================================== */
 
     setStatus(
-        "11.4 s – Der Nebel wird tief ..."
+        "11.4 s – Der Wald versinkt vollständig ..."
     );
 
 
     readingFog.style.opacity =
-        "0.55";
+        "0.54";
 
 
     mist.style.opacity =
@@ -2191,19 +2228,19 @@ async function startAnimation() {
 
 
     frontMist.style.opacity =
-        "0.78";
+        "0.72";
 
 
     denseFog.style.opacity =
-        "0.60";
+        "0.66";
 
 
     forest.style.opacity =
-        "0.09";
+        "0.025";
 
 
     darkness.style.opacity =
-        "0.62";
+        "0.60";
 
 
     await wait(1100);
@@ -2217,6 +2254,18 @@ async function startAnimation() {
     setStatus(
         "12.5 s – Etwas zeichnet sich ab ..."
     );
+
+
+    /*
+    Wald bleibt praktisch verschwunden.
+    */
+
+    forest.style.opacity =
+        "0.015";
+
+
+    denseFog.style.opacity =
+        "0.70";
 
 
     silhouette.style.opacity =
@@ -2280,11 +2329,11 @@ async function startAnimation() {
 
 
     fogFront.style.opacity =
-        "0.88";
+        "0.86";
 
 
     frontMist.style.opacity =
-        "0.90";
+        "0.82";
 
 
     mist.style.opacity =
@@ -2292,11 +2341,11 @@ async function startAnimation() {
 
 
     denseFog.style.opacity =
-        "0.72";
+        "0.76";
 
 
     forest.style.opacity =
-        "0.05";
+        "0.01";
 
 
     await wait(1500);
@@ -2377,7 +2426,8 @@ async function startAnimation() {
 
 
     /*
-    Keine weitere Blur-Animation.
+    Ab hier kein weiteres Blur-Animationsspiel
+    mit der Karte.
     */
 
     card.style.filter =
@@ -2393,19 +2443,19 @@ async function startAnimation() {
        ===================================================== */
 
     /*
-    Sehr dichter Nebel,
-    aber bewusst aus mehreren
-    unterschiedlichen Helligkeitsbereichen.
+    Jetzt kommt die gewünschte zusätzliche
+    Nebelverdichtung.
 
-    Kein einheitlicher weißer Schleier.
+    Wichtig:
+    Der Wald wird NICHT wieder sichtbar.
     */
 
     fogFront.style.opacity =
-        "0.92";
+        "0.96";
 
 
     frontMist.style.opacity =
-        "0.94";
+        "0.96";
 
 
     mist.style.opacity =
@@ -2413,15 +2463,15 @@ async function startAnimation() {
 
 
     denseFog.style.opacity =
-        "0.84";
+        "0.94";
 
 
     forest.style.opacity =
-        "0.02";
+        "0";
 
 
     darkness.style.opacity =
-        "0.70";
+        "0.72";
 
 
     await wait(3000);
