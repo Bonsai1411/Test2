@@ -1647,12 +1647,14 @@ const musicAudio =
 
 
 forestAudio.loop = true;
-windAudio.loop = true;
+windAudio.loop = false;
+windAudio2.loop = false;
 musicAudio.loop = true;
 
 
 forestAudio.volume = 0;
 windAudio.volume = 0;
+windAudio2.volume = 0;
 musicAudio.volume = 0;
 
 
@@ -1706,18 +1708,20 @@ function resetAudio() {
 
     forestAudio.pause();
     windAudio.pause();
+    windAudio2.pause();
     musicAudio.pause();
-
 
     forestAudio.currentTime = 0;
     windAudio.currentTime = 0;
+    windAudio2.currentTime = 0;
     musicAudio.currentTime = 0;
-
 
     forestAudio.volume = 0;
     windAudio.volume = 0;
+    windAudio2.volume = 0;
     musicAudio.volume = 0;
 }
+
 
 
 /* =========================================================
@@ -2243,6 +2247,31 @@ fadeVolume(
     0.42,
     4500
 );
+const windRestartId =
+    setTimeout(
+        () => {
+
+            windAudio2.currentTime = 0;
+
+            windAudio2.play();
+
+            fadeVolume(
+                windAudio,
+                0,
+                1200
+            );
+
+            fadeVolume(
+                windAudio2,
+                0.42,
+                1200
+            );
+
+        },
+        9200
+    );
+
+timerIds.push(windRestartId);
 
 
     prediction.classList.remove(
@@ -2360,7 +2389,21 @@ fadeVolume(
 
 
     await wait(1000);
+windAudio2.currentTime = 0;
 
+windAudio2.play();
+
+fadeVolume(
+    windAudio,
+    0.42,
+    800
+);
+
+fadeVolume(
+    windAudio2,
+    0.42,
+    800
+);
 
     /* =====================================================
        11.4 SEKUNDEN
@@ -2584,6 +2627,16 @@ whiteFog.style.opacity =
     setStatus(
         "19.5 s – Karte vollständig sichtbar."
     );
+    musicAudio.currentTime = 0;
+
+musicAudio.play();
+
+fadeVolume(
+    musicAudio,
+    0.38,
+    5000
+);
+
 fadeVolume(
     windAudio,
     0.26,
@@ -2657,6 +2710,18 @@ whiteFog.style.opacity =
 
 
     await wait(3000);
+    fadeVolume(
+    windAudio,
+    0,
+    3500
+);
+
+fadeVolume(
+    windAudio2,
+    0,
+    3500
+);
+
 fadeVolume(
     windAudio,
     0,
