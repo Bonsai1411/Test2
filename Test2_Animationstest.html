@@ -788,6 +788,43 @@ body {
     transition:
         opacity 4.5s ease;
 }
+/* =========================================================
+   HELLER SCHLUSSNEBEL
+   Überblendet den Wald beim Erscheinen der Silhouette
+   ========================================================= */
+
+#white-fog {
+
+    position: absolute;
+
+    inset: -8%;
+
+    z-index: 44;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 50%,
+            rgba(255, 255, 255, 0.72) 0%,
+            rgba(248, 248, 248, 0.58) 28%,
+            rgba(235, 235, 235, 0.38) 52%,
+            rgba(220, 220, 220, 0.18) 72%,
+            rgba(210, 210, 210, 0) 100%
+        );
+
+    filter:
+        blur(18px);
+
+    transform:
+        scale(1.03);
+
+    transition:
+        opacity 3.5s ease;
+}
 
 
 /*
