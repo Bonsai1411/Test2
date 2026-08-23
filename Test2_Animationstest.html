@@ -1628,6 +1628,96 @@ const startBtn =
 
 const resetBtn =
     document.getElementById("resetBtn");
+/* =========================================================
+   AUDIO
+   ========================================================= */
+
+const forestAudio =
+    new Audio("waldaudio.mp3");
+
+const windAudio =
+    new Audio("wind.mp3");
+
+const windAudio2 =
+    new Audio("wind.mp3");
+
+
+const musicAudio =
+    new Audio("musik.mp3");
+
+
+forestAudio.loop = true;
+windAudio.loop = true;
+musicAudio.loop = true;
+
+
+forestAudio.volume = 0;
+windAudio.volume = 0;
+musicAudio.volume = 0;
+
+
+/* =========================================================
+   AUDIO-ÜBERBLENDUNG
+   ========================================================= */
+
+function fadeVolume(audio, target, duration) {
+
+    const start =
+        audio.volume;
+
+    const difference =
+        target - start;
+
+    const startTime =
+        performance.now();
+
+
+    function step(now) {
+
+        const progress =
+            Math.min(
+                (now - startTime) / duration,
+                1
+            );
+
+
+        audio.volume =
+            start + difference * progress;
+
+
+        if (progress < 1) {
+
+            requestAnimationFrame(step);
+
+        }
+
+    }
+
+
+    requestAnimationFrame(step);
+}
+
+
+/* =========================================================
+   AUDIO RESET
+   ========================================================= */
+
+function resetAudio() {
+
+    forestAudio.pause();
+    windAudio.pause();
+    musicAudio.pause();
+
+
+    forestAudio.currentTime = 0;
+    windAudio.currentTime = 0;
+    musicAudio.currentTime = 0;
+
+
+    forestAudio.volume = 0;
+    windAudio.volume = 0;
+    musicAudio.volume = 0;
+}
 
 
 /* =========================================================
@@ -1920,6 +2010,7 @@ function showLeaves() {
 function resetAnimation() {
 
     clearTimers();
+resetAudio();
 
 
     forest.style.opacity =
@@ -2049,6 +2140,15 @@ async function startAnimation() {
     setStatus(
         "0.0 s – Wald erwacht ..."
     );
+forestAudio.currentTime = 0;
+
+forestAudio.play();
+
+fadeVolume(
+    forestAudio,
+    0.32,
+    2500
+);
 
 
     await wait(1000);
@@ -2128,6 +2228,21 @@ async function startAnimation() {
     setStatus(
         "8.5 s – Der Nebel wird dichter ..."
     );
+windAudio.currentTime = 0;
+
+windAudio.play();
+
+fadeVolume(
+    forestAudio,
+    0.08,
+    4500
+);
+
+fadeVolume(
+    windAudio,
+    0.42,
+    4500
+);
 
 
     prediction.classList.remove(
@@ -2469,6 +2584,21 @@ whiteFog.style.opacity =
     setStatus(
         "19.5 s – Karte vollständig sichtbar."
     );
+fadeVolume(
+    windAudio,
+    0.26,
+    2500
+);
+
+musicAudio.currentTime = 0;
+
+musicAudio.play();
+
+fadeVolume(
+    musicAudio,
+    0.38,
+    5000
+);
 
 
     card.style.opacity =
@@ -2527,6 +2657,11 @@ whiteFog.style.opacity =
 
 
     await wait(3000);
+fadeVolume(
+    windAudio,
+    0,
+    5000
+);
 
 
     setStatus(
