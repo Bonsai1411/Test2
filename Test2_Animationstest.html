@@ -10,12 +10,13 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Mystery Master – Animation Test 2.4</title>
+<title>Mystery Master – Animation Test 2.5</title>
 
 <link
     href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"
     rel="stylesheet"
 >
+
 <style>
 
 /* =========================================================
@@ -40,11 +41,11 @@ body {
     background: #000;
 
     font-family:
-    "Cinzel Decorative",
-    "Palatino Linotype",
-    "Book Antiqua",
-    Georgia,
-    serif;
+        "Cinzel Decorative",
+        "Palatino Linotype",
+        "Book Antiqua",
+        Georgia,
+        serif;
 }
 
 
@@ -162,9 +163,6 @@ body {
     font-weight:
         400;
 
-    /* Wörter dürfen umbrechen,
-       einzelne Wörter aber nicht */
-
     white-space:
         normal;
 
@@ -268,12 +266,6 @@ body {
     display: inline-block;
 
     white-space: nowrap;
-
-    /*
-    Verhindert insbesondere auf Android,
-    dass Cinzel Decorative innerhalb
-    eines Wortes umgebrochen wird.
-    */
 }
 
 
@@ -535,9 +527,7 @@ body {
 
 
 /* =========================================================
-   NEUER VORDERGRUND-NEBEL
-   Läuft über das gesamte Bild.
-   Besonders wichtig für die obere Bildhälfte.
+   VORDERGRUND-NEBEL
    ========================================================= */
 
 #front-mist {
@@ -556,29 +546,29 @@ body {
 
         radial-gradient(
             ellipse at 20% 15%,
-            rgba(225, 225, 225, 0.16) 0%,
-            rgba(200, 200, 200, 0.07) 28%,
+            rgba(225, 225, 225, 0.18) 0%,
+            rgba(200, 200, 200, 0.08) 28%,
             rgba(200, 200, 200, 0) 58%
         ),
 
         radial-gradient(
             ellipse at 78% 18%,
-            rgba(235, 235, 235, 0.14) 0%,
-            rgba(205, 205, 205, 0.06) 27%,
+            rgba(235, 235, 235, 0.16) 0%,
+            rgba(205, 205, 205, 0.07) 27%,
             rgba(205, 205, 205, 0) 60%
         ),
 
         radial-gradient(
             ellipse at 52% 45%,
-            rgba(235, 235, 235, 0.18) 0%,
-            rgba(210, 210, 210, 0.08) 30%,
+            rgba(235, 235, 235, 0.20) 0%,
+            rgba(210, 210, 210, 0.09) 30%,
             rgba(210, 210, 210, 0) 68%
         ),
 
         radial-gradient(
             ellipse at 35% 80%,
-            rgba(225, 225, 225, 0.16) 0%,
-            rgba(200, 200, 200, 0.06) 30%,
+            rgba(225, 225, 225, 0.18) 0%,
+            rgba(200, 200, 200, 0.07) 30%,
             rgba(200, 200, 200, 0) 65%
         );
 
@@ -593,10 +583,6 @@ body {
         transform 12s ease;
 }
 
-
-/* =========================================================
-   LANGSAMER NEBELDRIFT
-   ========================================================= */
 
 #front-mist::before,
 #front-mist::after {
@@ -645,21 +631,18 @@ body {
 @keyframes mistDriftA {
 
     0% {
-
         transform:
             translate3d(-5%, 2%, 0)
             scale(1);
     }
 
     50% {
-
         transform:
             translate3d(4%, -2%, 0)
             scale(1.08);
     }
 
     100% {
-
         transform:
             translate3d(-2%, 4%, 0)
             scale(1.04);
@@ -670,21 +653,18 @@ body {
 @keyframes mistDriftB {
 
     0% {
-
         transform:
             translate3d(5%, -2%, 0)
             scale(1.04);
     }
 
     50% {
-
         transform:
             translate3d(-4%, 3%, 0)
             scale(1.10);
     }
 
     100% {
-
         transform:
             translate3d(3%, -3%, 0)
             scale(1.02);
@@ -693,7 +673,7 @@ body {
 
 
 /* =========================================================
-   FINALER NEBEL
+   FINALER GIF-NEBEL
    ========================================================= */
 
 #fog-front {
@@ -748,9 +728,9 @@ body {
     background:
         radial-gradient(
             ellipse at 50% 58%,
-            rgba(235, 235, 235, 0.22) 0%,
-            rgba(190, 190, 190, 0.13) 20%,
-            rgba(100, 100, 100, 0.06) 43%,
+            rgba(245, 245, 245, 0.25) 0%,
+            rgba(200, 200, 200, 0.15) 20%,
+            rgba(110, 110, 110, 0.07) 43%,
             rgba(0, 0, 0, 0) 72%
         );
 
@@ -768,9 +748,6 @@ body {
 
 /* =========================================================
    DICHTER ABSCHLUSSNEBEL
-   Liegt vor Wald/GIF-Nebel, aber hinter Karte.
-   Dadurch bleibt die Karte im Nebel eingebettet,
-   während der Wald fast vollständig verschwindet.
    ========================================================= */
 
 #dense-fog {
@@ -789,24 +766,24 @@ body {
 
         radial-gradient(
             ellipse at 50% 48%,
-            rgba(220, 220, 220, 0.56) 0%,
-            rgba(190, 190, 190, 0.40) 24%,
-            rgba(150, 150, 150, 0.25) 48%,
-            rgba(90, 90, 90, 0.16) 72%,
+            rgba(230, 230, 230, 0.62) 0%,
+            rgba(200, 200, 200, 0.46) 24%,
+            rgba(160, 160, 160, 0.29) 48%,
+            rgba(95, 95, 95, 0.18) 72%,
             rgba(0, 0, 0, 0.04) 100%
         ),
 
         radial-gradient(
             ellipse at 18% 18%,
-            rgba(230, 230, 230, 0.42) 0%,
-            rgba(190, 190, 190, 0.18) 35%,
+            rgba(240, 240, 240, 0.46) 0%,
+            rgba(195, 195, 195, 0.20) 35%,
             rgba(0, 0, 0, 0) 70%
         ),
 
         radial-gradient(
             ellipse at 82% 20%,
-            rgba(230, 230, 230, 0.40) 0%,
-            rgba(190, 190, 190, 0.17) 35%,
+            rgba(240, 240, 240, 0.44) 0%,
+            rgba(195, 195, 195, 0.19) 35%,
             rgba(0, 0, 0, 0) 70%
         );
 
@@ -835,15 +812,15 @@ body {
 
         radial-gradient(
             ellipse at 35% 55%,
-            rgba(245, 245, 245, 0.22) 0%,
-            rgba(215, 215, 215, 0.10) 32%,
+            rgba(245, 245, 245, 0.24) 0%,
+            rgba(215, 215, 215, 0.11) 32%,
             transparent 68%
         ),
 
         radial-gradient(
             ellipse at 72% 42%,
-            rgba(235, 235, 235, 0.20) 0%,
-            rgba(205, 205, 205, 0.08) 34%,
+            rgba(235, 235, 235, 0.22) 0%,
+            rgba(205, 205, 205, 0.09) 34%,
             transparent 70%
         );
 
@@ -894,6 +871,318 @@ body {
         transform:
             translate3d(-5%, 3%, 0)
             scale(1.10);
+    }
+}
+
+
+/* =========================================================
+   BLÄTTER
+   Leichte HTML/CSS-Elemente.
+   Kein Blur, keine Bilder.
+   ========================================================= */
+
+#leaves {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 38;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    opacity: 0;
+}
+
+
+.leaf {
+
+    position: absolute;
+
+    width: 18px;
+    height: 10px;
+
+    border-radius:
+        100% 0 100% 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8f6f35 0%,
+            #6f4d22 55%,
+            #3d2915 100%
+        );
+
+    box-shadow:
+        0 0 3px rgba(0, 0, 0, 0.35);
+
+    opacity:
+        0;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+/*
+   Kleine Mittelrippe.
+   Ebenfalls ohne Blur.
+*/
+
+.leaf::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 15%;
+    top: 48%;
+
+    width: 72%;
+    height: 1px;
+
+    background:
+        rgba(35, 22, 10, 0.45);
+
+    transform:
+        rotate(-12deg);
+
+    transform-origin:
+        left center;
+}
+
+
+/* ---------------------------------------------------------
+   Blatt 1
+   --------------------------------------------------------- */
+
+.leaf.one {
+
+    left: -8%;
+    top: 17%;
+
+    width: 19px;
+    height: 11px;
+
+    animation:
+        leafOne 6.5s ease-in-out forwards;
+}
+
+
+/* ---------------------------------------------------------
+   Blatt 2
+   --------------------------------------------------------- */
+
+.leaf.two {
+
+    right: -8%;
+    top: 29%;
+
+    width: 15px;
+    height: 9px;
+
+    animation:
+        leafTwo 7.2s ease-in-out forwards;
+}
+
+
+/* ---------------------------------------------------------
+   Blatt 3
+   --------------------------------------------------------- */
+
+.leaf.three {
+
+    left: 28%;
+    top: -7%;
+
+    width: 21px;
+    height: 12px;
+
+    animation:
+        leafThree 6.8s ease-in-out forwards;
+}
+
+
+/* ---------------------------------------------------------
+   Blatt 4
+   --------------------------------------------------------- */
+
+.leaf.four {
+
+    left: -7%;
+    top: 66%;
+
+    width: 16px;
+    height: 9px;
+
+    animation:
+        leafFour 7.5s ease-in-out forwards;
+}
+
+
+/* =========================================================
+   BLATTFLUGBAHNEN
+   ========================================================= */
+
+@keyframes leafOne {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(-20deg)
+            scale(0.75);
+    }
+
+    8% {
+        opacity: 0.85;
+    }
+
+    35% {
+        transform:
+            translate3d(28vw, 13vh, 0)
+            rotate(125deg)
+            scale(1);
+    }
+
+    65% {
+        transform:
+            translate3d(58vw, 25vh, 0)
+            rotate(235deg)
+            scale(0.92);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(112vw, 44vh, 0)
+            rotate(390deg)
+            scale(0.72);
+    }
+}
+
+
+@keyframes leafTwo {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(30deg)
+            scale(0.75);
+    }
+
+    10% {
+        opacity: 0.78;
+    }
+
+    30% {
+        transform:
+            translate3d(-23vw, 7vh, 0)
+            rotate(-70deg)
+            scale(1.05);
+    }
+
+    62% {
+        transform:
+            translate3d(-55vw, 24vh, 0)
+            rotate(-190deg)
+            scale(0.94);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(-116vw, 50vh, 0)
+            rotate(-360deg)
+            scale(0.70);
+    }
+}
+
+
+@keyframes leafThree {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(70deg)
+            scale(0.70);
+    }
+
+    10% {
+        opacity: 0.82;
+    }
+
+    35% {
+        transform:
+            translate3d(13vw, 18vh, 0)
+            rotate(155deg)
+            scale(1.08);
+    }
+
+    68% {
+        transform:
+            translate3d(-5vw, 44vh, 0)
+            rotate(285deg)
+            scale(0.92);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(-28vw, 112vh, 0)
+            rotate(450deg)
+            scale(0.68);
+    }
+}
+
+
+@keyframes leafFour {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(-45deg)
+            scale(0.72);
+    }
+
+    10% {
+        opacity: 0.80;
+    }
+
+    35% {
+        transform:
+            translate3d(24vw, -8vh, 0)
+            rotate(80deg)
+            scale(1);
+    }
+
+    65% {
+        transform:
+            translate3d(55vw, -21vh, 0)
+            rotate(210deg)
+            scale(0.91);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(104vw, -55vh, 0)
+            rotate(360deg)
+            scale(0.65);
     }
 }
 
@@ -976,10 +1265,6 @@ body {
 
     left: 50%;
     top: 50%;
-
-    /*
-    Etwas größer als vorher.
-    */
 
     width:
         min(50vw, 310px);
@@ -1166,7 +1451,7 @@ button:active {
 
 
     <!-- =====================================================
-         NEUER VORDERGRUNDNEBEL
+         VORDERGRUNDNEBEL
          ===================================================== -->
 
     <div id="front-mist"></div>
@@ -1193,12 +1478,29 @@ button:active {
         alt=""
     >
 
+
     <!-- =====================================================
-         DICHTER NEBEL VOR DER KARTE
-         Dieser Layer liegt vor dem Wald und dem GIF-Nebel,
-         aber hinter Silhouette und Karte.
+         DICHTER NEBEL
          ===================================================== -->
+
     <div id="dense-fog"></div>
+
+
+    <!-- =====================================================
+         BLÄTTER
+         ===================================================== -->
+
+    <div id="leaves">
+
+        <div class="leaf one"></div>
+
+        <div class="leaf two"></div>
+
+        <div class="leaf three"></div>
+
+        <div class="leaf four"></div>
+
+    </div>
 
 
     <!-- =====================================================
@@ -1324,9 +1626,15 @@ const fogFront =
     document.getElementById(
         "fog-front"
     );
+
 const denseFog =
     document.getElementById(
         "dense-fog"
+    );
+
+const leaves =
+    document.getElementById(
+        "leaves"
     );
 
 const prediction =
@@ -1447,13 +1755,6 @@ function createLivingText(text) {
 
     prediction.innerHTML = "";
 
-    /*
-    Jedes Wort wird zu einem eigenen, untrennbaren Block.
-
-    Der Browser darf zwischen Wörtern umbrechen,
-    aber niemals mitten in einem Wort.
-    */
-
     const words =
         text.trim().split(/\s+/);
 
@@ -1467,10 +1768,6 @@ function createLivingText(text) {
 
             wordSpan.className =
                 "magic-word";
-
-            /*
-            Das Wort selbst bleibt zusammen.
-            */
 
             wordSpan.style.whiteSpace =
                 "nowrap";
@@ -1494,12 +1791,6 @@ function createLivingText(text) {
 
                 span.textContent =
                     char;
-
-                /*
-                Jeder Buchstabe bekommt
-                eine leicht andere Bewegung
-                und Transparenz.
-                */
 
                 const delay =
                     (
@@ -1581,11 +1872,6 @@ function createLivingText(text) {
                 wordSpan
             );
 
-            /*
-            Normales Leerzeichen zwischen
-            den untrennbaren Wortblöcken.
-            */
-
             if (
                 wordIndex <
                 words.length - 1
@@ -1611,6 +1897,66 @@ function cardPath(value) {
     return "karten/" +
         value +
         ".png";
+}
+
+
+/* =========================================================
+   BLÄTTER RESET
+   ========================================================= */
+
+function resetLeaves() {
+
+    leaves.style.opacity =
+        "0";
+
+    const leafElements =
+        leaves.querySelectorAll(
+            ".leaf"
+        );
+
+    leafElements.forEach(
+        leaf => {
+
+            leaf.style.animation =
+                "none";
+
+            leaf.offsetHeight;
+
+            leaf.style.animation =
+                "";
+
+        }
+    );
+}
+
+
+/* =========================================================
+   BLÄTTER STARTEN
+   ========================================================= */
+
+function startLeaves() {
+
+    leaves.style.opacity =
+        "1";
+
+    const leafElements =
+        leaves.querySelectorAll(
+            ".leaf"
+        );
+
+    leafElements.forEach(
+        leaf => {
+
+            leaf.style.animation =
+                "none";
+
+            leaf.offsetHeight;
+
+            leaf.style.animation =
+                "";
+
+        }
+    );
 }
 
 
@@ -1664,6 +2010,9 @@ function resetAnimation() {
 
     denseFog.style.transform =
         "scale(1.08)";
+
+
+    resetLeaves();
 
 
     prediction.classList.remove(
@@ -1792,15 +2141,20 @@ async function startAnimation() {
         "scale(1)";
 
 
-    await wait(1500);
+    /*
+    TEXT BLEIBT JETZT LÄNGER SICHTBAR.
+    */
+
+
+    await wait(2000);
 
 
     /* =====================================================
-       2.5 SEKUNDEN
+       3 SEKUNDEN
        ===================================================== */
 
     setStatus(
-        "2.5 s – Schrift beginnt zu leben ..."
+        "3.0 s – Schrift beginnt zu leben ..."
     );
 
 
@@ -1813,11 +2167,11 @@ async function startAnimation() {
 
 
     /* =====================================================
-       3 SEKUNDEN
+       3.5 SEKUNDEN
        ===================================================== */
 
     setStatus(
-        "3.0 s – Nebel zieht durch die Schrift ..."
+        "3.5 s – Nebel zieht durch die Schrift ..."
     );
 
 
@@ -1825,15 +2179,22 @@ async function startAnimation() {
         "1";
 
 
-    await wait(4000);
+    /*
+    Ursprünglich 4 Sekunden.
+    Jetzt 1 Sekunde länger.
+    */
+
+
+    await wait(5000);
 
 
     /* =====================================================
-       7 SEKUNDEN
+       8.5 SEKUNDEN
+       BEGINN DER VERDICHTUNG
        ===================================================== */
 
     setStatus(
-        "7.0 s – Der Nebel wird dichter ..."
+        "8.5 s – Der Nebel wird dichter ..."
     );
 
 
@@ -1851,11 +2212,11 @@ async function startAnimation() {
 
 
     readingFog.style.opacity =
-        "0.55";
+        "0.60";
 
 
     forest.style.opacity =
-        "0.42";
+        "0.38";
 
 
     forest.style.transform =
@@ -1867,7 +2228,7 @@ async function startAnimation() {
 
 
     mist.style.opacity =
-        "0.82";
+        "0.86";
 
 
     mist.style.transform =
@@ -1883,7 +2244,7 @@ async function startAnimation() {
 
 
     frontMist.style.opacity =
-        "0.55";
+        "0.58";
 
 
     frontMist.style.transform =
@@ -1891,21 +2252,30 @@ async function startAnimation() {
 
 
     denseFog.style.opacity =
-        "0.30";
+        "0.34";
+
 
     denseFog.style.transform =
         "scale(1.10)";
+
+
+    /*
+    BLÄTTER BEGINNEN JETZT.
+    */
+
+
+    startLeaves();
 
 
     await wait(1000);
 
 
     /* =====================================================
-       8 SEKUNDEN
+       9.5 SEKUNDEN
        ===================================================== */
 
     setStatus(
-        "8.0 s – Die Vorhersage verschwindet ..."
+        "9.5 s – Die Vorhersage verschwindet ..."
     );
 
 
@@ -1918,11 +2288,11 @@ async function startAnimation() {
 
 
     readingFog.style.opacity =
-        "0.75";
+        "0.78";
 
 
     forest.style.opacity =
-        "0.24";
+        "0.20";
 
 
     darkness.style.opacity =
@@ -1941,13 +2311,8 @@ async function startAnimation() {
         "scale(1.20)";
 
 
-    /*
-    Vordergrundnebel bleibt jetzt
-    auch oben deutlich sichtbar.
-    */
-
     frontMist.style.opacity =
-        "0.82";
+        "0.84";
 
 
     frontMist.style.transform =
@@ -1955,27 +2320,23 @@ async function startAnimation() {
 
 
     denseFog.style.opacity =
-        "0.58";
+        "0.62";
+
 
     denseFog.style.transform =
         "scale(1.12)";
 
 
-    /* =====================================================
-       8–11 SEKUNDEN
-       SPANNUNG
-       ===================================================== */
-
     await wait(3000);
 
 
     /* =====================================================
-       11 SEKUNDEN
+       12.5 SEKUNDEN
        SILHOUETTE
        ===================================================== */
 
     setStatus(
-        "11.0 s – Etwas zeichnet sich ab ..."
+        "12.5 s – Etwas zeichnet sich ab ..."
     );
 
 
@@ -1995,11 +2356,11 @@ async function startAnimation() {
 
 
     /* =====================================================
-       12.5 SEKUNDEN
+       14 SEKUNDEN
        ===================================================== */
 
     setStatus(
-        "12.5 s – Die Form wird deutlicher ..."
+        "14.0 s – Die Form wird deutlicher ..."
     );
 
 
@@ -2019,11 +2380,11 @@ async function startAnimation() {
 
 
     /* =====================================================
-       13.5 SEKUNDEN
+       15 SEKUNDEN
        ===================================================== */
 
     setStatus(
-        "13.5 s – Die Karte zeichnet sich ab ..."
+        "15.0 s – Die Karte zeichnet sich ab ..."
     );
 
 
@@ -2052,7 +2413,8 @@ async function startAnimation() {
 
 
     denseFog.style.opacity =
-        "0.76";
+        "0.78";
+
 
     denseFog.style.transform =
         "scale(1.15)";
@@ -2062,12 +2424,12 @@ async function startAnimation() {
 
 
     /* =====================================================
-       15 SEKUNDEN
+       16.5 SEKUNDEN
        SILHOUETTE → KARTE
        ===================================================== */
 
     setStatus(
-        "15.0 s – Die Vorhersage wird sichtbar ..."
+        "16.5 s – Die Vorhersage wird sichtbar ..."
     );
 
 
@@ -2099,11 +2461,11 @@ async function startAnimation() {
 
 
     /* =====================================================
-       16.5 SEKUNDEN
+       18 SEKUNDEN
        ===================================================== */
 
     setStatus(
-        "16.5 s – Die Karte erscheint ..."
+        "18.0 s – Die Karte erscheint ..."
     );
 
 
@@ -2123,12 +2485,12 @@ async function startAnimation() {
 
 
     /* =====================================================
-       18 SEKUNDEN
+       19.5 SEKUNDEN
        KARTE GROSS UND KLAR
        ===================================================== */
 
     setStatus(
-        "18.0 s – Karte vollständig sichtbar."
+        "19.5 s – Karte vollständig sichtbar."
     );
 
 
@@ -2136,55 +2498,49 @@ async function startAnimation() {
         "1";
 
 
+    /*
+    Kein dauerndes Blur-Animieren.
+    Die Karte bleibt am Ende praktisch scharf.
+    */
+
     card.style.filter =
         "blur(1.2px) brightness(0.94)";
 
-
-    /*
-    Endgröße bewusst größer
-    als in Version 2.2.
-    */
 
     card.style.transform =
         "translate(-50%, -50%) scale(1.10)";
 
 
-/*
-=========================================================
-ENDZUSTAND
+    /* =====================================================
+       ENDZUSTAND
+       ===================================================== */
 
-Der Nebel bleibt jetzt dicht.
-
-Die Karte liegt mit z-index 50
-bewusst VOR dem Nebel.
-
-Der Wald wird praktisch vollständig
-verschluckt und darf am Ende nicht
-wieder sichtbar werden.
-=========================================================
-*/
-
-fogFront.style.opacity =
-    "0.96";
-
-frontMist.style.opacity =
-    "0.98";
-
-mist.style.opacity =
-    "1";
+    fogFront.style.opacity =
+        "0.96";
 
 
-denseFog.style.opacity =
-    "0.88";
+    frontMist.style.opacity =
+        "0.99";
 
-denseFog.style.transform =
-    "scale(1.18)";
 
-forest.style.opacity =
-    "0.04";
+    mist.style.opacity =
+        "1";
 
-darkness.style.opacity =
-    "0.74";
+
+    denseFog.style.opacity =
+        "0.94";
+
+
+    denseFog.style.transform =
+        "scale(1.18)";
+
+
+    forest.style.opacity =
+        "0.03";
+
+
+    darkness.style.opacity =
+        "0.74";
 
 
     await wait(3000);
