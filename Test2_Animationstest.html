@@ -2244,7 +2244,7 @@ fadeVolume(
 
 fadeVolume(
     windAudio,
-    0.42,
+    0.14,
     4500
 );
 const windRestartId =
@@ -2263,7 +2263,7 @@ const windRestartId =
 
             fadeVolume(
                 windAudio2,
-                0.42,
+                0.14,
                 1200
             );
 
@@ -2395,13 +2395,13 @@ windAudio2.play();
 
 fadeVolume(
     windAudio,
-    0.42,
+    0.14,
     800
 );
 
 fadeVolume(
     windAudio2,
-    0.42,
+    0.14,
     800
 );
 
@@ -2639,7 +2639,7 @@ fadeVolume(
 
 fadeVolume(
     windAudio,
-    0.26,
+    0.09,
     2500
 );
 
@@ -2709,8 +2709,15 @@ whiteFog.style.opacity =
         "0.72";
 
 
-    await wait(3000);
-    fadeVolume(
+await wait(3000);
+
+fadeVolume(
+    musicAudio,
+    0,
+    10000
+);
+
+fadeVolume(
     windAudio,
     0,
     3500
@@ -2728,10 +2735,10 @@ fadeVolume(
     5000
 );
 
+setStatus(
+    "FERTIG – Vorhersagekarte steht."
+);
 
-    setStatus(
-        "FERTIG – Vorhersagekarte steht."
-    );
 }
 
 
