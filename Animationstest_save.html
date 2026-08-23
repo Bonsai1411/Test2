@@ -1,0 +1,2564 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>Mystery Master – Animation Test 2.5.2</title>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+/* =========================================================
+   GRUNDLAYOUT
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #000;
+
+    font-family:
+        "Cinzel Decorative",
+        "Palatino Linotype",
+        "Book Antiqua",
+        Georgia,
+        serif;
+}
+
+
+#stage {
+
+    position: fixed;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   WALD
+   ========================================================= */
+
+#forest {
+
+    position: absolute;
+
+    inset: -3%;
+
+    width: 106%;
+    height: 106%;
+
+    object-fit: cover;
+
+    opacity: 1;
+
+    transform: scale(1.02);
+
+    transition:
+        opacity 5s ease,
+        transform 10s ease;
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   DUNKELHEIT
+   ========================================================= */
+
+#darkness {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(0, 0, 0, 0.30);
+
+    opacity: 0;
+
+    transition:
+        opacity 5s ease;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   VORHERSAGE
+   ========================================================= */
+
+#prediction-wrap {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 8vw;
+
+    z-index: 20;
+
+    pointer-events: none;
+}
+
+
+#prediction {
+
+    max-width: 94%;
+
+    text-align: center;
+
+    color:
+        rgba(232, 211, 143, 0);
+
+    font-family:
+        "Cinzel Decorative",
+        "Palatino Linotype",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(24px, 5.2vw, 62px);
+
+    line-height:
+        1.35;
+
+    letter-spacing:
+        0.025em;
+
+    font-weight:
+        400;
+
+    white-space:
+        normal;
+
+    word-break:
+        normal;
+
+    overflow-wrap:
+        normal;
+
+    hyphens:
+        none;
+
+    text-shadow:
+        0 0 7px rgba(232, 211, 143, 0.30),
+        0 0 18px rgba(210, 185, 100, 0.22),
+        0 0 38px rgba(190, 160, 80, 0.10);
+
+    filter:
+        blur(12px);
+
+    transform:
+        scale(0.96);
+
+    opacity:
+        0;
+
+    transition:
+        opacity 2.5s ease,
+        filter 2.8s ease,
+        transform 3s ease;
+}
+
+
+/* =========================================================
+   LEBENDIGE GESAMTSCHRIFT
+   ========================================================= */
+
+#prediction.alive {
+
+    animation:
+        livingText 5.2s ease-in-out infinite alternate;
+}
+
+
+@keyframes livingText {
+
+    0% {
+
+        transform:
+            translate3d(-1px, 0px, 0)
+            scale(1.000);
+
+        text-shadow:
+            0 0 7px rgba(232, 211, 143, 0.25),
+            0 0 18px rgba(210, 185, 100, 0.16),
+            0 0 34px rgba(190, 160, 80, 0.08);
+    }
+
+    35% {
+
+        transform:
+            translate3d(1px, -1px, 0)
+            scale(1.008);
+
+        text-shadow:
+            0 0 10px rgba(232, 211, 143, 0.39),
+            0 0 25px rgba(210, 185, 100, 0.23),
+            0 0 45px rgba(190, 160, 80, 0.12);
+    }
+
+    70% {
+
+        transform:
+            translate3d(-1px, 1px, 0)
+            scale(1.004);
+
+        text-shadow:
+            0 0 8px rgba(232, 211, 143, 0.32),
+            0 0 22px rgba(210, 185, 100, 0.19);
+    }
+
+    100% {
+
+        transform:
+            translate3d(1px, 0px, 0)
+            scale(0.998);
+
+        text-shadow:
+            0 0 6px rgba(232, 211, 143, 0.23),
+            0 0 17px rgba(210, 185, 100, 0.12);
+    }
+}
+
+
+/* =========================================================
+   EINZELNE BUCHSTABEN
+   ========================================================= */
+
+.magic-word {
+
+    display: inline-block;
+
+    white-space: nowrap;
+}
+
+
+.magic-letter {
+
+    display: inline-block;
+
+    animation:
+        letterBreath var(--delay) ease-in-out infinite alternate;
+
+    opacity:
+        var(--opacity);
+
+    transform:
+        translateY(0)
+        scale(1);
+
+    text-shadow:
+        inherit;
+}
+
+
+@keyframes letterBreath {
+
+    0% {
+
+        opacity:
+            var(--opacity);
+
+        transform:
+            translate3d(
+                var(--x1),
+                1px,
+                0
+            )
+            scale(0.998);
+    }
+
+    30% {
+
+        opacity:
+            calc(var(--opacity) + 0.07);
+
+        transform:
+            translate3d(
+                var(--x2),
+                -1px,
+                0
+            )
+            scale(1.006);
+    }
+
+    65% {
+
+        opacity:
+            calc(var(--opacity) - 0.06);
+
+        transform:
+            translate3d(
+                var(--x3),
+                1px,
+                0
+            )
+            scale(0.997);
+    }
+
+    100% {
+
+        opacity:
+            var(--opacity);
+
+        transform:
+            translate3d(
+                var(--x4),
+                0px,
+                0
+            )
+            scale(1.004);
+    }
+}
+
+
+/* =========================================================
+   LESE-NEBEL
+   ========================================================= */
+
+#reading-fog {
+
+    position: absolute;
+
+    inset: -12%;
+
+    z-index: 25;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    /*
+    Weniger Blur auf dem gesamten Container.
+    Die einzelnen Wolken besitzen ihren eigenen Blur.
+    */
+
+    transition:
+        opacity 3.5s ease;
+}
+
+
+.fog-cloud {
+
+    position: absolute;
+
+    width: 58%;
+    height: 23%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(235, 235, 235, 0.17) 0%,
+            rgba(215, 215, 215, 0.09) 28%,
+            rgba(180, 180, 180, 0.035) 55%,
+            rgba(180, 180, 180, 0) 76%
+        );
+
+    filter:
+        blur(14px);
+
+    opacity:
+        0.75;
+
+    will-change:
+        transform;
+}
+
+
+.fog-cloud.one {
+
+    left: -20%;
+    top: 30%;
+
+    animation:
+        fogMoveOne 10s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveOne {
+
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(55vw, -3vh, 0)
+            scale(1.12);
+    }
+
+    100% {
+        transform:
+            translate3d(110vw, 2vh, 0)
+            scale(1.04);
+    }
+}
+
+
+.fog-cloud.two {
+
+    right: -25%;
+    top: 45%;
+
+    width: 68%;
+    height: 27%;
+
+    opacity:
+        0.60;
+
+    animation:
+        fogMoveTwo 13s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveTwo {
+
+    0% {
+        transform:
+            translate3d(0, 2vh, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(-48vw, -2vh, 0)
+            scale(1.15);
+    }
+
+    100% {
+        transform:
+            translate3d(-105vw, 3vh, 0)
+            scale(1.06);
+    }
+}
+
+
+.fog-cloud.three {
+
+    left: 15%;
+    top: 62%;
+
+    width: 70%;
+    height: 18%;
+
+    opacity:
+        0.40;
+
+    /*
+    Diese Wolke bewegt sich langsamer,
+    damit nicht zu viele große Layer
+    gleichzeitig stark animiert werden.
+    */
+
+    animation:
+        fogMoveThree 18s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveThree {
+
+    0% {
+        transform:
+            translate3d(-8vw, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(12vw, -3vh, 0)
+            scale(1.14);
+    }
+
+    100% {
+        transform:
+            translate3d(-6vw, 2vh, 0)
+            scale(1.04);
+    }
+}
+
+
+/* =========================================================
+   VORDERGRUND-NEBEL
+   ========================================================= */
+
+#front-mist {
+
+    position: absolute;
+
+    inset: -8%;
+
+    z-index: 32;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background:
+
+        radial-gradient(
+            ellipse at 20% 15%,
+            rgba(225, 225, 225, 0.18) 0%,
+            rgba(200, 200, 200, 0.08) 28%,
+            rgba(200, 200, 200, 0) 58%
+        ),
+
+        radial-gradient(
+            ellipse at 78% 18%,
+            rgba(235, 235, 235, 0.16) 0%,
+            rgba(205, 205, 205, 0.07) 27%,
+            rgba(205, 205, 205, 0) 60%
+        ),
+
+        radial-gradient(
+            ellipse at 52% 45%,
+            rgba(235, 235, 235, 0.20) 0%,
+            rgba(210, 210, 210, 0.09) 30%,
+            rgba(210, 210, 210, 0) 68%
+        ),
+
+        radial-gradient(
+            ellipse at 35% 80%,
+            rgba(225, 225, 225, 0.18) 0%,
+            rgba(200, 200, 200, 0.07) 30%,
+            rgba(200, 200, 200, 0) 65%
+        );
+
+    filter:
+        blur(22px);
+
+    transform:
+        scale(1.02);
+
+    transition:
+        opacity 5s ease;
+
+    /*
+    Nur ein Layer wird bewegt.
+    */
+
+    will-change:
+        opacity;
+}
+
+
+#front-mist::before,
+#front-mist::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -8%;
+
+    background:
+
+        radial-gradient(
+            ellipse at 40% 30%,
+            rgba(245, 245, 245, 0.10) 0%,
+            rgba(220, 220, 220, 0.03) 30%,
+            transparent 65%
+        ),
+
+        radial-gradient(
+            ellipse at 70% 70%,
+            rgba(230, 230, 230, 0.08) 0%,
+            rgba(210, 210, 210, 0.025) 32%,
+            transparent 65%
+        );
+}
+
+
+#front-mist::before {
+
+    animation:
+        mistDriftA 24s ease-in-out infinite alternate;
+}
+
+
+#front-mist::after {
+
+    animation:
+        mistDriftB 29s ease-in-out infinite alternate;
+}
+
+
+@keyframes mistDriftA {
+
+    0% {
+        transform:
+            translate3d(-3%, 1%, 0)
+            scale(1);
+    }
+
+    100% {
+        transform:
+            translate3d(3%, -2%, 0)
+            scale(1.05);
+    }
+}
+
+
+@keyframes mistDriftB {
+
+    0% {
+        transform:
+            translate3d(3%, -1%, 0)
+            scale(1.02);
+    }
+
+    100% {
+        transform:
+            translate3d(-3%, 2%, 0)
+            scale(1.06);
+    }
+}
+
+
+/* =========================================================
+   FINALER GIF-NEBEL
+   ========================================================= */
+
+#fog-front {
+
+    position: absolute;
+
+    inset: -3%;
+
+    width: 106%;
+    height: 106%;
+
+    object-fit: cover;
+
+    z-index: 34;
+
+    opacity: 0;
+
+    /*
+    Nur sehr leichter Blur.
+    */
+
+    filter:
+        blur(1px);
+
+    transform:
+        scale(1.04);
+
+    mix-blend-mode:
+        screen;
+
+    pointer-events:
+        none;
+
+    transition:
+        opacity 5s ease;
+}
+
+
+/* =========================================================
+   FINALER DUNST
+   ========================================================= */
+
+#mist {
+
+    position: absolute;
+
+    inset: -6%;
+
+    z-index: 27;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 58%,
+            rgba(245, 245, 245, 0.25) 0%,
+            rgba(200, 200, 200, 0.14) 20%,
+            rgba(110, 110, 110, 0.06) 43%,
+            rgba(0, 0, 0, 0) 72%
+        );
+
+    filter:
+        blur(22px);
+
+    transition:
+        opacity 4.5s ease;
+}
+
+
+/* =========================================================
+   DICHTER ABSCHLUSSNEBEL
+   ========================================================= */
+
+#dense-fog {
+
+    position: absolute;
+
+    inset: -7%;
+
+    z-index: 45;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    /*
+    Mehr Tiefe statt einfach nur mehr Weiß.
+    */
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 43%,
+            rgba(235, 235, 235, 0.50) 0%,
+            rgba(205, 205, 205, 0.34) 24%,
+            rgba(160, 160, 160, 0.18) 48%,
+            rgba(95, 95, 95, 0.09) 72%,
+            rgba(0, 0, 0, 0.015) 100%
+        ),
+
+        radial-gradient(
+            ellipse at 12% 22%,
+            rgba(240, 240, 240, 0.30) 0%,
+            rgba(190, 190, 190, 0.12) 36%,
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse at 88% 25%,
+            rgba(240, 240, 240, 0.28) 0%,
+            rgba(190, 190, 190, 0.11) 36%,
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse at 30% 82%,
+            rgba(225, 225, 225, 0.22) 0%,
+            rgba(180, 180, 180, 0.08) 36%,
+            transparent 70%
+        );
+
+    filter:
+        blur(14px);
+
+    transition:
+        opacity 4.5s ease;
+}
+/* =========================================================
+   HELLER SCHLUSSNEBEL
+   Überblendet den Wald beim Erscheinen der Silhouette
+   ========================================================= */
+
+#white-fog {
+
+    position: absolute;
+
+    inset: -8%;
+
+    z-index: 44;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 50%,
+            rgba(255, 255, 255, 0.72) 0%,
+            rgba(248, 248, 248, 0.58) 28%,
+            rgba(235, 235, 235, 0.38) 52%,
+            rgba(220, 220, 220, 0.18) 72%,
+            rgba(210, 210, 210, 0) 100%
+        );
+
+    filter:
+        blur(18px);
+
+    transform:
+        scale(1.03);
+
+    transition:
+        opacity 3.5s ease;
+}
+
+
+/*
+Die zusätzlichen Nebelstrukturen bleiben,
+bewegen sich aber wesentlich langsamer.
+*/
+
+#dense-fog::before,
+#dense-fog::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -7%;
+
+    background:
+
+        radial-gradient(
+            ellipse at 35% 55%,
+            rgba(245, 245, 245, 0.17) 0%,
+            rgba(215, 215, 215, 0.07) 34%,
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse at 72% 42%,
+            rgba(235, 235, 235, 0.15) 0%,
+            rgba(205, 205, 205, 0.06) 34%,
+            transparent 70%
+        );
+}
+
+
+#dense-fog::before {
+
+    animation:
+        denseFogDriftA 22s ease-in-out infinite alternate;
+}
+
+
+#dense-fog::after {
+
+    animation:
+        denseFogDriftB 27s ease-in-out infinite alternate;
+}
+
+
+@keyframes denseFogDriftA {
+
+    0% {
+        transform:
+            translate3d(-2%, 1%, 0);
+    }
+
+    100% {
+        transform:
+            translate3d(3%, -2%, 0);
+    }
+}
+
+
+@keyframes denseFogDriftB {
+
+    0% {
+        transform:
+            translate3d(2%, -1%, 0);
+    }
+
+    100% {
+        transform:
+            translate3d(-3%, 2%, 0);
+    }
+}
+
+
+/* =========================================================
+   BLÄTTER
+   ========================================================= */
+
+#leaves {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 38;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    opacity: 0;
+}
+
+
+.leaf {
+
+    position: absolute;
+
+    width: 18px;
+    height: 10px;
+
+    border-radius:
+        100% 0 100% 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8f6f35 0%,
+            #6f4d22 55%,
+            #3d2915 100%
+        );
+
+    box-shadow:
+        0 0 3px rgba(0, 0, 0, 0.35);
+
+    opacity: 0;
+
+    /*
+    Leichte Unschärfe.
+    Nicht stärker machen, sonst werden die Blätter
+    auf kleinen Displays zu matschig.
+    */
+
+    filter:
+        blur(1px);
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+/* =========================================================
+   BLATTDETAIL
+   ========================================================= */
+
+.leaf::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 15%;
+    top: 48%;
+
+    width: 72%;
+    height: 1px;
+
+    background:
+        rgba(35, 22, 10, 0.40);
+
+    transform:
+        rotate(-12deg);
+
+    transform-origin:
+        left center;
+}
+
+
+/* =========================================================
+   BLATT 1
+   ========================================================= */
+
+.leaf.one {
+
+    left: -8%;
+    top: 17%;
+
+    width: 19px;
+    height: 11px;
+}
+
+
+/* =========================================================
+   BLATT 2
+   ========================================================= */
+
+.leaf.two {
+
+    right: -8%;
+    top: 29%;
+
+    width: 15px;
+    height: 9px;
+}
+
+
+/* =========================================================
+   BLATT 3
+   ========================================================= */
+
+.leaf.three {
+
+    left: 28%;
+    top: -7%;
+
+    width: 21px;
+    height: 12px;
+}
+
+
+/* =========================================================
+   BLATT-ANIMATIONEN
+   Schneller als vorher.
+   ========================================================= */
+
+.leaf.one.run {
+
+    animation:
+        leafOne 4.4s ease-in-out forwards;
+}
+
+
+.leaf.two.run {
+
+    animation:
+        leafTwo 4.8s ease-in-out forwards;
+}
+
+
+.leaf.three.run {
+
+    animation:
+        leafThree 4.6s ease-in-out forwards;
+}
+
+
+@keyframes leafOne {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(-20deg)
+            scale(0.75);
+    }
+
+    8% {
+        opacity: 0.82;
+    }
+
+    32% {
+        transform:
+            translate3d(30vw, 13vh, 0)
+            rotate(145deg)
+            scale(1);
+    }
+
+    60% {
+        transform:
+            translate3d(64vw, 27vh, 0)
+            rotate(275deg)
+            scale(0.94);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(112vw, 46vh, 0)
+            rotate(430deg)
+            scale(0.68);
+    }
+}
+
+
+@keyframes leafTwo {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(30deg)
+            scale(0.75);
+    }
+
+    8% {
+        opacity: 0.78;
+    }
+
+    30% {
+        transform:
+            translate3d(-25vw, 8vh, 0)
+            rotate(-90deg)
+            scale(1.05);
+    }
+
+    60% {
+        transform:
+            translate3d(-60vw, 26vh, 0)
+            rotate(-220deg)
+            scale(0.92);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(-116vw, 52vh, 0)
+            rotate(-420deg)
+            scale(0.66);
+    }
+}
+
+
+@keyframes leafThree {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(70deg)
+            scale(0.70);
+    }
+
+    8% {
+        opacity: 0.82;
+    }
+
+    32% {
+        transform:
+            translate3d(15vw, 20vh, 0)
+            rotate(180deg)
+            scale(1.08);
+    }
+
+    62% {
+        transform:
+            translate3d(-8vw, 48vh, 0)
+            rotate(325deg)
+            scale(0.90);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(-30vw, 112vh, 0)
+            rotate(500deg)
+            scale(0.64);
+    }
+}
+
+
+/* =========================================================
+   SILHOUETTE
+   ========================================================= */
+
+#silhouette {
+
+    position: absolute;
+
+    z-index: 40;
+
+    left: 50%;
+    top: 50%;
+
+    width:
+        min(44vw, 270px);
+
+    aspect-ratio:
+        2 / 3;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.58);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(5, 5, 5, 0.90);
+
+    box-shadow:
+        0 0 35px rgba(255, 255, 255, 0.08),
+        0 0 100px rgba(255, 255, 255, 0.06);
+
+    opacity:
+        0;
+
+    filter:
+        blur(22px);
+
+    transition:
+        opacity 4s ease,
+        filter 4s ease,
+        transform 4.5s cubic-bezier(.2, .75, .2, 1);
+
+    pointer-events:
+        none;
+}
+
+
+#silhouette::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 5%;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius:
+        7px;
+}
+
+
+/* =========================================================
+   KARTE
+   ========================================================= */
+
+#card {
+
+    position: absolute;
+
+    z-index: 50;
+
+    left: 50%;
+    top: 50%;
+
+    width:
+        min(50vw, 310px);
+
+    aspect-ratio:
+        2 / 3;
+
+    object-fit:
+        contain;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.76);
+
+    opacity:
+        0;
+
+    /*
+    Blur nur für das Einblenden.
+    Danach wird er nicht mehr animiert.
+    */
+
+    filter:
+        blur(20px)
+        brightness(0.50);
+
+    transition:
+        opacity 4.5s ease,
+        filter 4.5s ease,
+        transform 5s cubic-bezier(.2, .75, .2, 1);
+
+    pointer-events:
+        none;
+}
+
+
+/* =========================================================
+   TESTSTEUERUNG
+   ========================================================= */
+
+#controls {
+
+    position: fixed;
+
+    z-index: 1000;
+
+    left: 10px;
+    right: 10px;
+
+    bottom: 10px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    justify-content: center;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(0, 0, 0, 0.72);
+
+    backdrop-filter:
+        blur(8px);
+}
+
+
+button,
+select {
+
+    appearance: none;
+
+    border:
+        1px solid #555;
+
+    border-radius:
+        7px;
+
+    background:
+        #111;
+
+    color:
+        #eee;
+
+    padding:
+        9px 10px;
+
+    font:
+        14px monospace;
+}
+
+
+button:active {
+
+    transform:
+        scale(0.97);
+}
+
+
+#status {
+
+    width: 100%;
+
+    color:
+        #aaa;
+
+    text-align:
+        center;
+
+    font:
+        12px monospace;
+
+    min-height:
+        16px;
+}
+
+
+@media (max-width: 600px) {
+
+    #controls {
+
+        bottom: 5px;
+
+        left: 5px;
+        right: 5px;
+    }
+
+
+    #prediction-wrap {
+
+        padding:
+            8vw;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE PERFORMANCE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    /*
+    Auf dem Handy etwas weniger Blur.
+    Die optische Wirkung bleibt erhalten,
+    aber die GPU bekommt weniger Arbeit.
+    */
+
+    .fog-cloud {
+        filter: blur(11px);
+    }
+
+    #front-mist {
+        filter: blur(17px);
+    }
+
+    #mist {
+        filter: blur(17px);
+    }
+
+    #dense-fog {
+        filter: blur(11px);
+    }
+
+    .leaf {
+        filter: blur(0.8px);
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div id="stage">
+
+    <img
+        id="forest"
+        src="wald.gif"
+        alt=""
+    >
+
+    <div id="darkness"></div>
+
+
+    <div id="reading-fog">
+
+        <div class="fog-cloud one"></div>
+
+        <div class="fog-cloud two"></div>
+
+        <div class="fog-cloud three"></div>
+
+    </div>
+
+
+    <div id="mist"></div>
+
+
+    <div id="front-mist"></div>
+
+
+    <div id="prediction-wrap">
+
+        <div id="prediction"></div>
+
+    </div>
+
+
+    <img
+        id="fog-front"
+        src="wald.gif"
+        alt=""
+    >
+
+
+    <div id="dense-fog"></div>
+
+
+    <div id="leaves">
+
+        <div class="leaf one"></div>
+
+        <div class="leaf two"></div>
+
+        <div class="leaf three"></div>
+
+    </div>
+
+<div id="white-fog"></div>
+
+    <div id="silhouette"></div>
+
+
+    <img
+        id="card"
+        src=""
+        alt="Vorhersagekarte"
+    >
+
+</div>
+
+
+<div id="controls">
+
+    <select id="caseSelect">
+
+        <option value="nameDate">
+            Name + Datum
+        </option>
+
+        <option value="dateOnly">
+            Nur Datum
+        </option>
+
+        <option value="nameOnly">
+            Nur Name
+        </option>
+
+        <option value="none">
+            Weder Name noch Datum
+        </option>
+
+    </select>
+
+
+    <select id="cardSelect">
+
+        <option value="pik_7">
+            Pik 7
+        </option>
+
+        <option value="herz_12">
+            Herz Dame
+        </option>
+
+        <option value="karo_1">
+            Karo Ass
+        </option>
+
+        <option value="kreuz_13">
+            Kreuz König
+        </option>
+
+    </select>
+
+
+    <button id="startBtn">
+        FINALE TESTEN
+    </button>
+
+
+    <button id="resetBtn">
+        RESET
+    </button>
+
+
+    <div id="status">
+        Animationstest bereit.
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTE
+   ========================================================= */
+
+const forest =
+    document.getElementById("forest");
+
+const darkness =
+    document.getElementById("darkness");
+
+const readingFog =
+    document.getElementById("reading-fog");
+
+const mist =
+    document.getElementById("mist");
+
+const frontMist =
+    document.getElementById("front-mist");
+
+const fogFront =
+    document.getElementById("fog-front");
+
+const denseFog =
+    document.getElementById("dense-fog");
+ const whiteFog =
+    document.getElementById("white-fog");
+
+const leaves =
+    document.getElementById("leaves");
+
+const leafOne =
+    document.querySelector(".leaf.one");
+
+const leafTwo =
+    document.querySelector(".leaf.two");
+
+const leafThree =
+    document.querySelector(".leaf.three");
+
+const prediction =
+    document.getElementById("prediction");
+
+const silhouette =
+    document.getElementById("silhouette");
+
+const card =
+    document.getElementById("card");
+
+const status =
+    document.getElementById("status");
+
+const caseSelect =
+    document.getElementById("caseSelect");
+
+const cardSelect =
+    document.getElementById("cardSelect");
+
+const startBtn =
+    document.getElementById("startBtn");
+
+const resetBtn =
+    document.getElementById("resetBtn");
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+let timerIds = [];
+
+
+function wait(ms) {
+
+    return new Promise(
+        resolve => {
+
+            const id =
+                setTimeout(
+                    resolve,
+                    ms
+                );
+
+            timerIds.push(id);
+
+        }
+    );
+}
+
+
+function clearTimers() {
+
+    timerIds.forEach(
+        clearTimeout
+    );
+
+    timerIds = [];
+}
+
+
+function setStatus(text) {
+
+    status.textContent =
+        text;
+}
+
+
+/* =========================================================
+   TESTTEXTE
+   ========================================================= */
+
+function predictionText(type) {
+
+    switch (type) {
+
+        case "nameDate":
+
+            return "Max, du wirst den 23. Juni als Datum nennen.";
+
+        case "dateOnly":
+
+            return "Du wirst den 23. Juni als Datum nennen.";
+
+        case "nameOnly":
+
+            return "Max, dies ist deine persönliche Vorhersage.";
+
+        default:
+
+            return "Dies ist deine persönliche Vorhersage.";
+    }
+}
+
+
+/* =========================================================
+   LEBENDIGE BUCHSTABEN
+   ========================================================= */
+
+function createLivingText(text) {
+
+    prediction.innerHTML = "";
+
+    const words =
+        text.trim().split(/\s+/);
+
+    words.forEach(
+        (word, wordIndex) => {
+
+            const wordSpan =
+                document.createElement("span");
+
+            wordSpan.className =
+                "magic-word";
+
+            wordSpan.style.whiteSpace =
+                "nowrap";
+
+            for (
+                let i = 0;
+                i < word.length;
+                i++
+            ) {
+
+                const span =
+                    document.createElement("span");
+
+                span.className =
+                    "magic-letter";
+
+                span.textContent =
+                    word[i];
+
+                const delay =
+                    (
+                        3.0 +
+                        Math.random() * 3.0
+                    ).toFixed(2) + "s";
+
+                const opacity =
+                    (
+                        0.78 +
+                        Math.random() * 0.22
+                    ).toFixed(2);
+
+                const x1 =
+                    (
+                        -1.5 +
+                        Math.random() * 3
+                    ).toFixed(1) + "px";
+
+                const x2 =
+                    (
+                        -2.5 +
+                        Math.random() * 5
+                    ).toFixed(1) + "px";
+
+                const x3 =
+                    (
+                        -2.5 +
+                        Math.random() * 5
+                    ).toFixed(1) + "px";
+
+                const x4 =
+                    (
+                        -1.5 +
+                        Math.random() * 3
+                    ).toFixed(1) + "px";
+
+                span.style.setProperty(
+                    "--delay",
+                    delay
+                );
+
+                span.style.setProperty(
+                    "--opacity",
+                    opacity
+                );
+
+                span.style.setProperty(
+                    "--x1",
+                    x1
+                );
+
+                span.style.setProperty(
+                    "--x2",
+                    x2
+                );
+
+                span.style.setProperty(
+                    "--x3",
+                    x3
+                );
+
+                span.style.setProperty(
+                    "--x4",
+                    x4
+                );
+
+                wordSpan.appendChild(
+                    span
+                );
+            }
+
+            prediction.appendChild(
+                wordSpan
+            );
+
+            if (
+                wordIndex <
+                words.length - 1
+            ) {
+
+                prediction.appendChild(
+                    document.createTextNode(" ")
+                );
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   KARTENPFAD
+   ========================================================= */
+
+function cardPath(value) {
+
+    return "karten/" +
+        value +
+        ".png";
+}
+
+
+/* =========================================================
+   BLÄTTER
+   ========================================================= */
+
+function resetLeaves() {
+
+    leaves.style.opacity =
+        "0";
+
+    leafOne.classList.remove("run");
+    leafTwo.classList.remove("run");
+    leafThree.classList.remove("run");
+
+    leafOne.style.opacity =
+        "0";
+
+    leafTwo.style.opacity =
+        "0";
+
+    leafThree.style.opacity =
+        "0";
+}
+
+
+function runLeaf(leaf) {
+
+    leaf.classList.remove("run");
+
+    void leaf.offsetWidth;
+
+    leaf.classList.add("run");
+}
+
+
+function showLeaves() {
+
+    leaves.style.opacity =
+        "1";
+
+
+    /*
+    Weiterhin einzeln.
+
+    Blatt 1:
+    sofort
+
+    Blatt 2:
+    +1.25 Sekunden
+
+    Blatt 3:
+    +2.45 Sekunden
+    */
+
+    runLeaf(leafOne);
+
+
+    const id1 =
+        setTimeout(
+            () => runLeaf(leafTwo),
+            1250
+        );
+
+    timerIds.push(id1);
+
+
+    const id2 =
+        setTimeout(
+            () => runLeaf(leafThree),
+            2450
+        );
+
+    timerIds.push(id2);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetAnimation() {
+
+    clearTimers();
+
+
+    forest.style.opacity =
+        "1";
+
+    forest.style.transform =
+        "scale(1.02)";
+
+
+    darkness.style.opacity =
+        "0";
+
+
+    readingFog.style.opacity =
+        "0";
+
+
+    mist.style.opacity =
+        "0";
+
+
+    frontMist.style.opacity =
+        "0";
+
+
+    fogFront.style.opacity =
+        "0";
+
+
+    denseFog.style.opacity =
+        "0";
+whiteFog.style.opacity =
+    "0";
+
+
+    resetLeaves();
+
+
+    prediction.classList.remove(
+        "alive"
+    );
+
+
+    prediction.innerHTML =
+        "";
+
+
+    prediction.style.opacity =
+        "0";
+
+
+    prediction.style.color =
+        "rgba(232, 211, 143, 0)";
+
+
+    prediction.style.filter =
+        "blur(12px)";
+
+
+    prediction.style.transform =
+        "scale(0.96)";
+
+
+    silhouette.style.opacity =
+        "0";
+
+
+    silhouette.style.filter =
+        "blur(22px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.58)";
+
+
+    card.style.opacity =
+        "0";
+
+
+    card.style.filter =
+        "blur(20px) brightness(0.50)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(0.76)";
+
+
+    card.src =
+        "";
+
+
+    setStatus(
+        "Animationstest bereit."
+    );
+}
+
+
+/* =========================================================
+   HAUPTANIMATION
+   ========================================================= */
+
+async function startAnimation() {
+
+    clearTimers();
+
+    resetAnimation();
+
+
+    const type =
+        caseSelect.value;
+
+
+    const selectedCard =
+        cardSelect.value;
+
+
+    card.src =
+        cardPath(
+            selectedCard
+        );
+
+
+    /* =====================================================
+       0 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "0.0 s – Wald erwacht ..."
+    );
+
+
+    await wait(1000);
+
+
+    /* =====================================================
+       1 SEKUNDE
+       ===================================================== */
+
+    setStatus(
+        "1.0 s – Vorhersage erscheint ..."
+    );
+
+
+    createLivingText(
+        predictionText(type)
+    );
+
+
+    prediction.style.color =
+        "rgba(232, 211, 143, 1)";
+
+
+    prediction.style.opacity =
+        "1";
+
+
+    prediction.style.filter =
+        "blur(0px)";
+
+
+    prediction.style.transform =
+        "scale(1)";
+
+
+    await wait(2000);
+
+
+    /* =====================================================
+       3 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "3.0 s – Schrift beginnt zu leben ..."
+    );
+
+
+    prediction.classList.add(
+        "alive"
+    );
+
+
+    await wait(500);
+
+
+    /* =====================================================
+       3.5 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "3.5 s – Nebel zieht durch die Schrift ..."
+    );
+
+
+    readingFog.style.opacity =
+        "1";
+
+
+    await wait(5000);
+
+
+    /* =====================================================
+       8.5 SEKUNDEN
+       BEGINN NEBELVERDICHTUNG
+       ===================================================== */
+
+    setStatus(
+        "8.5 s – Der Nebel wird dichter ..."
+    );
+
+
+    prediction.classList.remove(
+        "alive"
+    );
+
+
+    prediction.style.opacity =
+        "0.25";
+
+
+    prediction.style.filter =
+        "blur(10px)";
+
+
+    readingFog.style.opacity =
+        "0.62";
+
+
+    /*
+    Wald schon deutlich zurücknehmen.
+    */
+
+    forest.style.opacity =
+        "0.34";
+
+
+    darkness.style.opacity =
+        "0.44";
+
+
+    mist.style.opacity =
+        "0.50";
+
+
+    fogFront.style.opacity =
+        "0.34";
+
+
+    showLeaves();
+
+
+    await wait(900);
+
+
+    /* =====================================================
+       9.4 SEKUNDEN
+       PHASE 2
+       ===================================================== */
+
+    setStatus(
+        "9.4 s – Der Nebel breitet sich aus ..."
+    );
+
+
+    mist.style.opacity =
+        "0.76";
+
+
+    fogFront.style.opacity =
+        "0.54";
+
+
+    frontMist.style.opacity =
+        "0.40";
+
+
+    denseFog.style.opacity =
+        "0.26";
+
+
+    forest.style.opacity =
+        "0.22";
+
+
+    await wait(1000);
+
+
+    /* =====================================================
+       10.4 SEKUNDEN
+       PHASE 3
+       ===================================================== */
+
+    setStatus(
+        "10.4 s – Der Wald verschwindet im Nebel ..."
+    );
+
+
+    readingFog.style.opacity =
+        "0.68";
+
+
+    mist.style.opacity =
+        "0.92";
+
+
+    fogFront.style.opacity =
+        "0.70";
+
+
+    frontMist.style.opacity =
+        "0.58";
+
+
+    denseFog.style.opacity =
+        "0.48";
+
+
+    forest.style.opacity =
+        "0.08";
+
+
+    darkness.style.opacity =
+        "0.55";
+
+
+    await wait(1000);
+
+
+    /* =====================================================
+       11.4 SEKUNDEN
+       PHASE 4
+       ===================================================== */
+
+    setStatus(
+        "11.4 s – Der Wald versinkt vollständig ..."
+    );
+
+
+    readingFog.style.opacity =
+        "0.54";
+
+
+    mist.style.opacity =
+        "1";
+
+
+    fogFront.style.opacity =
+        "0.80";
+
+
+    frontMist.style.opacity =
+        "0.72";
+
+
+    denseFog.style.opacity =
+        "0.66";
+
+
+    forest.style.opacity =
+        "0.025";
+
+
+    darkness.style.opacity =
+        "0.60";
+
+
+    await wait(1100);
+
+
+    /* =====================================================
+       12.5 SEKUNDEN
+       SILHOUETTE
+       ===================================================== */
+
+    setStatus(
+        "12.5 s – Etwas zeichnet sich ab ..."
+    );
+
+whiteFog.style.opacity =
+    "0.34";
+
+    /*
+    Wald bleibt praktisch verschwunden.
+    */
+
+    forest.style.opacity =
+        "0.015";
+
+
+    denseFog.style.opacity =
+        "0.70";
+
+
+    silhouette.style.opacity =
+        "0.25";
+
+
+    silhouette.style.filter =
+        "blur(18px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.66)";
+
+
+    await wait(1500);
+
+
+    /* =====================================================
+       14 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "14.0 s – Die Form wird deutlicher ..."
+    );
+
+whiteFog.style.opacity =
+    "0.52";
+
+    silhouette.style.opacity =
+        "0.58";
+
+
+    silhouette.style.filter =
+        "blur(9px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.82)";
+
+
+    await wait(1000);
+
+
+    /* =====================================================
+       15 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "15.0 s – Die Karte zeichnet sich ab ..."
+    );
+whiteFog.style.opacity =
+    "0.68";
+
+
+    silhouette.style.opacity =
+        "0.82";
+
+
+    silhouette.style.filter =
+        "blur(5px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.94)";
+
+
+    fogFront.style.opacity =
+        "0.86";
+
+
+    frontMist.style.opacity =
+        "0.82";
+
+
+    mist.style.opacity =
+        "1";
+
+
+    denseFog.style.opacity =
+        "0.76";
+
+
+    forest.style.opacity =
+        "0.01";
+
+
+    await wait(1500);
+
+
+    /* =====================================================
+       16.5 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "16.5 s – Die Vorhersage wird sichtbar ..."
+    );
+
+whiteFog.style.opacity =
+    "0.76";
+
+    silhouette.style.opacity =
+        "0.25";
+
+
+    silhouette.style.filter =
+        "blur(10px)";
+
+
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(1.0)";
+
+
+    card.style.opacity =
+        "0.25";
+
+
+    card.style.filter =
+        "blur(15px) brightness(0.55)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(0.88)";
+
+
+    await wait(1500);
+
+
+    /* =====================================================
+       18 SEKUNDEN
+       ===================================================== */
+
+    setStatus(
+        "18.0 s – Die Karte erscheint ..."
+    );
+
+
+    card.style.opacity =
+        "0.72";
+
+
+    card.style.filter =
+        "blur(6px) brightness(0.82)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(1.02)";
+
+
+    await wait(1500);
+
+
+    /* =====================================================
+       19.5 SEKUNDEN
+       KARTE KLAR
+       ===================================================== */
+
+    setStatus(
+        "19.5 s – Karte vollständig sichtbar."
+    );
+
+
+    card.style.opacity =
+        "1";
+
+
+    /*
+    Ab hier kein weiteres Blur-Animationsspiel
+    mit der Karte.
+    */
+
+    card.style.filter =
+        "blur(1.2px) brightness(0.94)";
+
+
+    card.style.transform =
+        "translate(-50%, -50%) scale(1.10)";
+
+
+    /* =====================================================
+       ENDZUSTAND
+       ===================================================== */
+
+    /*
+    Jetzt kommt die gewünschte zusätzliche
+    Nebelverdichtung.
+
+    Wichtig:
+    Der Wald wird NICHT wieder sichtbar.
+    */
+
+    fogFront.style.opacity =
+        "0.96";
+
+
+    frontMist.style.opacity =
+        "0.96";
+
+
+    mist.style.opacity =
+        "1";
+
+
+    denseFog.style.opacity =
+        "0.94";
+whiteFog.style.opacity =
+    "0.82";
+
+
+    forest.style.opacity =
+        "0";
+
+
+    darkness.style.opacity =
+        "0.72";
+
+
+    await wait(3000);
+
+
+    setStatus(
+        "FERTIG – Vorhersagekarte steht."
+    );
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+startBtn.addEventListener(
+    "click",
+    startAnimation
+);
+
+
+resetBtn.addEventListener(
+    "click",
+    resetAnimation
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+resetAnimation();
+
+</script>
+
+</body>
+
+</html>
