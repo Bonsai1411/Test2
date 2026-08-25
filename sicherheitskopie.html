@@ -7,24 +7,13 @@
 
 <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    content="width=device-width, initial-scale=1.0"
 >
 
-<title>Mystery Master – Animation Test 2.4</title>
+<title>Mystery Master - Labor 3.0</title>
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"
-    rel="stylesheet"
->
+
 <style>
-
-/* =========================================================
-   GRUNDLAYOUT
-   ========================================================= */
-
-* {
-    box-sizing: border-box;
-}
 
 html,
 body {
@@ -35,1083 +24,66 @@ body {
     width: 100%;
     height: 100%;
 
-    overflow: hidden;
-
     background: #000;
 
-    font-family:
-    "Cinzel Decorative",
-    "Palatino Linotype",
-    "Book Antiqua",
-    Georgia,
-    serif;
+    overflow: hidden;
+
+    font-family: monospace;
 }
 
 
-#stage {
+/* =========================================
+   NOT-AUS-BEREICH
+   ========================================= */
+
+#emergency-exit {
 
     position: fixed;
 
-    inset: 0;
+    top: 0;
+    left: 0;
 
-    overflow: hidden;
+    width: 25%;
+    height: 25%;
 
-    background: #000;
+    z-index: 99999;
 }
 
 
-/* =========================================================
-   WALD
-   ========================================================= */
+/* =========================================
+   DEBUG-KONSOLE
+   ========================================= */
 
-#forest {
+#debug-console {
 
-    position: absolute;
-
-    inset: -3%;
-
-    width: 106%;
-    height: 106%;
-
-    object-fit: cover;
-
-    opacity: 1;
-
-    transform: scale(1.02);
-
-    transition:
-        opacity 5s ease,
-        transform 10s ease;
-
-    z-index: 1;
-}
-
-
-/* =========================================================
-   DUNKELHEIT
-   ========================================================= */
-
-#darkness {
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        rgba(0, 0, 0, 0.30);
-
-    opacity: 0;
-
-    transition:
-        opacity 5s ease;
-
-    z-index: 10;
-
-    pointer-events: none;
-}
-
-
-/* =========================================================
-   VORHERSAGE
-   ========================================================= */
-
-#prediction-wrap {
-
-    position: absolute;
-
-    inset: 0;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 8vw;
-
-    z-index: 20;
-
-    pointer-events: none;
-}
-
-
-#prediction {
-
-    max-width: 94%;
-
-    text-align: center;
-
-    color:
-        rgba(232, 211, 143, 0);
-
-    font-family:
-        "Cinzel Decorative",
-        "Palatino Linotype",
-        Georgia,
-        serif;
-
-    font-size:
-        clamp(24px, 5.2vw, 62px);
-
-    line-height:
-        1.35;
-
-    letter-spacing:
-        0.025em;
-
-    font-weight:
-        400;
-
-    /* Wörter dürfen umbrechen,
-       einzelne Wörter aber nicht */
-
-    white-space:
-        normal;
-
-    word-break:
-        normal;
-
-    overflow-wrap:
-        normal;
-
-    hyphens:
-        none;
-
-    text-shadow:
-        0 0 7px rgba(232, 211, 143, 0.30),
-        0 0 18px rgba(210, 185, 100, 0.22),
-        0 0 38px rgba(190, 160, 80, 0.10);
-
-    filter:
-        blur(12px);
-
-    transform:
-        scale(0.96);
-
-    opacity:
-        0;
-
-    transition:
-        opacity 2.5s ease,
-        filter 2.8s ease,
-        transform 3s ease;
-}
-
-
-/* =========================================================
-   LEBENDIGE GESAMTSCHRIFT
-   ========================================================= */
-
-#prediction.alive {
-
-    animation:
-        livingText 5.2s ease-in-out infinite alternate;
-}
-
-
-@keyframes livingText {
-
-    0% {
-
-        transform:
-            translate3d(-1px, 0px, 0)
-            scale(1.000);
-
-        text-shadow:
-            0 0 7px rgba(232, 211, 143, 0.25),
-            0 0 18px rgba(210, 185, 100, 0.16),
-            0 0 34px rgba(190, 160, 80, 0.08);
-    }
-
-    35% {
-
-        transform:
-            translate3d(1px, -1px, 0)
-            scale(1.008);
-
-        text-shadow:
-            0 0 10px rgba(232, 211, 143, 0.39),
-            0 0 25px rgba(210, 185, 100, 0.23),
-            0 0 45px rgba(190, 160, 80, 0.12);
-    }
-
-    70% {
-
-        transform:
-            translate3d(-1px, 1px, 0)
-            scale(1.004);
-
-        text-shadow:
-            0 0 8px rgba(232, 211, 143, 0.32),
-            0 0 22px rgba(210, 185, 100, 0.19);
-    }
-
-    100% {
-
-        transform:
-            translate3d(1px, 0px, 0)
-            scale(0.998);
-
-        text-shadow:
-            0 0 6px rgba(232, 211, 143, 0.23),
-            0 0 17px rgba(210, 185, 100, 0.12);
-    }
-}
-
-
-/* =========================================================
-   EINZELNE BUCHSTABEN
-   ========================================================= */
-
-.magic-word {
-
-    display: inline-block;
-
-    white-space: nowrap;
-
-    /*
-    Verhindert insbesondere auf Android,
-    dass Cinzel Decorative innerhalb
-    eines Wortes umgebrochen wird.
-    */
-}
-
-
-.magic-letter {
-
-    display: inline-block;
-
-    animation:
-        letterBreath var(--delay) ease-in-out infinite alternate;
-
-    opacity:
-        var(--opacity);
-
-    transform:
-        translateY(0)
-        scale(1);
-
-    text-shadow:
-        inherit;
-}
-
-
-@keyframes letterBreath {
-
-    0% {
-
-        opacity:
-            var(--opacity);
-
-        transform:
-            translate3d(
-                var(--x1),
-                1px,
-                0
-            )
-            scale(0.998);
-    }
-
-    30% {
-
-        opacity:
-            calc(var(--opacity) + 0.07);
-
-        transform:
-            translate3d(
-                var(--x2),
-                -1px,
-                0
-            )
-            scale(1.006);
-    }
-
-    65% {
-
-        opacity:
-            calc(var(--opacity) - 0.06);
-
-        transform:
-            translate3d(
-                var(--x3),
-                1px,
-                0
-            )
-            scale(0.997);
-    }
-
-    100% {
-
-        opacity:
-            var(--opacity);
-
-        transform:
-            translate3d(
-                var(--x4),
-                0px,
-                0
-            )
-            scale(1.004);
-    }
-}
-
-
-/* =========================================================
-   LESE-NEBEL
-   ========================================================= */
-
-#reading-fog {
-
-    position: absolute;
-
-    inset: -20%;
-
-    z-index: 25;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    overflow: hidden;
-
-    filter:
-        blur(18px);
-
-    transition:
-        opacity 3.5s ease;
-}
-
-
-.fog-cloud {
-
-    position: absolute;
-
-    width: 58%;
-    height: 23%;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(235, 235, 235, 0.17) 0%,
-            rgba(215, 215, 215, 0.09) 28%,
-            rgba(180, 180, 180, 0.035) 55%,
-            rgba(180, 180, 180, 0) 76%
-        );
-
-    filter:
-        blur(16px);
-
-    opacity:
-        0.75;
-}
-
-
-.fog-cloud.one {
-
-    left: -20%;
-    top: 30%;
-
-    animation:
-        fogMoveOne 11s ease-in-out infinite;
-}
-
-
-@keyframes fogMoveOne {
-
-    0% {
-
-        transform:
-            translateX(0)
-            translateY(0)
-            scale(1);
-    }
-
-    50% {
-
-        transform:
-            translateX(55vw)
-            translateY(-3vh)
-            scale(1.15);
-    }
-
-    100% {
-
-        transform:
-            translateX(110vw)
-            translateY(2vh)
-            scale(1.05);
-    }
-}
-
-
-.fog-cloud.two {
-
-    right: -25%;
-    top: 45%;
-
-    width: 68%;
-    height: 27%;
-
-    opacity:
-        0.60;
-
-    animation:
-        fogMoveTwo 14s ease-in-out infinite;
-}
-
-
-@keyframes fogMoveTwo {
-
-    0% {
-
-        transform:
-            translateX(0)
-            translateY(2vh)
-            scale(1);
-    }
-
-    50% {
-
-        transform:
-            translateX(-48vw)
-            translateY(-2vh)
-            scale(1.18);
-    }
-
-    100% {
-
-        transform:
-            translateX(-105vw)
-            translateY(3vh)
-            scale(1.08);
-    }
-}
-
-
-.fog-cloud.three {
-
-    left: 15%;
-    top: 62%;
-
-    width: 70%;
-    height: 18%;
-
-    opacity:
-        0.40;
-
-    animation:
-        fogMoveThree 16s ease-in-out infinite;
-}
-
-
-@keyframes fogMoveThree {
-
-    0% {
-
-        transform:
-            translateX(-10vw)
-            translateY(0)
-            scale(1);
-    }
-
-    50% {
-
-        transform:
-            translateX(15vw)
-            translateY(-4vh)
-            scale(1.20);
-    }
-
-    100% {
-
-        transform:
-            translateX(-8vw)
-            translateY(2vh)
-            scale(1.05);
-    }
-}
-
-
-/* =========================================================
-   NEUER VORDERGRUND-NEBEL
-   Läuft über das gesamte Bild.
-   Besonders wichtig für die obere Bildhälfte.
-   ========================================================= */
-
-#front-mist {
-
-    position: absolute;
-
-    inset: -12%;
-
-    z-index: 32;
-
-    pointer-events: none;
-
-    opacity: 0;
-
-    background:
-
-        radial-gradient(
-            ellipse at 20% 15%,
-            rgba(225, 225, 225, 0.16) 0%,
-            rgba(200, 200, 200, 0.07) 28%,
-            rgba(200, 200, 200, 0) 58%
-        ),
-
-        radial-gradient(
-            ellipse at 78% 18%,
-            rgba(235, 235, 235, 0.14) 0%,
-            rgba(205, 205, 205, 0.06) 27%,
-            rgba(205, 205, 205, 0) 60%
-        ),
-
-        radial-gradient(
-            ellipse at 52% 45%,
-            rgba(235, 235, 235, 0.18) 0%,
-            rgba(210, 210, 210, 0.08) 30%,
-            rgba(210, 210, 210, 0) 68%
-        ),
-
-        radial-gradient(
-            ellipse at 35% 80%,
-            rgba(225, 225, 225, 0.16) 0%,
-            rgba(200, 200, 200, 0.06) 30%,
-            rgba(200, 200, 200, 0) 65%
-        );
-
-    filter:
-        blur(24px);
-
-    transform:
-        scale(1.05);
-
-    transition:
-        opacity 5s ease,
-        transform 12s ease;
-}
-
-
-/* =========================================================
-   LANGSAMER NEBELDRIFT
-   ========================================================= */
-
-#front-mist::before,
-#front-mist::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: -15%;
-
-    background:
-
-        radial-gradient(
-            ellipse at 40% 30%,
-            rgba(245, 245, 245, 0.11) 0%,
-            rgba(220, 220, 220, 0.035) 30%,
-            transparent 65%
-        ),
-
-        radial-gradient(
-            ellipse at 70% 70%,
-            rgba(230, 230, 230, 0.09) 0%,
-            rgba(210, 210, 210, 0.03) 32%,
-            transparent 65%
-        );
-
-    filter:
-        blur(28px);
-}
-
-
-#front-mist::before {
-
-    animation:
-        mistDriftA 18s ease-in-out infinite alternate;
-}
-
-
-#front-mist::after {
-
-    animation:
-        mistDriftB 23s ease-in-out infinite alternate;
-}
-
-
-@keyframes mistDriftA {
-
-    0% {
-
-        transform:
-            translate3d(-5%, 2%, 0)
-            scale(1);
-    }
-
-    50% {
-
-        transform:
-            translate3d(4%, -2%, 0)
-            scale(1.08);
-    }
-
-    100% {
-
-        transform:
-            translate3d(-2%, 4%, 0)
-            scale(1.04);
-    }
-}
-
-
-@keyframes mistDriftB {
-
-    0% {
-
-        transform:
-            translate3d(5%, -2%, 0)
-            scale(1.04);
-    }
-
-    50% {
-
-        transform:
-            translate3d(-4%, 3%, 0)
-            scale(1.10);
-    }
-
-    100% {
-
-        transform:
-            translate3d(3%, -3%, 0)
-            scale(1.02);
-    }
-}
-
-
-/* =========================================================
-   FINALER NEBEL
-   ========================================================= */
-
-#fog-front {
-
-    position: absolute;
-
-    inset: -5%;
-
-    width: 110%;
-    height: 110%;
-
-    object-fit: cover;
-
-    z-index: 34;
-
-    opacity: 0;
-
-    filter:
-        blur(1px);
-
-    transform:
-        scale(1.08);
-
-    mix-blend-mode:
-        screen;
-
-    pointer-events:
-        none;
-
-    transition:
-        opacity 5s ease,
-        transform 9s ease;
-}
-
-
-/* =========================================================
-   FINALER DUNST
-   ========================================================= */
-
-#mist {
-
-    position: absolute;
-
-    inset: -10%;
-
-    z-index: 27;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    background:
-        radial-gradient(
-            ellipse at 50% 58%,
-            rgba(235, 235, 235, 0.22) 0%,
-            rgba(190, 190, 190, 0.13) 20%,
-            rgba(100, 100, 100, 0.06) 43%,
-            rgba(0, 0, 0, 0) 72%
-        );
-
-    filter:
-        blur(25px);
-
-    transform:
-        scale(1);
-
-    transition:
-        opacity 5s ease,
-        transform 9s ease;
-}
-
-
-/* =========================================================
-   DICHTER ABSCHLUSSNEBEL
-   Liegt vor Wald/GIF-Nebel, aber hinter Karte.
-   Dadurch bleibt die Karte im Nebel eingebettet,
-   während der Wald fast vollständig verschwindet.
-   ========================================================= */
-
-#dense-fog {
-
-    position: absolute;
-
-    inset: -12%;
-
-    z-index: 45;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    background:
-
-        radial-gradient(
-            ellipse at 50% 48%,
-            rgba(220, 220, 220, 0.56) 0%,
-            rgba(190, 190, 190, 0.40) 24%,
-            rgba(150, 150, 150, 0.25) 48%,
-            rgba(90, 90, 90, 0.16) 72%,
-            rgba(0, 0, 0, 0.04) 100%
-        ),
-
-        radial-gradient(
-            ellipse at 18% 18%,
-            rgba(230, 230, 230, 0.42) 0%,
-            rgba(190, 190, 190, 0.18) 35%,
-            rgba(0, 0, 0, 0) 70%
-        ),
-
-        radial-gradient(
-            ellipse at 82% 20%,
-            rgba(230, 230, 230, 0.40) 0%,
-            rgba(190, 190, 190, 0.17) 35%,
-            rgba(0, 0, 0, 0) 70%
-        );
-
-    filter:
-        blur(18px);
-
-    transform:
-        scale(1.08);
-
-    transition:
-        opacity 4.5s ease,
-        transform 8s ease;
-}
-
-
-#dense-fog::before,
-#dense-fog::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: -15%;
-
-    background:
-
-        radial-gradient(
-            ellipse at 35% 55%,
-            rgba(245, 245, 245, 0.22) 0%,
-            rgba(215, 215, 215, 0.10) 32%,
-            transparent 68%
-        ),
-
-        radial-gradient(
-            ellipse at 72% 42%,
-            rgba(235, 235, 235, 0.20) 0%,
-            rgba(205, 205, 205, 0.08) 34%,
-            transparent 70%
-        );
-
-    filter:
-        blur(25px);
-}
-
-
-#dense-fog::before {
-
-    animation:
-        denseFogDriftA 14s ease-in-out infinite alternate;
-}
-
-
-#dense-fog::after {
-
-    animation:
-        denseFogDriftB 18s ease-in-out infinite alternate;
-}
-
-
-@keyframes denseFogDriftA {
-
-    0% {
-        transform:
-            translate3d(-4%, 2%, 0)
-            scale(1);
-    }
-
-    100% {
-        transform:
-            translate3d(5%, -3%, 0)
-            scale(1.08);
-    }
-}
-
-
-@keyframes denseFogDriftB {
-
-    0% {
-        transform:
-            translate3d(4%, -2%, 0)
-            scale(1.04);
-    }
-
-    100% {
-        transform:
-            translate3d(-5%, 3%, 0)
-            scale(1.10);
-    }
-}
-
-
-/* =========================================================
-   SILHOUETTE
-   ========================================================= */
-
-#silhouette {
-
-    position: absolute;
-
-    z-index: 40;
-
-    left: 50%;
-    top: 50%;
-
-    width:
-        min(44vw, 270px);
-
-    aspect-ratio:
-        2 / 3;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0.58);
-
-    border-radius:
-        10px;
-
-    background:
-        rgba(5, 5, 5, 0.90);
-
-    box-shadow:
-        0 0 35px rgba(255, 255, 255, 0.08),
-        0 0 100px rgba(255, 255, 255, 0.06);
-
-    opacity:
-        0;
-
-    filter:
-        blur(22px);
-
-    transition:
-        opacity 4s ease,
-        filter 4s ease,
-        transform 4.5s cubic-bezier(.2, .75, .2, 1);
-
-    pointer-events:
-        none;
-}
-
-
-#silhouette::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: 5%;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.08);
-
-    border-radius:
-        7px;
-}
-
-
-/* =========================================================
-   KARTE
-   ========================================================= */
-
-#card {
-
-    position: absolute;
-
-    z-index: 50;
-
-    left: 50%;
-    top: 50%;
-
-    /*
-    Etwas größer als vorher.
-    */
-
-    width:
-        min(50vw, 310px);
-
-    aspect-ratio:
-        2 / 3;
-
-    object-fit:
-        contain;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0.76);
-
-    opacity:
-        0;
-
-    filter:
-        blur(20px)
-        brightness(0.50);
-
-    transition:
-        opacity 4.5s ease,
-        filter 4.5s ease,
-        transform 5s cubic-bezier(.2, .75, .2, 1);
-
-    pointer-events:
-        none;
-}
-
-
-/* =========================================================
-   TESTSTEUERUNG
-   ========================================================= */
-
-#controls {
+    display: block;
 
     position: fixed;
 
-    z-index: 1000;
-
+    top: 10px;
     left: 10px;
     right: 10px;
-
     bottom: 10px;
 
-    display: flex;
+    box-sizing: border-box;
 
-    flex-wrap: wrap;
+    background: #050505;
 
-    gap: 7px;
+    color: #00ff00;
 
-    justify-content: center;
+    font-family: monospace;
 
-    padding: 10px;
+    font-size: 12px;
 
-    border-radius: 12px;
+    line-height: 16px;
 
-    background:
-        rgba(0, 0, 0, 0.72);
+    padding: 15px;
 
-    backdrop-filter:
-        blur(8px);
-}
+    overflow-y: auto;
 
+    border: 2px solid #111;
 
-button,
-select {
-
-    appearance: none;
-
-    border:
-        1px solid #555;
-
-    border-radius:
-        7px;
-
-    background:
-        #111;
-
-    color:
-        #eee;
-
-    padding:
-        9px 10px;
-
-    font:
-        14px monospace;
-}
-
-
-button:active {
-
-    transform:
-        scale(0.97);
-}
-
-
-#status {
-
-    width: 100%;
-
-    color:
-        #aaa;
-
-    text-align:
-        center;
-
-    font:
-        12px monospace;
-
-    min-height:
-        16px;
-}
-
-
-@media (max-width: 600px) {
-
-    #controls {
-
-        bottom: 5px;
-
-        left: 5px;
-        right: 5px;
-    }
-
-
-    #prediction-wrap {
-
-        padding:
-            8vw;
-    }
+    z-index: 99999;
 }
 
 </style>
@@ -1122,1104 +94,1512 @@ button:active {
 <body>
 
 
-<div id="stage">
+<div id="emergency-exit"></div>
 
 
-    <!-- =====================================================
-         WALD
-         ===================================================== -->
+<div id="debug-console">
 
-    <img
-        id="forest"
-        src="wald.gif"
-        alt=""
-    >
+    ==================================================<br>
 
+    🚀 SYSTEM-LABOR 3.0: RETRO-FUNDAMENT AKTIV<br>
 
-    <!-- =====================================================
-         DUNKELHEIT
-         ===================================================== -->
+    ==================================================<br>
 
-    <div id="darkness"></div>
-
-
-    <!-- =====================================================
-         LESE-NEBEL
-         ===================================================== -->
-
-    <div id="reading-fog">
-
-        <div class="fog-cloud one"></div>
-
-        <div class="fog-cloud two"></div>
-
-        <div class="fog-cloud three"></div>
-
-    </div>
-
-
-    <!-- =====================================================
-         FINALER DUNST
-         ===================================================== -->
-
-    <div id="mist"></div>
-
-
-    <!-- =====================================================
-         NEUER VORDERGRUNDNEBEL
-         ===================================================== -->
-
-    <div id="front-mist"></div>
-
-
-    <!-- =====================================================
-         VORHERSAGE
-         ===================================================== -->
-
-    <div id="prediction-wrap">
-
-        <div id="prediction"></div>
-
-    </div>
-
-
-    <!-- =====================================================
-         FINALER GIF-NEBEL
-         ===================================================== -->
-
-    <img
-        id="fog-front"
-        src="wald.gif"
-        alt=""
-    >
-
-    <!-- =====================================================
-         DICHTER NEBEL VOR DER KARTE
-         Dieser Layer liegt vor dem Wald und dem GIF-Nebel,
-         aber hinter Silhouette und Karte.
-         ===================================================== -->
-    <div id="dense-fog"></div>
-
-
-    <!-- =====================================================
-         SILHOUETTE
-         ===================================================== -->
-
-    <div id="silhouette"></div>
-
-
-    <!-- =====================================================
-         KARTE
-         ===================================================== -->
-
-    <img
-        id="card"
-        src=""
-        alt="Vorhersagekarte"
-    >
+    [STATUS] Warte auf Phase 0: „zusammen“...
 
 </div>
-
-
-
-<!-- =========================================================
-     TESTSTEUERUNG
-     ========================================================= -->
-
-<div id="controls">
-
-
-    <select id="caseSelect">
-
-        <option value="nameDate">
-            Name + Datum
-        </option>
-
-        <option value="dateOnly">
-            Nur Datum
-        </option>
-
-        <option value="nameOnly">
-            Nur Name
-        </option>
-
-        <option value="none">
-            Weder Name noch Datum
-        </option>
-
-    </select>
-
-
-    <select id="cardSelect">
-
-        <option value="pik_7">
-            Pik 7
-        </option>
-
-        <option value="herz_12">
-            Herz Dame
-        </option>
-
-        <option value="karo_1">
-            Karo Ass
-        </option>
-
-        <option value="kreuz_13">
-            Kreuz König
-        </option>
-
-    </select>
-
-
-    <button id="startBtn">
-        FINALE TESTEN
-    </button>
-
-
-    <button id="resetBtn">
-        RESET
-    </button>
-
-
-    <div id="status">
-        Animationstest bereit.
-    </div>
-
-</div>
-
 
 
 <script>
 
-/* =========================================================
-   ELEMENTE
-   ========================================================= */
 
-const forest =
-    document.getElementById(
-        "forest"
-    );
+/* =====================================================
+   GRUNDVARIABLEN
+   ===================================================== */
 
-const darkness =
-    document.getElementById(
-        "darkness"
-    );
+let phase = 0;
 
-const readingFog =
-    document.getElementById(
-        "reading-fog"
-    );
+let kartenFarbe = "";
 
-const mist =
-    document.getElementById(
-        "mist"
-    );
+let kartenWert = 0;
 
-const frontMist =
-    document.getElementById(
-        "front-mist"
-    );
+let zuschauerName = "";
 
-const fogFront =
-    document.getElementById(
-        "fog-front"
-    );
-const denseFog =
-    document.getElementById(
-        "dense-fog"
-    );
+let geburtsTag = null;
 
-const prediction =
-    document.getElementById(
-        "prediction"
-    );
+let geburtsMonat = null;
 
-const silhouette =
-    document.getElementById(
-        "silhouette"
-    );
+let geburtsDatum = "";
 
-const card =
-    document.getElementById(
-        "card"
-    );
+let istGeburtstag = false;
 
-const status =
-    document.getElementById(
-        "status"
-    );
 
-const caseSelect =
-    document.getElementById(
-        "caseSelect"
-    );
+/* =====================================================
+   SPRACHPUFFER
+   ===================================================== */
 
-const cardSelect =
-    document.getElementById(
-        "cardSelect"
-    );
+let phase1Text = "";
 
-const startBtn =
-    document.getElementById(
-        "startBtn"
-    );
+let phase2Text = "";
 
-const resetBtn =
+let phase3Text = "";
+
+
+let verarbeitetesResultat = 0;
+
+let benutzerScrollt = false;
+
+
+/* =====================================================
+   SPEECH RECOGNITION
+   ===================================================== */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+const consoleDiv =
     document.getElementById(
-        "resetBtn"
+        "debug-console"
     );
 
 
-/* =========================================================
-   TIMER
-   ========================================================= */
+/* =====================================================
+   SCROLLVERHALTEN
+   ===================================================== */
 
-let timerIds = [];
+consoleDiv.addEventListener(
+    "scroll",
+    () => {
 
+        if (
+            consoleDiv.scrollHeight -
+            consoleDiv.scrollTop >
+            consoleDiv.clientHeight + 30
+        ) {
 
-function wait(ms) {
+            benutzerScrollt = true;
 
-    return new Promise(
-        resolve => {
+        } else {
 
-            const id =
-                setTimeout(
-                    resolve,
-                    ms
-                );
-
-            timerIds.push(id);
-
+            benutzerScrollt = false;
         }
-    );
-}
+
+    }
+);
 
 
-function clearTimers() {
+/* =====================================================
+   KONSOLE
+   ===================================================== */
 
-    timerIds.forEach(
-        clearTimeout
-    );
+function logToConsole(text) {
 
-    timerIds = [];
-}
+    if (consoleDiv) {
 
-
-function setStatus(text) {
-
-    status.textContent =
-        text;
-}
+        consoleDiv.innerHTML +=
+            "<br>" + text;
 
 
-/* =========================================================
-   TESTTEXTE
-   ========================================================= */
+        if (!benutzerScrollt) {
 
-function predictionText(type) {
-
-    switch (type) {
-
-        case "nameDate":
-
-            return "Max, du wirst den 23. Juni als Datum nennen.";
-
-        case "dateOnly":
-
-            return "Du wirst den 23. Juni als Datum nennen.";
-
-        case "nameOnly":
-
-            return "Max, dies ist deine persönliche Vorhersage.";
-
-        default:
-
-            return "Dies ist deine persönliche Vorhersage.";
+            consoleDiv.scrollTop =
+                consoleDiv.scrollHeight;
+        }
     }
 }
 
 
-/* =========================================================
-   LEBENDIGE BUCHSTABEN
-   ========================================================= */
-
-function createLivingText(text) {
-
-    prediction.innerHTML = "";
-
-    /*
-    Jedes Wort wird zu einem eigenen, untrennbaren Block.
-
-    Der Browser darf zwischen Wörtern umbrechen,
-    aber niemals mitten in einem Wort.
-    */
-
-    const words =
-        text.trim().split(/\s+/);
-
-    words.forEach(
-        (word, wordIndex) => {
-
-            const wordSpan =
-                document.createElement(
-                    "span"
-                );
-
-            wordSpan.className =
-                "magic-word";
-
-            /*
-            Das Wort selbst bleibt zusammen.
-            */
-
-            wordSpan.style.whiteSpace =
-                "nowrap";
-
-            for (
-                let i = 0;
-                i < word.length;
-                i++
-            ) {
-
-                const char =
-                    word[i];
-
-                const span =
-                    document.createElement(
-                        "span"
-                    );
-
-                span.className =
-                    "magic-letter";
-
-                span.textContent =
-                    char;
-
-                /*
-                Jeder Buchstabe bekommt
-                eine leicht andere Bewegung
-                und Transparenz.
-                */
-
-                const delay =
-                    (
-                        3.0 +
-                        Math.random() * 3.0
-                    ).toFixed(2) +
-                    "s";
-
-                const opacity =
-                    (
-                        0.78 +
-                        Math.random() * 0.22
-                    ).toFixed(2);
-
-                const x1 =
-                    (
-                        -1.5 +
-                        Math.random() * 3
-                    ).toFixed(1) +
-                    "px";
-
-                const x2 =
-                    (
-                        -2.5 +
-                        Math.random() * 5
-                    ).toFixed(1) +
-                    "px";
-
-                const x3 =
-                    (
-                        -2.5 +
-                        Math.random() * 5
-                    ).toFixed(1) +
-                    "px";
-
-                const x4 =
-                    (
-                        -1.5 +
-                        Math.random() * 3
-                    ).toFixed(1) +
-                    "px";
+/* =====================================================
+   DEUTSCHE ZAHLEN
+   ===================================================== */
 
-                span.style.setProperty(
-                    "--delay",
-                    delay
-                );
+const deutscheZahlen = {
 
-                span.style.setProperty(
-                    "--opacity",
-                    opacity
-                );
+    "null": 0,
 
-                span.style.setProperty(
-                    "--x1",
-                    x1
-                );
+    "eins": 1,
+    "ein": 1,
 
-                span.style.setProperty(
-                    "--x2",
-                    x2
-                );
+    "zwei": 2,
 
-                span.style.setProperty(
-                    "--x3",
-                    x3
-                );
+    "drei": 3,
 
-                span.style.setProperty(
-                    "--x4",
-                    x4
-                );
+    "vier": 4,
 
-                wordSpan.appendChild(
-                    span
-                );
-            }
+    "fünf": 5,
+    "funf": 5,
 
-            prediction.appendChild(
-                wordSpan
-            );
+    "sechs": 6,
 
-            /*
-            Normales Leerzeichen zwischen
-            den untrennbaren Wortblöcken.
-            */
+    "sieben": 7,
 
-            if (
-                wordIndex <
-                words.length - 1
-            ) {
+    "acht": 8,
 
-                prediction.appendChild(
-                    document.createTextNode(
-                        " "
-                    )
-                );
-            }
-        }
-    );
-}
+    "neun": 9,
 
+    "zehn": 10,
 
-/* =========================================================
-   KARTENPFAD
-   ========================================================= */
+    "elf": 11,
 
-function cardPath(value) {
+    "zwölf": 12,
+    "zwolf": 12,
 
-    return "karten/" +
-        value +
-        ".png";
-}
+    "dreizehn": 13,
 
+    "vierzehn": 14,
 
-/* =========================================================
-   RESET
-   ========================================================= */
+    "fünfzehn": 15,
+    "funfzehn": 15,
 
-function resetAnimation() {
+    "sechzehn": 16,
 
-    clearTimers();
+    "siebzehn": 17,
 
+    "achtzehn": 18,
 
-    forest.style.opacity =
-        "1";
+    "neunzehn": 19,
 
-    forest.style.transform =
-        "scale(1.02)";
+    "zwanzig": 20,
 
+    "einundzwanzig": 21,
 
-    darkness.style.opacity =
-        "0";
+    "zweiundzwanzig": 22,
 
+    "dreiundzwanzig": 23,
 
-    readingFog.style.opacity =
-        "0";
+    "vierundzwanzig": 24,
 
+    "fünfundzwanzig": 25,
+    "funfundzwanzig": 25,
 
-    mist.style.opacity =
-        "0";
+    "sechsundzwanzig": 26,
 
-    mist.style.transform =
-        "scale(1)";
+    "siebenundzwanzig": 27,
 
+    "achtundzwanzig": 28,
 
-    frontMist.style.opacity =
-        "0";
+    "neunundzwanzig": 29,
 
-    frontMist.style.transform =
-        "scale(1.05)";
+    "dreißig": 30,
+    "dreissig": 30,
 
+    "einunddreißig": 31,
+    "einunddreissig": 31
+};
 
-    fogFront.style.opacity =
-        "0";
 
-    fogFront.style.transform =
-        "scale(1.08)";
+/* =====================================================
+   ZAHLEN AUS TEXT HOLEN
+   ===================================================== */
 
+function findeZahlen(text) {
 
-    denseFog.style.opacity =
-        "0";
+    let zahlen = [];
 
-    denseFog.style.transform =
-        "scale(1.08)";
 
-
-    prediction.classList.remove(
-        "alive"
-    );
-
-
-    prediction.innerHTML =
-        "";
-
-
-    prediction.style.opacity =
-        "0";
-
-
-    prediction.style.color =
-        "rgba(232, 211, 143, 0)";
-
-
-    prediction.style.filter =
-        "blur(12px)";
-
-
-    prediction.style.transform =
-        "scale(0.96)";
-
-
-    silhouette.style.opacity =
-        "0";
-
-
-    silhouette.style.filter =
-        "blur(22px)";
-
-
-    silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.58)";
-
-
-    card.style.opacity =
-        "0";
-
-
-    card.style.filter =
-        "blur(20px) brightness(0.50)";
-
-
-    card.style.transform =
-        "translate(-50%, -50%) scale(0.76)";
-
-
-    card.src =
-        "";
-
-
-    setStatus(
-        "Animationstest bereit."
-    );
-}
-
-
-/* =========================================================
-   HAUPTANIMATION
-   ========================================================= */
-
-async function startAnimation() {
-
-    clearTimers();
-
-    resetAnimation();
-
-
-    const type =
-        caseSelect.value;
-
-
-    const selectedCard =
-        cardSelect.value;
-
-
-    card.src =
-        cardPath(
-            selectedCard
+    let gesaeubert =
+        text.replace(
+            /\./g,
+            " "
         );
 
 
-    /* =====================================================
-       0 SEKUNDEN
-       ===================================================== */
+    /*
+    Ziffern wie 20 oder 06
+    */
 
-    setStatus(
-        "0.0 s – Wald erwacht ..."
-    );
+    const mitZiffern =
+        gesaeubert.match(
+            /\d+/g
+        );
 
 
-    await wait(1000);
+    if (mitZiffern) {
 
+        for (
+            const zahl of mitZiffern
+        ) {
 
-    /* =====================================================
-       1 SEKUNDE
-       ===================================================== */
+            const wert =
+                parseInt(
+                    zahl,
+                    10
+                );
 
-    setStatus(
-        "1.0 s – Vorhersage erscheint ..."
-    );
 
+            if (!isNaN(wert)) {
 
-    createLivingText(
-        predictionText(type)
-    );
-
-
-    prediction.style.color =
-        "rgba(232, 211, 143, 1)";
-
-
-    prediction.style.opacity =
-        "1";
-
-
-    prediction.style.filter =
-        "blur(0px)";
-
-
-    prediction.style.transform =
-        "scale(1)";
-
-
-    await wait(1500);
-
-
-    /* =====================================================
-       2.5 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "2.5 s – Schrift beginnt zu leben ..."
-    );
-
-
-    prediction.classList.add(
-        "alive"
-    );
-
-
-    await wait(500);
-
-
-    /* =====================================================
-       3 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "3.0 s – Nebel zieht durch die Schrift ..."
-    );
-
-
-    readingFog.style.opacity =
-        "1";
-
-
-    await wait(4000);
-
-
-    /* =====================================================
-       7 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "7.0 s – Der Nebel wird dichter ..."
-    );
-
-
-    prediction.classList.remove(
-        "alive"
-    );
-
-
-    prediction.style.opacity =
-        "0.25";
-
-
-    prediction.style.filter =
-        "blur(10px)";
-
-
-    readingFog.style.opacity =
-        "0.55";
-
-
-    forest.style.opacity =
-        "0.42";
-
-
-    forest.style.transform =
-        "scale(1.10)";
-
-
-    darkness.style.opacity =
-        "0.48";
-
-
-    mist.style.opacity =
-        "0.82";
-
-
-    mist.style.transform =
-        "scale(1.12)";
-
-
-    fogFront.style.opacity =
-        "0.48";
-
-
-    fogFront.style.transform =
-        "scale(1.15)";
-
-
-    frontMist.style.opacity =
-        "0.55";
-
-
-    frontMist.style.transform =
-        "scale(1.10)";
-
-
-    denseFog.style.opacity =
-        "0.30";
-
-    denseFog.style.transform =
-        "scale(1.10)";
-
-
-    await wait(1000);
-
-
-    /* =====================================================
-       8 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "8.0 s – Die Vorhersage verschwindet ..."
-    );
-
-
-    prediction.style.opacity =
-        "0";
-
-
-    prediction.style.filter =
-        "blur(18px)";
-
-
-    readingFog.style.opacity =
-        "0.75";
-
-
-    forest.style.opacity =
-        "0.24";
-
-
-    darkness.style.opacity =
-        "0.58";
-
-
-    mist.style.opacity =
-        "1";
-
-
-    fogFront.style.opacity =
-        "0.72";
-
-
-    fogFront.style.transform =
-        "scale(1.20)";
+                zahlen.push(wert);
+            }
+        }
+    }
 
 
     /*
-    Vordergrundnebel bleibt jetzt
-    auch oben deutlich sichtbar.
+    Zahlwörter
     */
 
-    frontMist.style.opacity =
-        "0.82";
-
-
-    frontMist.style.transform =
-        "scale(1.14)";
-
-
-    denseFog.style.opacity =
-        "0.58";
-
-    denseFog.style.transform =
-        "scale(1.12)";
-
-
-    /* =====================================================
-       8–11 SEKUNDEN
-       SPANNUNG
-       ===================================================== */
-
-    await wait(3000);
-
-
-    /* =====================================================
-       11 SEKUNDEN
-       SILHOUETTE
-       ===================================================== */
-
-    setStatus(
-        "11.0 s – Etwas zeichnet sich ab ..."
-    );
-
-
-    silhouette.style.opacity =
-        "0.25";
-
-
-    silhouette.style.filter =
-        "blur(18px)";
-
-
-    silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.66)";
-
-
-    await wait(1500);
-
-
-    /* =====================================================
-       12.5 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "12.5 s – Die Form wird deutlicher ..."
-    );
-
-
-    silhouette.style.opacity =
-        "0.58";
-
-
-    silhouette.style.filter =
-        "blur(9px)";
-
-
-    silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.82)";
-
-
-    await wait(1000);
-
-
-    /* =====================================================
-       13.5 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "13.5 s – Die Karte zeichnet sich ab ..."
-    );
-
-
-    silhouette.style.opacity =
-        "0.82";
-
-
-    silhouette.style.filter =
-        "blur(5px)";
-
-
-    silhouette.style.transform =
-        "translate(-50%, -50%) scale(0.94)";
-
-
-    fogFront.style.opacity =
-        "0.90";
-
-
-    frontMist.style.opacity =
-        "0.95";
-
-
-    mist.style.opacity =
-        "1";
-
-
-    denseFog.style.opacity =
-        "0.76";
-
-    denseFog.style.transform =
-        "scale(1.15)";
-
-
-    await wait(1500);
-
-
-    /* =====================================================
-       15 SEKUNDEN
-       SILHOUETTE → KARTE
-       ===================================================== */
-
-    setStatus(
-        "15.0 s – Die Vorhersage wird sichtbar ..."
-    );
-
-
-    silhouette.style.opacity =
-        "0.25";
-
-
-    silhouette.style.filter =
-        "blur(10px)";
-
-
-    silhouette.style.transform =
-        "translate(-50%, -50%) scale(1.0)";
-
-
-    card.style.opacity =
-        "0.25";
-
-
-    card.style.filter =
-        "blur(15px) brightness(0.55)";
-
-
-    card.style.transform =
-        "translate(-50%, -50%) scale(0.88)";
-
-
-    await wait(1500);
-
-
-    /* =====================================================
-       16.5 SEKUNDEN
-       ===================================================== */
-
-    setStatus(
-        "16.5 s – Die Karte erscheint ..."
-    );
-
-
-    card.style.opacity =
-        "0.72";
-
-
-    card.style.filter =
-        "blur(6px) brightness(0.82)";
-
-
-    card.style.transform =
-        "translate(-50%, -50%) scale(1.02)";
-
-
-    await wait(1500);
-
-
-    /* =====================================================
-       18 SEKUNDEN
-       KARTE GROSS UND KLAR
-       ===================================================== */
-
-    setStatus(
-        "18.0 s – Karte vollständig sichtbar."
-    );
-
-
-    card.style.opacity =
-        "1";
-
-
-    card.style.filter =
-        "blur(1.2px) brightness(0.94)";
-
-
-    /*
-    Endgröße bewusst größer
-    als in Version 2.2.
-    */
-
-    card.style.transform =
-        "translate(-50%, -50%) scale(1.10)";
-
-
-/*
-=========================================================
-ENDZUSTAND
-
-Der Nebel bleibt jetzt dicht.
-
-Die Karte liegt mit z-index 50
-bewusst VOR dem Nebel.
-
-Der Wald wird praktisch vollständig
-verschluckt und darf am Ende nicht
-wieder sichtbar werden.
-=========================================================
-*/
-
-fogFront.style.opacity =
-    "0.96";
-
-frontMist.style.opacity =
-    "0.98";
-
-mist.style.opacity =
-    "1";
-
-
-denseFog.style.opacity =
-    "0.88";
-
-denseFog.style.transform =
-    "scale(1.18)";
-
-forest.style.opacity =
-    "0.04";
-
-darkness.style.opacity =
-    "0.74";
-
-
-    await wait(3000);
-
-
-    setStatus(
-        "FERTIG – Vorhersagekarte steht."
-    );
+    const woerter =
+        gesaeubert
+            .toLowerCase()
+            .replace(
+                /[.,!?;:]/g,
+                " "
+            )
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    for (
+        const wort of woerter
+    ) {
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                deutscheZahlen,
+                wort
+            )
+        ) {
+
+            zahlen.push(
+                deutscheZahlen[wort]
+            );
+        }
+    }
+
+
+    return zahlen;
 }
 
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
+/* =====================================================
+   CODEWÖRTER ROBUST ERKENNEN
+   ===================================================== */
 
-startBtn.addEventListener(
-    "click",
-    startAnimation
-);
+function verarbeiteCodewoerter(text) {
 
-
-resetBtn.addEventListener(
-    "click",
-    resetAnimation
-);
+    let etwasGefunden = false;
 
 
-/* =========================================================
-   START
-   ========================================================= */
+    /*
+    Leerzeichen zwischen Zahl und „mal“
+    normalisieren.
 
-resetAnimation();
+    WICHTIG:
+    Nur Kombinationen mit „mal“ werden
+    als Kartenwert-Code erkannt.
+
+    „eins“ / „zwei“ / „drei“ / „vier“
+    allein zählen NICHT.
+    */
+
+    text = text
+        .toLowerCase()
+        .replace(
+            /\bein\s+mal\b/g,
+            "einmal"
+        )
+        .replace(
+            /\bzwei\s+mal\b/g,
+            "zweimal"
+        )
+        .replace(
+            /\bdrei\s+mal\b/g,
+            "dreimal"
+        )
+        .replace(
+            /\bvier\s+mal\b/g,
+            "viermal"
+        );
+
+
+    /* -----------------------------------------
+       HÄNDE = +10
+       ----------------------------------------- */
+
+    if (
+        /\bhänden\b/.test(text) ||
+        /\bhaenden\b/.test(text)
+    ) {
+
+        kartenWert += 10;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] HÄNDEN erkannt (+10)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       EINMAL = +1
+       ----------------------------------------- */
+
+    if (
+        /\beinmal\b/.test(text)
+    ) {
+
+        kartenWert += 1;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] EINMAL erkannt (+1)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       ZWEIMAL = +2
+       ----------------------------------------- */
+
+    if (
+        /\bzweimal\b/.test(text)
+    ) {
+
+        kartenWert += 2;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] ZWEIMAL erkannt (+2)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       DREIMAL = +3
+       ----------------------------------------- */
+
+    if (
+        /\bdreimal\b/.test(text)
+    ) {
+
+        kartenWert += 3;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] DREIMAL erkannt (+3)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       VIERMAL = +4
+       ----------------------------------------- */
+
+    if (
+        /\bviermal\b/.test(text)
+    ) {
+
+        kartenWert += 4;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] VIERMAL erkannt (+4)"
+        );
+    }
+
+
+    /* -----------------------------------------
+       HAND = +5
+
+       HÄNDEN darf nicht zusätzlich
+       als HAND gezählt werden.
+       ----------------------------------------- */
+
+    if (
+        !/\bhänden\b/.test(text) &&
+        !/\bhaenden\b/.test(text) &&
+        /\bhand\b/.test(text)
+    ) {
+
+        kartenWert += 5;
+
+        etwasGefunden = true;
+
+        logToConsole(
+            "👉 [CODE] HAND erkannt (+5)"
+        );
+    }
+
+
+    if (etwasGefunden) {
+
+        logToConsole(
+            "📊 RECHENWERT AKTUELL: " +
+            kartenWert
+        );
+    }
+}
+
+
+/* =====================================================
+   BROWSERPRÜFUNG
+   ===================================================== */
+
+if (!SpeechRecognition) {
+
+    logToConsole(
+        "❌ FEHLER: Dieser Browser unterstützt webkitSpeechRecognition nicht!"
+    );
+
+} else {
+
+
+    /* =================================================
+       SPEECH RECOGNITION ERSTELLEN
+       ================================================= */
+
+    const recognition =
+        new SpeechRecognition();
+
+
+    recognition.lang =
+        "de-DE";
+
+
+    /*
+    Wichtig für Android:
+    continuous bleibt FALSE.
+    Der Neustart erfolgt kontrolliert
+    über onend.
+    */
+
+    recognition.continuous =
+        false;
+
+
+    recognition.interimResults =
+        false;
+
+
+    /* =================================================
+       STATUS-EVENTS
+       ================================================= */
+
+    recognition.onstart = () => {
+
+        logToConsole(
+            "🎤 SPRACHERKENNUNG GESTARTET"
+        );
+    };
+
+
+    recognition.onaudiostart = () => {
+
+        logToConsole(
+            "🎧 MIKROFON / AUDIO AKTIV"
+        );
+    };
+
+
+    recognition.onspeechstart = () => {
+
+        logToConsole(
+            "🗣️ SPRACHE ERKANNT"
+        );
+    };
+
+
+    /* =================================================
+       FEHLERBEHANDLUNG
+       ================================================= */
+
+    recognition.onerror =
+        (event) => {
+
+            logToConsole(
+                "⚠️ SPRACHERKENNUNGS-FEHLER: " +
+                event.error
+            );
+
+
+            if (
+                (
+                    event.error ===
+                    "no-speech"
+                ) ||
+                (
+                    event.error ===
+                    "aborted"
+                )
+            ) {
+
+                if (
+                    phase < 4
+                ) {
+
+                    setTimeout(
+                        () => {
+
+                            try {
+
+                                recognition.start();
+
+                            } catch (e) {
+
+                                /*
+                                onend übernimmt
+                                ebenfalls den
+                                normalen Neustart.
+                                */
+
+                            }
+
+                        },
+                        250
+                    );
+                }
+            }
+        };
+
+
+    /* =================================================
+       SPRACHERGEBNIS
+       ================================================= */
+
+    recognition.onresult =
+        (event) => {
+
+
+            for (
+                let i =
+                    verarbeitetesResultat;
+
+                i <
+                event.results.length;
+
+                i++
+            ) {
+
+
+                const result =
+                    event.results[i];
+
+
+                if (
+                    !result ||
+                    !result[0]
+                ) {
+
+                    continue;
+                }
+
+
+                let roherText =
+                    result[0].transcript;
+
+
+                if (!roherText) {
+
+                    continue;
+                }
+
+
+                roherText =
+                    roherText
+                        .toLowerCase()
+                        .trim();
+
+
+                verarbeitetesResultat =
+                    i + 1;
+
+
+                /* =====================================
+                   SPRACHAUFARBEITUNG
+                   ===================================== */
+
+                let text =
+                    roherText
+
+                        .replace(
+                            /ein\s+mal/g,
+                            "einmal"
+                        )
+
+                        .replace(
+                            /zwei\s+mal/g,
+                            "zweimal"
+                        )
+
+                        .replace(
+                            /drei\s+mal/g,
+                            "dreimal"
+                        )
+
+                        .replace(
+                            /vier\s+mal/g,
+                            "viermal"
+                        )
+
+                        .replace(
+                            /reihem\s+folge/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /reihen\s+folge/g,
+                            "reihenfolge"
+                        )
+
+                        /*
+                        Bereits getestete
+                        Hörfehler
+                        */
+
+                        .replace(
+                            /garten/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /kartendeckt/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /deckels/g,
+                            "reihenfolge"
+                        )
+
+                        .replace(
+                            /beachte/g,
+                            "14"
+                        )
+
+                        .replace(
+                            /achte/g,
+                            "8"
+                        )
+
+                        .replace(
+                            /ranz/g,
+                            "franz"
+                        )
+
+                        .replace(
+                            /wolf/g,
+                            "12"
+                        )
+
+                        .replace(
+                            /dein\s+datum/g,
+                            "dein datum"
+                        );
+
+
+                logToConsole(
+                    "<br>📢 [GEHÖRT] „" +
+                    roherText +
+                    "“"
+                );
+
+
+                if (
+                    roherText !== text
+                ) {
+
+                    logToConsole(
+                        "✨ [GEBÜGELT] „" +
+                        text +
+                        "“"
+                    );
+                }
+
+
+                verarbeiteSprache(
+                    text
+                );
+            }
+        };
+
+
+    /* =====================================================
+       HAUPTVERARBEITUNG DER PHASEN
+       ===================================================== */
+
+    function verarbeiteSprache(text) {
+
+
+        logToConsole(
+            "🔍 [ANALYSE] Prüfe Phase " +
+            phase +
+            "..."
+        );
+
+
+        /* ================================================
+           PHASE 0
+           ZUSAMMEN
+           ================================================ */
+
+        if (
+            phase === 0
+        ) {
+
+
+            if (
+                text.includes(
+                    "zusammen"
+                )
+            ) {
+
+                phase = 1;
+
+
+                phase1Text =
+                    "";
+
+
+                logToConsole(
+                    "▶️ „ZUSAMMEN“ ERKANNT"
+                );
+
+
+                logToConsole(
+                    "PHASE 1: SUCHE KARTENFARBE"
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* ================================================
+           PHASE 1
+           KARTENFARBE
+           ================================================ */
+
+        if (
+            phase === 1
+        ) {
+
+            /*
+            Sprachfragmente sammeln.
+            */
+
+            phase1Text +=
+                " " + text;
+
+
+            /*
+            REIHEN FOLGE
+            zusammenführen.
+            */
+
+            phase1Text =
+                phase1Text.replace(
+                    /reihen\s+folge/g,
+                    "reihenfolge"
+                );
+
+
+            /*
+            KARTENFARBE
+            */
+
+            if (
+                phase1Text.includes(
+                    "passiert"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Pik ♠";
+
+
+            } else if (
+                phase1Text.includes(
+                    "geschehen"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Herz ♥";
+
+
+            } else if (
+                phase1Text.includes(
+                    "gewesen"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Kreuz ♣";
+
+
+            } else if (
+                phase1Text.includes(
+                    "gehabt"
+                )
+            ) {
+
+                kartenFarbe =
+                    "Karo ♦";
+            }
+
+
+            /*
+            Farbe gefunden
+            */
+
+            if (
+                kartenFarbe !== ""
+            ) {
+
+                logToConsole(
+                    "🃏 KARTENFARBE: " +
+                    kartenFarbe
+                );
+
+
+                phase = 2;
+
+
+                /*
+                Ganz wichtig:
+                Phase 2 bekommt einen
+                leeren Puffer.
+                */
+
+                phase2Text =
+                    "";
+
+
+                logToConsole(
+                    "PHASE 2: CODEWÖRTER ZÄHLEN"
+                );
+
+
+                return;
+            }
+
+
+            return;
+        }
+
+
+        /* ================================================
+           PHASE 2
+           CODEWÖRTER + REIHENFOLGE
+           ================================================ */
+
+        if (
+            phase === 2
+        ) {
+
+            /*
+            Alle Sprachfragmente sammeln.
+            */
+
+            phase2Text +=
+                " " + text;
+
+
+            /*
+            Getrennt gehörtes
+            REIHEN FOLGE zusammenführen.
+            */
+
+            phase2Text =
+                phase2Text.replace(
+                    /reihen\s+folge/g,
+                    "reihenfolge"
+                );
+
+
+            /*
+            AKTUELLES SPRACHFRAGMENT
+            nach Codewörtern durchsuchen.
+
+            Wichtig:
+            verarbeiteCodewoerter()
+            erkennt nur:
+
+            einmal
+            zweimal
+            dreimal
+            viermal
+            hand
+            händen
+
+            Reine Zahlen wie
+            „eins“, „zwei“, „drei“
+            werden hier NICHT gezählt.
+            */
+
+            verarbeiteCodewoerter(
+                text
+            );
+
+
+            /*
+            REIHENFOLGE / KARTENFOLGE
+            */
+
+            const reihenfolgeErkannt =
+                phase2Text.includes(
+                    "reihenfolge"
+                );
+
+
+            const folgeKartenErkannt =
+                phase2Text.includes("folge") &&
+                phase2Text.includes("karten") &&
+                phase2Text.includes("bestimmt");
+
+
+            const kartenDeckBestimmt =
+                phase2Text.includes("karten") &&
+                phase2Text.includes("deck") &&
+                phase2Text.includes("bestimmt");
+
+
+            if (
+                reihenfolgeErkannt ||
+                folgeKartenErkannt ||
+                kartenDeckBestimmt
+            ) {
+
+                phase = 3;
+
+                phase3Text = "";
+
+
+                logToConsole(
+                    "🔒 KARTENFOLGE / REIHENFOLGE ERKANNT"
+                );
+
+
+                logToConsole(
+                    "KARTENWERT FESTGESETZT: " +
+                    kartenWert
+                );
+
+
+                logToConsole(
+                    "PHASE 3: NAME / DATUM"
+                );
+
+
+                return;
+            }
+
+
+            return;
+        }
+
+
+        /* ================================================
+           PHASE 3
+           NAME / DATUM / HEUTE / VERDECKT
+           ================================================ */
+
+        if (
+            phase === 3
+        ) {
+
+
+            /*
+            Alle Sprachfragmente
+            aus Phase 3 sammeln.
+            */
+
+            phase3Text +=
+                " " + text;
+
+
+            /* --------------------------------------------
+               NAME
+               -------------------------------------------- */
+
+            const datumPosition =
+                phase3Text.indexOf(
+                    "dein datum"
+                );
+
+
+            if (
+                datumPosition > 0 &&
+                zuschauerName === ""
+            ) {
+
+
+                let nameTeil =
+                    phase3Text
+                        .substring(
+                            0,
+                            datumPosition
+                        )
+                        .trim();
+
+
+                const woerter =
+                    nameTeil.split(
+                        /\s+/
+                    );
+
+
+                if (
+                    woerter.length > 0
+                ) {
+
+
+                    nameTeil =
+                        woerter[
+                            woerter.length - 1
+                        ]
+                        .replace(
+                            /^[,.:;!? ]+|[,.:;!? ]+$/g,
+                            ""
+                        );
+
+
+                    if (
+                        nameTeil !== "" &&
+                        nameTeil.toLowerCase() !==
+                            "name"
+                    ) {
+
+
+                        zuschauerName =
+                            nameTeil
+                                .charAt(0)
+                                .toUpperCase() +
+                            nameTeil.slice(1);
+
+
+                        logToConsole(
+                            "👤 NAME: " +
+                            zuschauerName
+                        );
+                    }
+                }
+            }
+
+
+            /* --------------------------------------------
+               HEUTE
+               -------------------------------------------- */
+
+            if (
+                geburtsTag === null &&
+                phase3Text.includes(
+                    "heute"
+                )
+            ) {
+
+
+                const heute =
+                    new Date();
+
+
+                geburtsTag =
+                    heute.getDate();
+
+
+                geburtsMonat =
+                    heute.getMonth() + 1;
+
+
+                geburtsDatum =
+                    String(
+                        geburtsTag
+                    ).padStart(
+                        2,
+                        "0"
+                    ) +
+                    "." +
+                    String(
+                        geburtsMonat
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                logToConsole(
+                    "📅 DATUM: HEUTE → " +
+                    geburtsDatum
+                );
+            }
+
+
+            /* --------------------------------------------
+               DATUM NACH „ALSO“
+               -------------------------------------------- */
+
+            if (
+                geburtsTag === null
+            ) {
+
+
+                const alsoPosition =
+                    phase3Text.indexOf(
+                        "also"
+                    );
+
+
+                if (
+                    alsoPosition !== -1
+                ) {
+
+
+                    const nachAlso =
+                        phase3Text.substring(
+                            alsoPosition + 4
+                        );
+
+
+                    const zahlen =
+                        findeZahlen(
+                            nachAlso
+                        );
+
+
+                    if (
+                        zahlen.length >= 2
+                    ) {
+
+
+                        const tag =
+                            zahlen[0];
+
+
+                        const monat =
+                            zahlen[1];
+
+
+                        if (
+                            tag >= 1 &&
+                            tag <= 31 &&
+                            monat >= 1 &&
+                            monat <= 12
+                        ) {
+
+
+                            geburtsTag =
+                                tag;
+
+
+                            geburtsMonat =
+                                monat;
+
+
+                            geburtsDatum =
+                                String(
+                                    tag
+                                ).padStart(
+                                    2,
+                                    "0"
+                                ) +
+                                "." +
+                                String(
+                                    monat
+                                ).padStart(
+                                    2,
+                                    "0"
+                                );
+
+
+                            logToConsole(
+                                "📅 DATUM: " +
+                                geburtsDatum
+                            );
+                        }
+                    }
+                }
+            }
+
+
+            /* --------------------------------------------
+               VERDECKT = ABSCHLUSS
+               -------------------------------------------- */
+
+            if (
+                phase3Text.includes(
+                    "verdeckt"
+                )
+            ) {
+
+
+                phase = 4;
+
+
+                logToConsole(
+                    "🛑 „VERDECKT“ ERKANNT"
+                );
+
+
+                logToConsole(
+                    "🎤 SPRACHERKENNUNG WIRD BEENDET"
+                );
+
+
+                /*
+                Geburtstag prüfen
+                */
+
+                const heute =
+                    new Date();
+
+
+                const heuteTag =
+                    heute.getDate();
+
+
+                const heuteMonat =
+                    heute.getMonth() + 1;
+
+
+                istGeburtstag =
+                    geburtsTag ===
+                        heuteTag &&
+                    geburtsMonat ===
+                        heuteMonat;
+
+
+                /*
+                ERGEBNIS
+                */
+
+                logToConsole(
+                    "--------------------------------"
+                );
+
+
+                logToConsole(
+                    "ERGEBNIS"
+                );
+
+
+                logToConsole(
+                    "FARBE: " +
+                    kartenFarbe
+                );
+
+
+                logToConsole(
+                    "WERT: " +
+                    kartenWert
+                );
+
+
+                logToConsole(
+                    "NAME: " +
+                    (
+                        zuschauerName ||
+                        "(kein Name erkannt)"
+                    )
+                );
+
+
+                logToConsole(
+                    "DATUM: " +
+                    (
+                        geburtsDatum ||
+                        "(kein Datum erkannt)"
+                    )
+                );
+
+
+                logToConsole(
+                    "GEBURTSTAG: " +
+                    (
+                        istGeburtstag
+                            ? "JA 🎂"
+                            : "NEIN"
+                    )
+                );
+
+
+                logToConsole(
+                    "--------------------------------"
+                );
+
+
+                /*
+                Spracherkennung
+                endgültig beenden.
+                */
+
+                recognition.stop();
+
+
+                return;
+            }
+
+
+            return;
+        }
+    }
+
+
+    /* =====================================================
+       MIKROFON-RESTART
+       ===================================================== */
+
+    let neustartTimer = null;
+
+    let antiLoopSperre = false;
+
+
+    recognition.onend = () => {
+
+
+        /*
+        Nach „Verdeckt“
+        NICHT wieder starten.
+        */
+
+        if (
+            phase >= 4
+        ) {
+
+            return;
+        }
+
+
+        /*
+        Verhindert mehrere
+        gleichzeitige Neustarts.
+        */
+
+        if (
+            antiLoopSperre
+        ) {
+
+            return;
+        }
+
+
+        antiLoopSperre =
+            true;
+
+
+        if (
+            neustartTimer
+        ) {
+
+            clearTimeout(
+                neustartTimer
+            );
+        }
+
+
+        neustartTimer =
+            setTimeout(
+                () => {
+
+
+                    try {
+
+
+                        verarbeitetesResultat =
+                            0;
+
+
+                        recognition.start();
+
+
+                        setTimeout(
+                            () => {
+
+                                antiLoopSperre =
+                                    false;
+
+                            },
+                            1000
+                        );
+
+
+                    } catch (e) {
+
+
+                        antiLoopSperre =
+                            false;
+                    }
+
+
+                },
+                800
+            );
+    };
+
+
+    /* =====================================================
+       ERSTER START
+       ===================================================== */
+
+    try {
+
+        recognition.start();
+
+    } catch (e) {
+
+        logToConsole(
+            "❌ STARTFEHLER: " +
+            e.message
+        );
+    }
+
+}
+
+
+/* =====================================================
+   NOT-AUS
+   3 SEKUNDEN OBEN LINKS GEDRÜCKT HALTEN
+   ===================================================== */
+
+let exitTimer = null;
+
+
+document
+    .getElementById(
+        "emergency-exit"
+    )
+    .addEventListener(
+        "touchstart",
+        () => {
+
+
+            exitTimer =
+                setTimeout(
+                    () => {
+
+                        location.reload();
+
+                    },
+                    3000
+                );
+        }
+    );
+
+
+document
+    .getElementById(
+        "emergency-exit"
+    )
+    .addEventListener(
+        "touchend",
+        () => {
+
+            clearTimeout(
+                exitTimer
+            );
+
+        }
+    );
 
 </script>
 
 </body>
 
-</html>
