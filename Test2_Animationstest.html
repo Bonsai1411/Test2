@@ -1664,14 +1664,11 @@ musicAudio.volume = 0;
 
 function fadeVolume(audio, target, duration) {
 
-    const start =
-        audio.volume;
+    const start = audio.volume;
 
-    const difference =
-        target - start;
+    const difference = target - start;
 
-    const startTime =
-        performance.now();
+    const startTime = performance.now();
 
 
     function step(now) {
@@ -1683,8 +1680,28 @@ function fadeVolume(audio, target, duration) {
             );
 
 
-        audio.volume =
+        let volume =
             start + difference * progress;
+
+
+        /*
+        Sicherheitsbegrenzung:
+        Lautstärke darf niemals kleiner als 0
+        oder größer als 1 werden.
+        */
+
+        volume =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    volume
+                )
+            );
+
+
+        audio.volume =
+            volume;
 
 
         if (progress < 1) {
@@ -1698,6 +1715,7 @@ function fadeVolume(audio, target, duration) {
 
     requestAnimationFrame(step);
 }
+
 
 
 /* =========================================================
