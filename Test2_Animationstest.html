@@ -1777,6 +1777,15 @@ function wait(ms) {
 
 
 function clearTimers() {
+
+    timerIds.forEach(
+        clearTimeout
+    );
+
+    timerIds = [];
+}
+
+
 /* =========================================================
    ANIMATION SOFORT BEENDEN
    ========================================================= */
@@ -1794,19 +1803,17 @@ function endAnimation() {
     );
 }
 
-    timerIds.forEach(
-        clearTimeout
-    );
 
-    timerIds = [];
-}
-
+/* =========================================================
+   STATUS
+   ========================================================= */
 
 function setStatus(text) {
 
     status.textContent =
         text;
 }
+
 
 
 /* =========================================================
