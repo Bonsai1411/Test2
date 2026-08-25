@@ -2150,6 +2150,7 @@ async function startAnimation() {
     clearTimers();
 
     resetAnimation();
+    animationState = "RUNNING";
 
 
     const type =
@@ -2767,6 +2768,7 @@ fadeVolume(
 setStatus(
     "FERTIG – Vorhersagekarte steht."
 );
+animationState = "RESULT";
 
 }
 
@@ -2784,6 +2786,97 @@ startBtn.addEventListener(
 resetBtn.addEventListener(
     "click",
     resetAnimation
+);
+/* =========================================================
+   DOPPELKLICK / DREIFACHKLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        /*
+        Nur der obere rechte Bereich
+        reagiert auf diese Sonderbedienung.
+        */
+
+        const x =
+            event.clientX;
+
+        const y =
+            event.clientY;
+
+        const width =
+            window.innerWidth;
+
+        const height =
+            window.innerHeight;
+
+
+        const inTopRight =
+            x > width * 0.72 &&
+            y < height * 0.28;
+
+
+        if (!inTopRight) {
+
+            return;
+
+        }
+
+
+        const now =
+            Date.now();
+
+
+        /*
+        Alte Klicks entfernen.
+        */
+
+        clickTimes =
+            clickTimes.filter(
+                time =>
+                    now - time < CLICK_WINDOW
+            );
+
+
+        clickTimes.push(now);
+
+
+        /* =================================================
+           DREIFACHKLICK
+           ================================================= */
+
+        if (clickTimes.length >= 3) {
+
+            clickTimes = [];
+
+            resetAnimation();
+
+            setStatus(
+                "Neue Runde bereit."
+            );
+
+            return;
+
+        }
+
+
+        /* =================================================
+           DOPPELKLICK
+           ================================================= */
+
+        if (clickTimes.length === 2) {
+
+            clickTimes = [];
+
+            endAnimation();
+
+            return;
+
+        }
+
+    }
 );
 
 
