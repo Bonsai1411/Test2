@@ -1628,6 +1628,118 @@ const startBtn =
 
 const resetBtn =
     document.getElementById("resetBtn");
+/* =========================================================
+   AUDIO
+   ========================================================= */
+
+const forestAudio =
+    new Audio("waldaudio.mp3");
+
+const windAudio =
+    new Audio("wind.mp3");
+
+const windAudio2 =
+    new Audio("wind.mp3");
+
+
+const musicAudio =
+    new Audio("musik.mp3");
+
+
+forestAudio.loop = true;
+windAudio.loop = false;
+windAudio2.loop = false;
+musicAudio.loop = true;
+
+
+forestAudio.volume = 0;
+windAudio.volume = 0;
+windAudio2.volume = 0;
+musicAudio.volume = 0;
+
+
+/* =========================================================
+   AUDIO-ÜBERBLENDUNG
+   ========================================================= */
+
+function fadeVolume(audio, target, duration) {
+
+    const start = audio.volume;
+
+    const difference = target - start;
+
+    const startTime = performance.now();
+
+
+    function step(now) {
+
+        const progress =
+            Math.min(
+                (now - startTime) / duration,
+                1
+            );
+
+
+        let volume =
+            start + difference * progress;
+
+
+        /*
+        Sicherheitsbegrenzung:
+        Lautstärke darf niemals kleiner als 0
+        oder größer als 1 werden.
+        */
+
+        volume =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    volume
+                )
+            );
+
+
+        audio.volume =
+            volume;
+
+
+        if (progress < 1) {
+
+            requestAnimationFrame(step);
+
+        }
+
+    }
+
+
+    requestAnimationFrame(step);
+}
+
+
+
+/* =========================================================
+   AUDIO RESET
+   ========================================================= */
+
+function resetAudio() {
+
+    forestAudio.pause();
+    windAudio.pause();
+    windAudio2.pause();
+    musicAudio.pause();
+
+    forestAudio.currentTime = 0;
+    windAudio.currentTime = 0;
+    windAudio2.currentTime = 0;
+    musicAudio.currentTime = 0;
+
+    forestAudio.volume = 0;
+    windAudio.volume = 0;
+    windAudio2.volume = 0;
+    musicAudio.volume = 0;
+}
+
 
 
 /* =========================================================
@@ -1635,6 +1747,15 @@ const resetBtn =
    ========================================================= */
 
 let timerIds = [];
+/* =========================================================
+   ANIMATIONSZUSTAND
+   ========================================================= */
+
+let animationState = "IDLE";
+
+let clickTimes = [];
+
+const CLICK_WINDOW = 700;
 
 
 function wait(ms) {
@@ -1665,11 +1786,34 @@ function clearTimers() {
 }
 
 
+/* =========================================================
+   ANIMATION SOFORT BEENDEN
+   ========================================================= */
+
+function endAnimation() {
+
+    clearTimers();
+
+    animationState = "ENDED";
+
+    resetAudio();
+
+    setStatus(
+        "Animation beendet."
+    );
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
 function setStatus(text) {
 
     status.textContent =
         text;
 }
+
 
 
 /* =========================================================
@@ -1921,6 +2065,11 @@ function resetAnimation() {
 
     clearTimers();
 
+    resetAudio();
+
+    animationState = "IDLE";
+
+
 
     forest.style.opacity =
         "1";
@@ -2026,6 +2175,7 @@ async function startAnimation() {
     clearTimers();
 
     resetAnimation();
+    animationState = "RUNNING";
 
 
     const type =
@@ -2049,6 +2199,15 @@ async function startAnimation() {
     setStatus(
         "0.0 s – Wald erwacht ..."
     );
+forestAudio.currentTime = 0;
+
+forestAudio.play();
+
+fadeVolume(
+    forestAudio,
+    0.40,
+    2500
+);
 
 
     await wait(1000);
@@ -2128,6 +2287,46 @@ async function startAnimation() {
     setStatus(
         "8.5 s – Der Nebel wird dichter ..."
     );
+windAudio.currentTime = 0;
+
+windAudio.play();
+
+fadeVolume(
+    forestAudio,
+    0.12,
+    4500
+);
+
+fadeVolume(
+    windAudio,
+    0.14,
+    4500
+);
+const windRestartId =
+    setTimeout(
+        () => {
+
+            windAudio2.currentTime = 0;
+
+            windAudio2.play();
+
+            fadeVolume(
+                windAudio,
+                0,
+                1200
+            );
+
+            fadeVolume(
+                windAudio2,
+                0.14,
+                1200
+            );
+
+        },
+        9200
+    );
+
+timerIds.push(windRestartId);
 
 
     prediction.classList.remove(
@@ -2245,7 +2444,21 @@ async function startAnimation() {
 
 
     await wait(1000);
+windAudio2.currentTime = 0;
 
+windAudio2.play();
+
+fadeVolume(
+    windAudio,
+    0.14,
+    800
+);
+
+fadeVolume(
+    windAudio2,
+    0.14,
+    800
+);
 
     /* =====================================================
        11.4 SEKUNDEN
@@ -2469,6 +2682,31 @@ whiteFog.style.opacity =
     setStatus(
         "19.5 s – Karte vollständig sichtbar."
     );
+    musicAudio.currentTime = 0;
+
+musicAudio.play();
+
+fadeVolume(
+    musicAudio,
+    0.42,
+    5000
+);
+
+fadeVolume(
+    windAudio,
+    0.1,
+    2500
+);
+
+musicAudio.currentTime = 0;
+
+musicAudio.play();
+
+fadeVolume(
+    musicAudio,
+    0.4,
+    5000
+);
 
 
     card.style.opacity =
@@ -2526,12 +2764,42 @@ whiteFog.style.opacity =
         "0.72";
 
 
-    await wait(3000);
+await wait(3000);
 
+fadeVolume(
+    musicAudio,
+    0,
+    10000
+);
 
-    setStatus(
-        "FERTIG – Vorhersagekarte steht."
-    );
+fadeVolume(
+    windAudio,
+    0,
+    3500
+);
+
+fadeVolume(
+    windAudio2,
+    0,
+    3500
+);
+
+fadeVolume(
+    windAudio,
+    0,
+    5000
+);
+fadeVolume(
+    forestAudio,
+    0,
+    5000
+);
+
+setStatus(
+    "FERTIG – Vorhersagekarte steht."
+);
+animationState = "RESULT";
+
 }
 
 
@@ -2548,6 +2816,137 @@ startBtn.addEventListener(
 resetBtn.addEventListener(
     "click",
     resetAnimation
+);
+/* =========================================================
+   DOPPELKLICK / DREIFACHKLICK
+   ========================================================= */
+
+
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        /*
+        Nur der obere rechte Bereich
+        reagiert auf diese Sonderbedienung.
+        */
+
+        const x =
+            event.clientX;
+
+        const y =
+            event.clientY;
+
+        const width =
+            window.innerWidth;
+
+        const height =
+            window.innerHeight;
+
+
+        const inTopRight =
+            x > width * 0.72 &&
+            y < height * 0.28;
+
+
+        if (!inTopRight) {
+
+            return;
+
+        }
+
+
+        const now =
+            Date.now();
+
+
+        /*
+        Alte Klicks entfernen.
+        */
+
+        clickTimes =
+            clickTimes.filter(
+                time =>
+                    now - time < CLICK_WINDOW
+            );
+
+
+        clickTimes.push(now);
+
+
+        /*
+        =====================================================
+        DREIFACHKLICK
+        =====================================================
+        */
+
+        if (clickTimes.length >= 3) {
+
+            clickTimes = [];
+
+
+            /*
+            Aktuelle Animation beenden
+            und anschließend vollständig
+            für eine neue Runde zurücksetzen.
+            */
+
+            endAnimation();
+
+            resetAnimation();
+
+
+            setStatus(
+                "Neue Runde bereit."
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+        =====================================================
+        DOPPELKLICK
+        =====================================================
+        
+        Wichtig:
+        Der zweite Klick beendet NICHT sofort.
+
+        Wir warten kurz ab, ob noch ein
+        dritter Klick kommt.
+        */
+
+        if (clickTimes.length === 2) {
+
+            setTimeout(
+                function() {
+
+                    /*
+                    Wenn inzwischen kein
+                    dritter Klick gekommen ist,
+                    war es tatsächlich ein Doppelklick.
+                    */
+
+                    if (
+                        clickTimes.length === 2
+                    ) {
+
+                        clickTimes = [];
+
+                        endAnimation();
+
+                    }
+
+                },
+                CLICK_WINDOW
+            );
+
+        }
+
+    }
 );
 
 
