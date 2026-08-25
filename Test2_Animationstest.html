@@ -1729,6 +1729,15 @@ function resetAudio() {
    ========================================================= */
 
 let timerIds = [];
+/* =========================================================
+   ANIMATIONSZUSTAND
+   ========================================================= */
+
+let animationState = "IDLE";
+
+let clickTimes = [];
+
+const CLICK_WINDOW = 700;
 
 
 function wait(ms) {
@@ -1750,6 +1759,22 @@ function wait(ms) {
 
 
 function clearTimers() {
+/* =========================================================
+   ANIMATION SOFORT BEENDEN
+   ========================================================= */
+
+function endAnimation() {
+
+    clearTimers();
+
+    animationState = "ENDED";
+
+    resetAudio();
+
+    setStatus(
+        "Animation beendet."
+    );
+}
 
     timerIds.forEach(
         clearTimeout
@@ -2014,7 +2039,11 @@ function showLeaves() {
 function resetAnimation() {
 
     clearTimers();
-resetAudio();
+
+    resetAudio();
+
+    animationState = "IDLE";
+
 
 
     forest.style.opacity =
