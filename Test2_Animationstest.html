@@ -2816,6 +2816,11 @@ resetBtn.addEventListener(
    DOPPELKLICK / DREIFACHKLICK
    ========================================================= */
 
+let clickTimes = [];
+
+const CLICK_WINDOW = 500;
+
+
 document.addEventListener(
     "click",
     function(event) {
@@ -2868,36 +2873,74 @@ document.addEventListener(
         clickTimes.push(now);
 
 
-        /* =================================================
-           DREIFACHKLICK
-           ================================================= */
+        /*
+        =====================================================
+        DREIFACHKLICK
+        =====================================================
+        */
 
         if (clickTimes.length >= 3) {
 
             clickTimes = [];
 
+
+            /*
+            Aktuelle Animation beenden
+            und anschließend vollständig
+            für eine neue Runde zurücksetzen.
+            */
+
+            endAnimation();
+
             resetAnimation();
+
 
             setStatus(
                 "Neue Runde bereit."
             );
+
 
             return;
 
         }
 
 
-        /* =================================================
-           DOPPELKLICK
-           ================================================= */
+        /*
+        =====================================================
+        DOPPELKLICK
+        =====================================================
+        
+        Wichtig:
+        Der zweite Klick beendet NICHT sofort.
+
+        Wir warten kurz ab, ob noch ein
+        dritter Klick kommt.
+        */
 
         if (clickTimes.length === 2) {
 
-            clickTimes = [];
+            setTimeout(
+                function() {
 
-            endAnimation();
+                    /*
+                    Wenn inzwischen kein
+                    dritter Klick gekommen ist,
+                    war es tatsächlich ein Doppelklick.
+                    */
 
-            return;
+                    if (
+                        clickTimes.length === 2
+                    ) {
+
+                        clickTimes = [];
+
+                        endAnimation();
+
+                    }
+
+                },
+                CLICK_WINDOW
+            );
 
         }
 
