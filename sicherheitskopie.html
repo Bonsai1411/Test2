@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Mystery Master - Labor 3.0</title>
+<title>Mystery Master - Sprachlabor 3.1</title>
 
 
 <style>
@@ -101,11 +101,11 @@ body {
 
     ==================================================<br>
 
-    🚀 SYSTEM-LABOR 3.0: RETRO-FUNDAMENT AKTIV<br>
+    🚀 SPRACHLABOR 3.1: DOPPEL-STARTTRIGGER AKTIV<br>
 
     ==================================================<br>
 
-    [STATUS] Warte auf Phase 0: „zusammen“...
+    [STATUS] Warte auf Phase 0: „zusammen“ ODER „dieser Stelle“...
 
 </div>
 
@@ -132,6 +132,10 @@ let geburtsMonat = null;
 let geburtsDatum = "";
 
 let istGeburtstag = false;
+
+let startDurchZusammenAnzahl = 0;
+let startDurchDieserStelleAnzahl = 0;
+let startDurchBeideAnzahl = 0;
 
 
 /* =====================================================
@@ -837,37 +841,75 @@ if (!SpeechRecognition) {
 
         /* ================================================
            PHASE 0
-           ZUSAMMEN
+           ZUSAMMEN ODER DIESER STELLE
            ================================================ */
 
         if (
             phase === 0
         ) {
 
+            const zusammenErkannt =
+                text.includes("zusammen");
 
-            if (
-                text.includes(
-                    "zusammen"
-                )
-            ) {
-
-                phase = 1;
-
-
-                phase1Text =
-                    "";
-
-
-                logToConsole(
-                    "▶️ „ZUSAMMEN“ ERKANNT"
+            const dieserStelleErkannt =
+                text.includes("dieser stelle") ||
+                text.includes("an dieser stelle") ||
+                (
+                    text.includes("dieser") &&
+                    text.includes("stelle")
                 );
 
+            if (
+                zusammenErkannt ||
+                dieserStelleErkannt
+            ) {
+
+                if (
+                    zusammenErkannt &&
+                    dieserStelleErkannt
+                ) {
+
+                    startDurchBeideAnzahl += 1;
+
+                    logToConsole(
+                        "▶️ START: BEIDE erkannt – „DIESER STELLE“ + „ZUSAMMEN“"
+                    );
+
+                } else if (
+                    dieserStelleErkannt
+                ) {
+
+                    startDurchDieserStelleAnzahl += 1;
+
+                    logToConsole(
+                        "▶️ START: „DIESER STELLE“ erkannt"
+                    );
+
+                } else {
+
+                    startDurchZusammenAnzahl += 1;
+
+                    logToConsole(
+                        "▶️ START: „ZUSAMMEN“ erkannt"
+                    );
+                }
+
+                logToConsole(
+                    "📊 STARTSTATISTIK – ZUSAMMEN: " +
+                    startDurchZusammenAnzahl +
+                    " | DIESER STELLE: " +
+                    startDurchDieserStelleAnzahl +
+                    " | BEIDE: " +
+                    startDurchBeideAnzahl
+                );
+
+                phase = 1;
+                phase1Text = "";
 
                 logToConsole(
                     "PHASE 1: SUCHE KARTENFARBE"
                 );
             }
-
 
             return;
         }
@@ -1602,4 +1644,3 @@ document
 </script>
 
 </body>
-
