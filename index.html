@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mystery Master – Hauptcode mit Finale</title>
+<title>Mystery Master – Hauptcode mit Finale 1.1</title>
 
 <style>
 html, body {
@@ -36,6 +36,7 @@ html, body {
     inset: 0;
     overflow: hidden;
     background: #000;
+    opacity: 0;
 }
 
 /* =========================================================
@@ -2057,6 +2058,9 @@ if (!SpeechRecognition) {
    ANIMATION – ELEMENTE
    ========================================================= */
 
+const stage =
+    document.getElementById("stage");
+
 const forest =
     document.getElementById("forest");
 
@@ -2483,6 +2487,13 @@ function resetAnimation() {
     card.style.transform =
         "translate(-50%, -50%) scale(0.76)";
     card.src = "";
+
+    /*
+    resetAnimation wird auch beim Programmstart und bei
+    einer neuen Runde benutzt. Deshalb bleibt die eigentliche
+    Bühne bis zum Wischen unsichtbar.
+    */
+    stage.style.opacity = "0";
 }
 
 /* =========================================================
@@ -2495,18 +2506,27 @@ async function startAnimation() {
         return;
     }
 
-    finaleGestartet = true;
-    animationState = "RUNNING";
-
     if (recognition) {
         try {
             recognition.stop();
         } catch (e) {}
     }
 
-    clearTimers();
-    resetAudio();
+    /*
+    Erst die Animation in Grundstellung bringen.
+    WICHTIG: resetAnimation() setzt animationState auf IDLE.
+    Deshalb RUNNING erst DANACH setzen.
+    */
     resetAnimation();
+
+    finaleGestartet = true;
+    animationState = "RUNNING";
+
+    /*
+    Bis zum Wischen war die Bühne komplett schwarz.
+    Jetzt wird der Wald sichtbar.
+    */
+    stage.style.opacity = "1";
 
     const cardFile =
         ermittleKartenDatei();
@@ -2932,6 +2952,8 @@ function processTopRightClick(event) {
                 resetAudio();
 
                 animationState = "ENDED";
+
+                stage.style.opacity = "0";
 
                 forest.style.opacity = "0";
                 readingFog.style.opacity = "0";
