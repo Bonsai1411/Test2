@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Mystery Master - Sprachlabor 3.1</title>
+<title>Mystery Master - Sprachlabor 3.2</title>
 
 
 <style>
@@ -101,7 +101,7 @@ body {
 
     ==================================================<br>
 
-    🚀 SPRACHLABOR 3.1: DOPPEL-STARTTRIGGER AKTIV<br>
+    🚀 SPRACHLABOR 3.1: EVENT-DIAGNOSE AKTIV<br>
 
     ==================================================<br>
 
@@ -136,6 +136,34 @@ let istGeburtstag = false;
 let startDurchZusammenAnzahl = 0;
 let startDurchDieserStelleAnzahl = 0;
 let startDurchBeideAnzahl = 0;
+
+let diagnoseSitzung = 0, diagnoseStarts = 0, diagnoseAudioStarts = 0;
+let diagnoseSpeechStarts = 0, diagnoseSpeechEnds = 0, diagnoseAudioEnds = 0;
+let diagnoseResults = 0, diagnoseErrors = 0, diagnoseEnds = 0, diagnoseLeereEnds = 0;
+let diagnoseAktuelleSitzungHatResultat = false;
+let diagnoseAktuelleSitzungHatSpeech = false;
+
+function diagnoseZeit() {
+    const d = new Date();
+    return String(d.getHours()).padStart(2,"0") + ":" +
+           String(d.getMinutes()).padStart(2,"0") + ":" +
+           String(d.getSeconds()).padStart(2,"0") + "." +
+           String(d.getMilliseconds()).padStart(3,"0");
+}
+function diagnoseLog(name, extra="") {
+    logToConsole("🧪 [" + diagnoseZeit() + "] SITZUNG " + diagnoseSitzung +
+                 " | " + name + (extra ? " | " + extra : ""));
+}
+function diagnoseStatistik() {
+    logToConsole("📈 STARTS: " + diagnoseStarts +
+        " | AUDIO: " + diagnoseAudioStarts +
+        " | SPEECH: " + diagnoseSpeechStarts +
+        " | RESULTATE: " + diagnoseResults +
+        " | ERRORS: " + diagnoseErrors +
+        " | ENDS: " + diagnoseEnds +
+        " | OHNE RESULTAT: " + diagnoseLeereEnds);
+}
+
 
 
 /* =====================================================
@@ -588,6 +616,11 @@ if (!SpeechRecognition) {
        ================================================= */
 
     recognition.onstart = () => {
+        diagnoseSitzung++;
+        diagnoseStarts++;
+        diagnoseAktuelleSitzungHatResultat = false;
+        diagnoseAktuelleSitzungHatSpeech = false;
+        diagnoseLog("START");
 
         logToConsole(
             "🎤 SPRACHERKENNUNG GESTARTET"
@@ -596,6 +629,8 @@ if (!SpeechRecognition) {
 
 
     recognition.onaudiostart = () => {
+        diagnoseAudioStarts++;
+        diagnoseLog("AUDIOSTART");
 
         logToConsole(
             "🎧 MIKROFON / AUDIO AKTIV"
@@ -604,10 +639,24 @@ if (!SpeechRecognition) {
 
 
     recognition.onspeechstart = () => {
+        diagnoseSpeechStarts++;
+        diagnoseAktuelleSitzungHatSpeech = true;
+        diagnoseLog("SPEECHSTART");
 
         logToConsole(
             "🗣️ SPRACHE ERKANNT"
         );
+    };
+
+
+    recognition.onspeechend = () => {
+        diagnoseSpeechEnds++;
+        diagnoseLog("SPEECHEND");
+    };
+
+    recognition.onaudioend = () => {
+        diagnoseAudioEnds++;
+        diagnoseLog("AUDIOEND");
     };
 
 
@@ -617,6 +666,8 @@ if (!SpeechRecognition) {
 
     recognition.onerror =
         (event) => {
+            diagnoseErrors++;
+            diagnoseLog("ERROR", event.error);
 
             logToConsole(
                 "⚠️ SPRACHERKENNUNGS-FEHLER: " +
@@ -670,6 +721,9 @@ if (!SpeechRecognition) {
 
     recognition.onresult =
         (event) => {
+            diagnoseResults++;
+            diagnoseAktuelleSitzungHatResultat = true;
+            diagnoseLog("RESULT", "results.length=" + event.results.length);
 
 
             for (
@@ -1495,6 +1549,18 @@ if (!SpeechRecognition) {
 
 
     recognition.onend = () => {
+        diagnoseEnds++;
+
+        if (!diagnoseAktuelleSitzungHatResultat) {
+            diagnoseLeereEnds++;
+        }
+
+        diagnoseLog(
+            "END",
+            "Speech=" + (diagnoseAktuelleSitzungHatSpeech ? "JA" : "NEIN") +
+            " | Resultat=" + (diagnoseAktuelleSitzungHatResultat ? "JA" : "NEIN")
+        );
+        diagnoseStatistik();
 
 
         /*
