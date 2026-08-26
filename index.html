@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mystery Master – Hauptcode mit Finale 1.2</title>
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mystery Master – Hauptcode mit Finale 1.3</title>
 
 <style>
 html, body {
@@ -58,6 +61,38 @@ html, body {
     pointer-events: none;
     opacity: 0;
 }
+
+/* =========================================================
+   NOTFALL-VORHERSAGE
+   ========================================================= */
+
+#fallback-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:
+        max(28px, env(safe-area-inset-top))
+        max(26px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(26px, env(safe-area-inset-left));
+    background: #000;
+    color: rgba(232, 211, 143, 0.96);
+    font-family: "Cinzel Decorative", Georgia, serif;
+    font-size: clamp(22px, 5vw, 48px);
+    line-height: 1.45;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.8s ease;
+}
+
+#fallback-screen.visible {
+    opacity: 1;
+}
+
 
 /* =========================================================
    ANIMATION
@@ -1465,6 +1500,12 @@ bewegen sich aber wesentlich langsamer.
 
 <div id="debug-console"></div>
 
+<div id="fallback-screen">
+    Er ist der Zauberer.<br><br>
+    Warum soll ich seine Arbeit machen?<br><br>
+    Er soll gefälligst die Vorhersage selbst machen.
+</div>
+
 <script>
 /* =========================================================
    GRUNDVARIABLEN
@@ -1760,7 +1801,12 @@ if (!SpeechRecognition) {
                 text.includes("zusammen");
 
             const startDurchDieseStelle =
-                text.includes("dieser stelle");
+                text.includes("dieser stelle") ||
+                text.includes("an dieser stelle") ||
+                (
+                    text.includes("dieser") &&
+                    text.includes("stelle")
+                );
 
             if (
                 startDurchZusammen ||
@@ -2104,6 +2150,9 @@ const silhouette =
 
 const card =
     document.getElementById("card");
+
+const fallbackScreen =
+    document.getElementById("fallback-screen");
 
 /* =========================================================
    AUDIO
@@ -2487,6 +2536,10 @@ function resetAnimation() {
         "translate(-50%, -50%) scale(0.76)";
     card.src = "";
 
+    if (fallbackScreen) {
+        fallbackScreen.classList.remove("visible");
+    }
+
     /*
     resetAnimation wird auch beim Programmstart und bei
     einer neuen Runde benutzt. Deshalb bleibt die eigentliche
@@ -2536,11 +2589,14 @@ async function startAnimation() {
     */
     if (!cardFile) {
 
-        /*
-        Notfallpfad kommt als nächster Schritt:
-        Schwarzer Bildschirm + Zauberspruch.
-        */
         animationState = "FALLBACK";
+
+        stage.style.opacity = "0";
+
+        if (fallbackScreen) {
+            fallbackScreen.classList.add("visible");
+        }
+
         return;
     }
 
@@ -2778,6 +2834,33 @@ async function startAnimation() {
 }
 
 /* =========================================================
+   VOLLBILD
+   ========================================================= */
+
+function versucheVollbild() {
+
+    const element = document.documentElement;
+
+    if (document.fullscreenElement) {
+        return;
+    }
+
+    if (element.requestFullscreen) {
+        try {
+            const result =
+                element.requestFullscreen({
+                    navigationUI: "hide"
+                });
+
+            if (result && result.catch) {
+                result.catch(() => {});
+            }
+        } catch (e) {}
+    }
+}
+
+
+/* =========================================================
    WISCHEN
    ========================================================= */
 
@@ -2837,6 +2920,7 @@ function handleTouchEnd(event) {
         distance >= 30 &&
         duration <= 1500
     ) {
+        versucheVollbild();
         startAnimation();
     }
 }
@@ -2951,6 +3035,10 @@ function processTopRightClick(event) {
                 resetAudio();
 
                 animationState = "ENDED";
+
+                if (fallbackScreen) {
+                    fallbackScreen.classList.remove("visible");
+                }
 
                 stage.style.opacity = "0";
 
