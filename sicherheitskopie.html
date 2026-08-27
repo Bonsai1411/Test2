@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Mystery Master - Sprachlabor 3.2</title>
+<title>Mystery Master - Sprachlabor 4.0</title>
 
 
 <style>
@@ -86,6 +86,24 @@ body {
     z-index: 99999;
 }
 
+
+#lab-controls {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    z-index: 100000;
+    display: flex;
+    gap: 8px;
+}
+#lab-controls button {
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #111;
+    color: #ddd;
+    padding: 10px 12px;
+    font-family: monospace;
+    font-size: 13px;
+}
 </style>
 
 </head>
@@ -101,7 +119,7 @@ body {
 
     ==================================================<br>
 
-    🚀 SPRACHLABOR 3.1: EVENT-DIAGNOSE AKTIV<br>
+    🚀 SPRACHLABOR 3.1: TIMING-DIAGNOSE AKTIV<br>
 
     ==================================================<br>
 
@@ -109,6 +127,10 @@ body {
 
 </div>
 
+<div id="lab-controls">
+    <button id="end-test-btn">TEST BEENDEN</button>
+    <button id="new-test-btn">NEUER TEST</button>
+</div>
 
 <script>
 
@@ -142,6 +164,141 @@ let diagnoseSpeechStarts = 0, diagnoseSpeechEnds = 0, diagnoseAudioEnds = 0;
 let diagnoseResults = 0, diagnoseErrors = 0, diagnoseEnds = 0, diagnoseLeereEnds = 0;
 let diagnoseAktuelleSitzungHatResultat = false;
 let diagnoseAktuelleSitzungHatSpeech = false;
+
+let testStartZeit = null;
+let testBeendet = false;
+let erkannteTexte = [];
+let codewortEreignisse = [];
+let sitzungsEreignisse = [];
+
+function seitTestStart() {
+    if (testStartZeit === null) return 0;
+    return (performance.now() - testStartZeit) / 1000;
+}
+
+function fmtSek(wert) {
+    return (Math.round(wert * 100) / 100).toFixed(2) + " s";
+}
+
+function speichereSitzungsEvent(name) {
+    sitzungsEreignisse.push({
+        zeit: seitTestStart(),
+        name: name,
+        sitzung: diagnoseSitzung
+    });
+}
+
+function speichereCodewort(name) {
+    const jetzt = seitTestStart();
+    const letztes = codewortEreignisse[codewortEreignisse.length - 1];
+
+    if (letztes && letztes.name === name && Math.abs(jetzt - letztes.zeit) < 0.30) {
+        return;
+    }
+
+    codewortEreignisse.push({
+        zeit: jetzt,
+        name: name,
+        phase: phase
+    });
+}
+
+function timingCodewoerter(text) {
+    const t = text.toLowerCase();
+
+    if (t.includes("dieser stelle") || t.includes("an dieser stelle")) speichereCodewort("DIESER STELLE");
+    if (t.includes("zusammen")) speichereCodewort("ZUSAMMEN");
+
+    if (t.includes("passiert")) speichereCodewort("FARBE: PASSIERT / PIK");
+    if (t.includes("geschehen")) speichereCodewort("FARBE: GESCHEHEN / HERZ");
+    if (t.includes("gewesen")) speichereCodewort("FARBE: GEWESEN / KREUZ");
+    if (t.includes("gehabt")) speichereCodewort("FARBE: GEHABT / KARO");
+
+    if (/\bein\s*mal\b/.test(t) || /\beinmal\b/.test(t)) speichereCodewort("WERT: EINMAL (+1)");
+    if (/\bzwei\s*mal\b/.test(t) || /\bzweimal\b/.test(t)) speichereCodewort("WERT: ZWEIMAL (+2)");
+    if (/\bdrei\s*mal\b/.test(t) || /\bdreimal\b/.test(t)) speichereCodewort("WERT: DREIMAL (+3)");
+    if (/\bvier\s*mal\b/.test(t) || /\bviermal\b/.test(t)) speichereCodewort("WERT: VIERMAL (+4)");
+
+    if (/\bhänden\b/.test(t) || /\bhaenden\b/.test(t)) {
+        speichereCodewort("WERT: HÄNDEN (+10)");
+    } else if (/\bhand\b/.test(t)) {
+        speichereCodewort("WERT: HAND (+5)");
+    }
+
+    if (
+        t.includes("reihenfolge") ||
+        (t.includes("karten") && t.includes("deck") && t.includes("bestimmt"))
+    ) {
+        speichereCodewort("REIHENFOLGE / WERT ENDE");
+    }
+
+    if (t.includes("dein datum")) speichereCodewort("DEIN DATUM");
+    if (t.includes("also")) speichereCodewort("ALSO / DATUMSZAHLEN");
+    if (t.includes("heute")) speichereCodewort("HEUTE");
+    if (t.includes("verdeckt")) speichereCodewort("VERDECKT");
+}
+
+function erstelleTestAuswertung() {
+    logToConsole("<br>==================================================");
+    logToConsole("🧾 TESTAUSWERTUNG");
+    logToConsole("==================================================");
+    logToConsole("GESAMTDAUER: " + fmtSek(seitTestStart()));
+
+    logToConsole("<br>--- ALLE ERKANNTEN TEXTE ---");
+    if (erkannteTexte.length === 0) {
+        logToConsole("(kein Textresultat)");
+    } else {
+        for (const e of erkannteTexte) {
+            logToConsole(
+                fmtSek(e.zeit) +
+                " | Sitzung " + e.sitzung +
+                " | „" + e.text + "“"
+            );
+        }
+    }
+
+    logToConsole("<br>--- CODEWORT-TIMING ---");
+    if (codewortEreignisse.length === 0) {
+        logToConsole("(keine Codewörter erkannt)");
+    } else {
+        let vorher = null;
+        for (const e of codewortEreignisse) {
+            const abstand = vorher === null ? "START" : "+" + fmtSek(e.zeit - vorher);
+            logToConsole(fmtSek(e.zeit) + " | " + e.name + " | Abstand: " + abstand);
+            vorher = e.zeit;
+        }
+    }
+
+    logToConsole("<br>--- SITZUNGSGRENZEN ---");
+    for (const e of sitzungsEreignisse) {
+        logToConsole(fmtSek(e.zeit) + " | Sitzung " + e.sitzung + " | " + e.name);
+    }
+
+    logToConsole("<br>--- PROGRAMMSTATUS ---");
+    logToConsole("PHASE: " + phase);
+    logToConsole("FARBE: " + (kartenFarbe || "(nicht erkannt)"));
+    logToConsole("WERT: " + kartenWert);
+    logToConsole("NAME: " + (zuschauerName || "(nicht erkannt)"));
+    logToConsole("DATUM: " + (geburtsDatum || "(nicht erkannt)"));
+    logToConsole("CODE KOMPLETT: " + (phase >= 4 ? "JA" : "NEIN"));
+    logToConsole("==================================================");
+}
+
+function beendeTestManuell() {
+    if (testBeendet) return;
+    testBeendet = true;
+
+    try {
+        recognition.stop();
+    } catch (e) {}
+
+    setTimeout(erstelleTestAuswertung, 300);
+}
+
+function starteNeuenTest() {
+    location.reload();
+}
+
 
 function diagnoseZeit() {
     const d = new Date();
@@ -620,7 +777,9 @@ if (!SpeechRecognition) {
         diagnoseStarts++;
         diagnoseAktuelleSitzungHatResultat = false;
         diagnoseAktuelleSitzungHatSpeech = false;
+        if (testStartZeit === null) testStartZeit = performance.now();
         diagnoseLog("START");
+        speichereSitzungsEvent("START");
 
         logToConsole(
             "🎤 SPRACHERKENNUNG GESTARTET"
@@ -631,6 +790,7 @@ if (!SpeechRecognition) {
     recognition.onaudiostart = () => {
         diagnoseAudioStarts++;
         diagnoseLog("AUDIOSTART");
+        speichereSitzungsEvent("AUDIOSTART");
 
         logToConsole(
             "🎧 MIKROFON / AUDIO AKTIV"
@@ -642,6 +802,7 @@ if (!SpeechRecognition) {
         diagnoseSpeechStarts++;
         diagnoseAktuelleSitzungHatSpeech = true;
         diagnoseLog("SPEECHSTART");
+        speichereSitzungsEvent("SPEECHSTART");
 
         logToConsole(
             "🗣️ SPRACHE ERKANNT"
@@ -652,11 +813,13 @@ if (!SpeechRecognition) {
     recognition.onspeechend = () => {
         diagnoseSpeechEnds++;
         diagnoseLog("SPEECHEND");
+        speichereSitzungsEvent("SPEECHEND");
     };
 
     recognition.onaudioend = () => {
         diagnoseAudioEnds++;
         diagnoseLog("AUDIOEND");
+        speichereSitzungsEvent("AUDIOEND");
     };
 
 
@@ -852,6 +1015,14 @@ if (!SpeechRecognition) {
                             "dein datum"
                         );
 
+
+                erkannteTexte.push({
+                    zeit: seitTestStart(),
+                    sitzung: diagnoseSitzung,
+                    text: roherText
+                });
+
+                timingCodewoerter(roherText);
 
                 logToConsole(
                     "<br>📢 [GEHÖRT] „" +
@@ -1523,11 +1694,15 @@ if (!SpeechRecognition) {
 
 
                 /*
-                Spracherkennung
-                endgültig beenden.
+                SPRACHLABOR 4.0:
+                „VERDECKT“ beendet nur die Programmlogik.
+                Der Test selbst läuft weiter, bis
+                TEST BEENDEN gedrückt wird.
                 */
 
-                recognition.stop();
+                logToConsole(
+                    "🧪 LABOR: „VERDECKT“ erkannt – Test läuft weiter bis zum manuellen Ende."
+                );
 
 
                 return;
@@ -1560,6 +1735,7 @@ if (!SpeechRecognition) {
             "Speech=" + (diagnoseAktuelleSitzungHatSpeech ? "JA" : "NEIN") +
             " | Resultat=" + (diagnoseAktuelleSitzungHatResultat ? "JA" : "NEIN")
         );
+        speichereSitzungsEvent("END");
         diagnoseStatistik();
 
 
@@ -1569,7 +1745,7 @@ if (!SpeechRecognition) {
         */
 
         if (
-            phase >= 4
+            testBeendet
         ) {
 
             return;
@@ -1660,6 +1836,15 @@ if (!SpeechRecognition) {
     }
 
 }
+
+
+document
+    .getElementById("end-test-btn")
+    .addEventListener("click", beendeTestManuell);
+
+document
+    .getElementById("new-test-btn")
+    .addEventListener("click", starteNeuenTest);
 
 
 /* =====================================================
