@@ -233,9 +233,9 @@ function timingCodewoerter(text) {
     }
 
     if (t.includes("dein datum")) speichereCodewort("DEIN DATUM");
-    if (t.includes("also")) speichereCodewort("ALSO / DATUMSZAHLEN");
+    if (t.includes("also") || t.includes("nämlich") || t.includes("naemlich")) speichereCodewort("ALSO / NÄMLICH / DATUMSZAHLEN");
     if (t.includes("heute")) speichereCodewort("HEUTE");
-    if (t.includes("verdeckt")) speichereCodewort("VERDECKT");
+    if (t.includes("verdeckt") || t.includes("unbekannt")) speichereCodewort("VERDECKT / UNBEKANNT");
 }
 
 function erstelleTestAuswertung() {
@@ -1501,7 +1501,7 @@ if (!SpeechRecognition) {
 
 
             /* --------------------------------------------
-               DATUM NACH „ALSO“
+               DATUM NACH „ALSO“ ODER „NÄMLICH“
                -------------------------------------------- */
 
             if (
@@ -1514,15 +1514,41 @@ if (!SpeechRecognition) {
                         "also"
                     );
 
+                const naemlichPosition =
+                    phase3Text.indexOf("nämlich") !== -1
+                        ? phase3Text.indexOf("nämlich")
+                        : phase3Text.indexOf("naemlich");
+
+                let zahlenTriggerPosition = -1;
+                let zahlenTriggerLaenge = 0;
+
+                if (alsoPosition !== -1 && naemlichPosition !== -1) {
+                    if (alsoPosition < naemlichPosition) {
+                        zahlenTriggerPosition = alsoPosition;
+                        zahlenTriggerLaenge = 4;
+                    } else {
+                        zahlenTriggerPosition = naemlichPosition;
+                        zahlenTriggerLaenge =
+                            phase3Text.indexOf("nämlich") === naemlichPosition ? 7 : 8;
+                    }
+                } else if (alsoPosition !== -1) {
+                    zahlenTriggerPosition = alsoPosition;
+                    zahlenTriggerLaenge = 4;
+                } else if (naemlichPosition !== -1) {
+                    zahlenTriggerPosition = naemlichPosition;
+                    zahlenTriggerLaenge =
+                        phase3Text.indexOf("nämlich") === naemlichPosition ? 7 : 8;
+                }
+
 
                 if (
-                    alsoPosition !== -1
+                    zahlenTriggerPosition !== -1
                 ) {
 
 
                     const nachAlso =
                         phase3Text.substring(
-                            alsoPosition + 4
+                            zahlenTriggerPosition + zahlenTriggerLaenge
                         );
 
 
@@ -1588,12 +1614,15 @@ if (!SpeechRecognition) {
 
 
             /* --------------------------------------------
-               VERDECKT = ABSCHLUSS
+               VERDECKT / UNBEKANNT = ABSCHLUSS
                -------------------------------------------- */
 
             if (
                 phase3Text.includes(
                     "verdeckt"
+                ) ||
+                phase3Text.includes(
+                    "unbekannt"
                 )
             ) {
 
@@ -1602,7 +1631,7 @@ if (!SpeechRecognition) {
 
 
                 logToConsole(
-                    "🛑 „VERDECKT“ ERKANNT"
+                    "🛑 „VERDECKT“ / „UNBEKANNT“ ERKANNT"
                 );
 
 
@@ -1701,7 +1730,7 @@ if (!SpeechRecognition) {
                 */
 
                 logToConsole(
-                    "🧪 LABOR: „VERDECKT“ erkannt – Test läuft weiter bis zum manuellen Ende."
+                    "🧪 LABOR: Abschlusswort erkannt – Test läuft weiter bis zum manuellen Ende."
                 );
 
 
