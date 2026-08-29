@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Mystery Master – Geburtstagsanimation Labor 1.2</title>
+<title>Mystery Master – Geburtstagsanimation Labor 1.3</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial,sans-serif}
@@ -13,7 +13,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:
 #glow{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.12),rgba(0,0,0,0) 48%);opacity:0;transition:opacity .7s}
 #nameWrap{position:absolute;left:5vw;right:5vw;top:64%;text-align:center;z-index:5;pointer-events:none}
 #name{display:inline-block;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(68px,16vw,172px);letter-spacing:.025em;color:#ffd45a;text-shadow:0 0 5px #fff2b0,0 0 18px rgba(255,205,55,.95),0 0 44px rgba(255,150,20,.78);opacity:0;filter:blur(10px);transform:scale(.9);transition:opacity .8s,filter .8s,transform .8s}
-#name.show{opacity:1;filter:blur(0);transform:scale(1);animation:nameWobble 3.6s ease-in-out infinite;transform-style:preserve-3d}
+#name.show{opacity:1;filter:blur(0);transform:scale(1);animation:nameWobble 2.8s ease-in-out infinite,nameGlow 2.1s ease-in-out infinite;transform-style:preserve-3d}
 #name.dissolve{opacity:0;filter:blur(10px);transform:scale(1.12);transition:opacity 1.5s,filter 1.5s,transform 1.5s}
 #particleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:7;pointer-events:none}
 #silhouette{position:absolute;left:50%;top:54%;width:min(50vw,310px);aspect-ratio:0.714;transform:translate(-50%,-50%) scale(.76);border:3px solid rgba(255,245,205,.95);border-radius:14px;background:rgba(255,238,165,.10);box-shadow:0 0 20px rgba(255,240,180,.8),0 0 60px rgba(255,190,70,.55);opacity:0;filter:blur(8px);z-index:8;transition:opacity 1s,filter 1s,transform 1s}
@@ -28,11 +28,17 @@ button:active{transform:scale(.97)}
 #status{width:100%;text-align:center;color:#aaa;font:12px monospace;min-height:16px}
 
 @keyframes nameWobble{
-  0%{transform:scale(1) rotateY(-7deg) rotateZ(-1deg)}
-  25%{transform:scale(1.015) rotateY(5deg) rotateZ(.8deg)}
-  50%{transform:scale(1) rotateY(-3deg) rotateZ(-.5deg)}
-  75%{transform:scale(1.012) rotateY(6deg) rotateZ(.7deg)}
-  100%{transform:scale(1) rotateY(-7deg) rotateZ(-1deg)}
+  0%{transform:perspective(650px) scale(1) rotateY(-14deg) rotateZ(-1.4deg)}
+  20%{transform:perspective(650px) scale(1.035) rotateY(10deg) rotateZ(1deg)}
+  43%{transform:perspective(650px) scale(.99) rotateY(-8deg) rotateZ(-.7deg)}
+  68%{transform:perspective(650px) scale(1.045) rotateY(13deg) rotateZ(1.2deg)}
+  100%{transform:perspective(650px) scale(1) rotateY(-14deg) rotateZ(-1.4deg)}
+}
+@keyframes nameGlow{
+  0%,100%{color:#ffd45a;filter:brightness(1);text-shadow:0 0 5px #fff2b0,0 0 18px rgba(255,205,55,.95),0 0 44px rgba(255,150,20,.78)}
+  30%{color:#ffe58b;filter:brightness(1.25);text-shadow:0 0 9px #fff8d5,0 0 28px rgba(255,220,90,1),0 0 62px rgba(255,165,25,.92)}
+  58%{color:#ffc83d;filter:brightness(.95);text-shadow:0 0 4px #ffe9a0,0 0 15px rgba(255,190,45,.9),0 0 38px rgba(255,135,10,.72)}
+  82%{color:#fff0ad;filter:brightness(1.35);text-shadow:0 0 11px white,0 0 32px rgba(255,225,105,1),0 0 72px rgba(255,175,35,.95)}
 }
 
 </style>
@@ -66,7 +72,7 @@ button:active{transform:scale(.97)}
 
 <script>
 /*
-MYSTERY MASTER – GEBURTSTAGSANIMATION LABOR 1.2
+MYSTERY MASTER – GEBURTSTAGSANIMATION LABOR 1.3
 
 Benötigte Dateien im selben Ordner:
   happy.gif
@@ -132,31 +138,34 @@ function reset(){
   status("Geburtstagslabor bereit.");
 }
 
-function makeParticles(count=900){
+function makeParticles(count=1500){
   particles=[];
   const cx=innerWidth/2, cy=innerHeight*.54;
   const cardW=Math.min(innerWidth*.50,310), cardH=cardW/0.714;
   for(let i=0;i<count;i++){
     let tx,ty;
-    // Zielpunkte über die gesamte Kartenfläche verteilen,
-    // mit leichter Betonung der Außenkante.
-    if(i%4===0){
-      const edge=i%4;
+    // 92 % der Partikel enden INNERHALB der Kartenfläche.
+    // Dadurch entsteht eine gefüllte Lichtkarte statt nur einer Kontur.
+    if(Math.random()<.92){
+      const margin=5;
+      tx=cx-cardW/2+margin+Math.random()*(cardW-margin*2);
+      ty=cy-cardH/2+margin+Math.random()*(cardH-margin*2);
+    } else {
+      // wenige Funken betonen zusätzlich die Kontur
+      const edge=Math.floor(Math.random()*4);
       if(edge===0){tx=cx-cardW/2+Math.random()*cardW;ty=cy-cardH/2}
       else if(edge===1){tx=cx+cardW/2;ty=cy-cardH/2+Math.random()*cardH}
       else if(edge===2){tx=cx-cardW/2+Math.random()*cardW;ty=cy+cardH/2}
       else {tx=cx-cardW/2;ty=cy-cardH/2+Math.random()*cardH}
-    } else {
-      tx=cx-cardW/2+Math.random()*cardW;
-      ty=cy-cardH/2+Math.random()*cardH;
     }
     particles.push({
       x:(i%3===0 ? -30-Math.random()*120 : (i%3===1 ? innerWidth+30+Math.random()*120 : Math.random()*innerWidth)),
       y:(i%3===2 ? -40-Math.random()*innerHeight*.75 : Math.random()*innerHeight*.72),
       vx:(i%3===0 ? 1.0+Math.random()*1.5 : (i%3===1 ? -1.0-Math.random()*1.5 : (Math.random()-.5)*.8)),
       vy:(i%3===2 ? .45+Math.random()*1.0 : .15+Math.random()*.55),
-      r:.8+Math.random()*2.2,
-      a:.35+Math.random()*.65,
+      r:.7+Math.random()*2.4,
+      a:.38+Math.random()*.62,
+      tw:Math.random()*Math.PI*2,
       tx,ty
     });
   }
@@ -175,11 +184,20 @@ function animateParticles(){
       if(p.y>innerHeight+20){p.y=-20;p.x=Math.random()*innerWidth}
     }
     p.x+=p.vx;p.y+=p.vy;
+    p.tw+=.07;
+    const shimmer=.78+.22*Math.sin(p.tw);
     ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,${205+Math.floor(Math.random()*45)},${100+Math.floor(Math.random()*100)},${p.a})`;
-    ctx.shadowBlur=10;ctx.shadowColor="rgba(255,210,100,.8)";
+    ctx.arc(p.x,p.y,p.r*(gather>.55?1.18:1),0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,${210+Math.floor(Math.random()*40)},${115+Math.floor(Math.random()*100)},${Math.min(1,p.a*shimmer+(gather>.72?.18:0))})`;
+    ctx.shadowBlur=(gather>.55?16:10);
+    ctx.shadowColor="rgba(255,215,105,.9)";
     ctx.fill();
+    if(gather>.72){
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,Math.max(.45,p.r*.38),0,Math.PI*2);
+      ctx.fillStyle="rgba(255,250,220,.88)";
+      ctx.fill();
+    }
   }
   ctx.shadowBlur=0;
   if(running) raf=requestAnimationFrame(animateParticles);
@@ -226,18 +244,20 @@ async function start(){
 
   later(15300,()=>{if(running)gather=.58});
 
-  later(16500,()=>{if(running)gather=1});
+  later(16500,()=>{if(running)gather=1.35});
 
   later(17200,()=>{
     if(!running)return;
-    silhouette.className="show";
-    status("17.2 s – Partikelsilhouette ist gefüllt");
+    // Noch keine harte Kontur: zuerst soll nur die gefüllte
+    // Partikelkarte sichtbar sein.
+    status("17.2 s – Kartenfläche ist vollständig mit Partikeln gefüllt");
   });
 
   later(18200,()=>{
     if(!running)return;
+    // Erst jetzt wird die ganze gefüllte Fläche zum Lichtblitz.
     silhouette.className="bright";
-    status("18.2 s – Silhouette blendet hell auf");
+    status("18.2 s – Gefüllte Partikelkarte blendet hell auf");
   });
 
   later(19000,async()=>{
