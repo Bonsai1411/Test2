@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Mystery Master – Geburtstagsanimation Labor 1.1</title>
+<title>Mystery Master – Geburtstagsanimation Labor 1.2</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial,sans-serif}
@@ -12,12 +12,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:
 #happy{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .55s ease}
 #glow{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.12),rgba(0,0,0,0) 48%);opacity:0;transition:opacity .7s}
 #nameWrap{position:absolute;left:5vw;right:5vw;top:64%;text-align:center;z-index:5;pointer-events:none}
-#name{display:inline-block;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(58px,14vw,150px);letter-spacing:.025em;color:#ffd45a;text-shadow:0 0 5px #fff2b0,0 0 18px rgba(255,205,55,.95),0 0 44px rgba(255,150,20,.78);opacity:0;filter:blur(10px);transform:scale(.9);transition:opacity .8s,filter .8s,transform .8s}
-#name.show{opacity:1;filter:blur(0);transform:scale(1)}
-#name.dissolve{opacity:0;filter:blur(8px);transform:scale(1.08);transition:opacity 1.2s,filter 1.2s,transform 1.2s}
+#name{display:inline-block;font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(68px,16vw,172px);letter-spacing:.025em;color:#ffd45a;text-shadow:0 0 5px #fff2b0,0 0 18px rgba(255,205,55,.95),0 0 44px rgba(255,150,20,.78);opacity:0;filter:blur(10px);transform:scale(.9);transition:opacity .8s,filter .8s,transform .8s}
+#name.show{opacity:1;filter:blur(0);transform:scale(1);animation:nameWobble 3.6s ease-in-out infinite;transform-style:preserve-3d}
+#name.dissolve{opacity:0;filter:blur(10px);transform:scale(1.12);transition:opacity 1.5s,filter 1.5s,transform 1.5s}
 #particleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:7;pointer-events:none}
-#silhouette{position:absolute;left:50%;top:54%;width:min(50vw,310px);aspect-ratio:0.714;transform:translate(-50%,-50%) scale(.76);border:3px solid rgba(255,245,205,.95);border-radius:14px;background:rgba(255,245,210,.08);box-shadow:0 0 20px rgba(255,240,180,.8),0 0 60px rgba(255,190,70,.55);opacity:0;filter:blur(8px);z-index:8;transition:opacity 1s,filter 1s,transform 1s}
-#silhouette.show{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}
+#silhouette{position:absolute;left:50%;top:54%;width:min(50vw,310px);aspect-ratio:0.714;transform:translate(-50%,-50%) scale(.76);border:3px solid rgba(255,245,205,.95);border-radius:14px;background:rgba(255,238,165,.10);box-shadow:0 0 20px rgba(255,240,180,.8),0 0 60px rgba(255,190,70,.55);opacity:0;filter:blur(8px);z-index:8;transition:opacity 1s,filter 1s,transform 1s}
+#silhouette.show{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1);background:rgba(255,235,150,.28)}
+#silhouette.bright{opacity:1;filter:blur(1px) brightness(2.8);transform:translate(-50%,-50%) scale(1.025);background:rgba(255,250,220,.96);box-shadow:0 0 35px rgba(255,255,255,1),0 0 95px rgba(255,220,120,.95),0 0 150px rgba(255,170,40,.75);transition:all .7s ease}
 #card{position:absolute;left:50%;top:54%;width:min(50vw,310px);height:auto;transform:translate(-50%,-50%) scale(.94);opacity:0;filter:blur(10px) brightness(1.25);z-index:9;border-radius:12px;box-shadow:0 0 26px rgba(255,255,255,.7),0 0 70px rgba(255,190,60,.55);transition:opacity .8s,filter .8s,transform .8s}
 #card.show{opacity:1;filter:blur(0) brightness(1);transform:translate(-50%,-50%) scale(1)}
 #controls{position:fixed;z-index:30;left:8px;right:8px;bottom:8px;padding:9px;border:1px solid #333;border-radius:12px;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
@@ -25,6 +26,15 @@ input,select,button{appearance:none;border:1px solid #555;border-radius:7px;back
 input{width:130px}
 button:active{transform:scale(.97)}
 #status{width:100%;text-align:center;color:#aaa;font:12px monospace;min-height:16px}
+
+@keyframes nameWobble{
+  0%{transform:scale(1) rotateY(-7deg) rotateZ(-1deg)}
+  25%{transform:scale(1.015) rotateY(5deg) rotateZ(.8deg)}
+  50%{transform:scale(1) rotateY(-3deg) rotateZ(-.5deg)}
+  75%{transform:scale(1.012) rotateY(6deg) rotateZ(.7deg)}
+  100%{transform:scale(1) rotateY(-7deg) rotateZ(-1deg)}
+}
+
 </style>
 </head>
 <body>
@@ -56,7 +66,7 @@ button:active{transform:scale(.97)}
 
 <script>
 /*
-MYSTERY MASTER – GEBURTSTAGSANIMATION LABOR 1.1
+MYSTERY MASTER – GEBURTSTAGSANIMATION LABOR 1.2
 
 Benötigte Dateien im selben Ordner:
   happy.gif
@@ -67,14 +77,15 @@ sowie Karten unter:
   karten/<kartenname>.png
 
 Erster dramaturgischer Entwurf:
-  0.0 s  happy.gif + Feuerwerk (stark reduzierte Lautstärke)
-  2.7 s  Name erscheint
-  8.7 s  Name löst sich auf / Partikelregen beginnt
-  9.0 s  Crossfade Feuerwerk -> Feier
- 11.3 s  Partikel sammeln sich zur Kartensilhouette
- 13.8 s  Silhouette steht
- 15.0 s  Karte erscheint + Fanfare
- 16.8 s  Karte bleibt stehen
+  0.0 s  happy.gif + Feuerwerk
+  3.0 s  Name erscheint
+ 10.0 s  Name löst sich auf / dichter, langsamer Partikelregen
+ 10.5 s  Crossfade Feuerwerk -> Feier
+ 14.0 s  Partikel beginnen sich zur Kartenfläche zu verdichten
+ 17.2 s  Kartenfläche ist als Partikelsilhouette gefüllt
+ 18.2 s  Silhouette blendet hell auf
+ 19.0 s  Karte erscheint + Fanfare
+ 21.0 s  Karte bleibt stehen
 */
 
 const happy=document.getElementById("happy");
@@ -121,22 +132,29 @@ function reset(){
   status("Geburtstagslabor bereit.");
 }
 
-function makeParticles(count=430){
+function makeParticles(count=900){
   particles=[];
   const cx=innerWidth/2, cy=innerHeight*.54;
   const cardW=Math.min(innerWidth*.50,310), cardH=cardW/0.714;
   for(let i=0;i<count;i++){
-    const edge=i%4;
     let tx,ty;
-    if(edge===0){tx=cx-cardW/2+Math.random()*cardW;ty=cy-cardH/2}
-    else if(edge===1){tx=cx+cardW/2;ty=cy-cardH/2+Math.random()*cardH}
-    else if(edge===2){tx=cx-cardW/2+Math.random()*cardW;ty=cy+cardH/2}
-    else {tx=cx-cardW/2;ty=cy-cardH/2+Math.random()*cardH}
+    // Zielpunkte über die gesamte Kartenfläche verteilen,
+    // mit leichter Betonung der Außenkante.
+    if(i%4===0){
+      const edge=i%4;
+      if(edge===0){tx=cx-cardW/2+Math.random()*cardW;ty=cy-cardH/2}
+      else if(edge===1){tx=cx+cardW/2;ty=cy-cardH/2+Math.random()*cardH}
+      else if(edge===2){tx=cx-cardW/2+Math.random()*cardW;ty=cy+cardH/2}
+      else {tx=cx-cardW/2;ty=cy-cardH/2+Math.random()*cardH}
+    } else {
+      tx=cx-cardW/2+Math.random()*cardW;
+      ty=cy-cardH/2+Math.random()*cardH;
+    }
     particles.push({
       x:(i%3===0 ? -30-Math.random()*120 : (i%3===1 ? innerWidth+30+Math.random()*120 : Math.random()*innerWidth)),
       y:(i%3===2 ? -40-Math.random()*innerHeight*.75 : Math.random()*innerHeight*.72),
       vx:(i%3===0 ? 1.0+Math.random()*1.5 : (i%3===1 ? -1.0-Math.random()*1.5 : (Math.random()-.5)*.8)),
-      vy:(i%3===2 ? 1.0+Math.random()*2.0 : .35+Math.random()*1.1),
+      vy:(i%3===2 ? .45+Math.random()*1.0 : .15+Math.random()*.55),
       r:.8+Math.random()*2.2,
       a:.35+Math.random()*.65,
       tx,ty
@@ -148,7 +166,7 @@ function animateParticles(){
   ctx.clearRect(0,0,innerWidth,innerHeight);
   for(const p of particles){
     if(gather>0){
-      const pull=.004+.035*gather;
+      const pull=.0025+.024*gather;
       p.vx+=(p.tx-p.x)*pull;
       p.vy+=(p.ty-p.y)*pull;
       p.vx*=.82;p.vy*=.82;
@@ -177,58 +195,64 @@ async function start(){
   fireworks.volume=.30;
   try{await fireworks.play()}catch(e){status("Audio konnte nicht automatisch starten – erneut tippen.")}
 
-  later(2700,()=>{
+  later(3000,()=>{
     if(!running)return;
     nameEl.className="show";
-    status("2.7 s – Name erscheint");
+    status("3.0 s – Name erscheint");
   });
 
-  later(8700,()=>{
+  later(10000,()=>{
     if(!running)return;
     nameEl.className="dissolve";
     makeParticles();
     animateParticles();
-    status("8.7 s – Name zerfällt / Partikelregen");
+    status("10.0 s – Name zerfällt / dichter Partikelregen");
   });
 
-  later(9000,async()=>{
+  later(10500,async()=>{
     if(!running)return;
     party.volume=0;
     try{await party.play()}catch(e){}
     fadeAudio(fireworks,Math.min(.30,fireworks.volume),0,3300);
     fadeAudio(party,0,.28,3300);
-    status("9.0 s – Sound-Crossfade zu feier.mp3");
+    status("10.5 s – Sound-Crossfade zu feier.mp3");
   });
 
-  later(11300,()=>{
+  later(14000,()=>{
     if(!running)return;
     gather=.25;
-    status("11.3 s – Partikel beginnen sich zu sammeln");
+    status("14.0 s – Partikel beginnen sich zur Kartenfläche zu sammeln");
   });
 
-  later(12300,()=>{if(running)gather=.58});
+  later(15300,()=>{if(running)gather=.58});
 
-  later(13200,()=>{if(running)gather=1});
+  later(16500,()=>{if(running)gather=1});
 
-  later(13800,()=>{
+  later(17200,()=>{
     if(!running)return;
     silhouette.className="show";
-    status("13.8 s – Kartensilhouette entsteht");
+    status("17.2 s – Partikelsilhouette ist gefüllt");
   });
 
-  later(15000,async()=>{
+  later(18200,()=>{
+    if(!running)return;
+    silhouette.className="bright";
+    status("18.2 s – Silhouette blendet hell auf");
+  });
+
+  later(19000,async()=>{
     if(!running)return;
     card.className="show";
     silhouette.style.opacity=.18;
     fanfare.volume=.28;
     try{await fanfare.play()}catch(e){}
-    status("15.0 s – Karte erscheint / FANFARE");
+    status("19.0 s – Karte erscheint / FANFARE");
   });
 
-  later(16800,()=>{
+  later(21000,()=>{
     if(!running)return;
     particles.forEach(p=>p.a*=.35);
-    status("16.8 s – Karte bleibt stehen");
+    status("21.0 s – Karte bleibt stehen");
   });
 }
 
