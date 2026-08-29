@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>Mystery Master - Sprachlabor 4.2</title>
+<title>Mystery Master - Sprachlabor 4.3</title>
 
 
 <style>
@@ -135,18 +135,26 @@ body {
 <script>
 
 /* =====================================================
-   ÄNDERUNGSSTAND SPRACHLABOR 4.2
+   ÄNDERUNGSSTAND SPRACHLABOR 4.3
 
+   Bisher bestätigte Änderungen:
    - „DIESER STELLE“ bleibt als alternativer Starttrigger erhalten.
-     Testformulierung: „Wir wollen an dieser Stelle ... zusammen ...“
-   - „UNBEKANNT“ ist zusätzlich zu „VERDECKT“ ein Abschluss-Trigger.
-   - Datumslogik im Labor geändert:
-       ERST  -> erste folgende Zahl = Tag
-       DANN  -> erste folgende Zahl = Monat
-     Das Datum wird nur gesetzt, wenn BEIDE Trigger mit gültigen Zahlen
-     in dieser Reihenfolge erkannt wurden.
-   - „ALSO“ / „NÄMLICH“ werden für die Datumszahlen in 4.2 nicht mehr
-     als Trigger verwendet.
+   - „UNBEKANNT“ bleibt zusätzlich zu „VERDECKT“ ein Abschluss-Trigger.
+
+   Neuer Datumstest in 4.3:
+   - „ERST“ / „DANN“ werden wieder verworfen.
+   - Das Geburtsdatum wird direkt aus der ersten Nennung
+     unmittelbar nach „DEIN DATUM“ gelesen.
+   - Unterstützt werden u. a. Schreibweisen wie:
+       03.02
+       2.01
+       erste zweite
+   - Das Datum wird nur übernommen, wenn zwei getrennte,
+     gültige Werte erkannt werden:
+       erster Wert = Tag (1–31)
+       zweiter Wert = Monat (1–12)
+   - Ein einzelner zusammengezogener Wert wie „11“ wird
+     NICHT geraten oder künstlich in 1 / 1 zerlegt.
    ===================================================== */
 
 
@@ -248,8 +256,6 @@ function timingCodewoerter(text) {
     }
 
     if (t.includes("dein datum")) speichereCodewort("DEIN DATUM");
-    if (t.includes("erst")) speichereCodewort("ERST / TAG");
-    if (t.includes("dann")) speichereCodewort("DANN / MONAT");
     if (t.includes("heute")) speichereCodewort("HEUTE");
     if (t.includes("verdeckt") || t.includes("unbekannt")) speichereCodewort("VERDECKT / UNBEKANNT");
 }
@@ -576,6 +582,226 @@ function findeZahlen(text) {
 
 
     return zahlen;
+}
+
+
+/* =====================================================
+   DATUM DIREKT NACH „DEIN DATUM“ AUSLESEN
+   ===================================================== */
+
+const datumsOrdinalStamm = {
+    "erst": 1,
+    "zweit": 2,
+    "dritt": 3,
+    "viert": 4,
+    "fünft": 5,
+    "funft": 5,
+    "sechst": 6,
+    "siebt": 7,
+    "acht": 8,
+    "neunt": 9,
+    "zehnt": 10,
+    "elft": 11,
+    "zwölft": 12,
+    "zwolft": 12,
+    "dreizehnt": 13,
+    "vierzehnt": 14,
+    "fünfzehnt": 15,
+    "funfzehnt": 15,
+    "sechzehnt": 16,
+    "siebzehnt": 17,
+    "achtzehnt": 18,
+    "neunzehnt": 19,
+    "zwanzigst": 20,
+    "einundzwanzigst": 21,
+    "zweiundzwanzigst": 22,
+    "dreiundzwanzigst": 23,
+    "vierundzwanzigst": 24,
+    "fünfundzwanzigst": 25,
+    "funfundzwanzigst": 25,
+    "sechsundzwanzigst": 26,
+    "siebenundzwanzigst": 27,
+    "achtundzwanzigst": 28,
+    "neunundzwanzigst": 29,
+    "dreißigst": 30,
+    "dreissigst": 30,
+    "einunddreißigst": 31,
+    "einunddreissigst": 31
+};
+
+
+function datumsWertAusWort(wort) {
+
+    const sauber =
+        wort
+            .toLowerCase()
+            .replace(/^[^a-zäöüß0-9]+|[^a-zäöüß0-9]+$/g, "");
+
+
+    if (/^\d{1,2}$/.test(sauber)) {
+
+        return parseInt(
+            sauber,
+            10
+        );
+    }
+
+
+    if (
+        Object.prototype.hasOwnProperty.call(
+            deutscheZahlen,
+            sauber
+        )
+    ) {
+
+        return deutscheZahlen[
+            sauber
+        ];
+    }
+
+
+    /*
+    Ordinalformen normalisieren:
+    erste / erster / ersten / erstem / erstes -> erst
+    zweite / zweiter / zweiten ...            -> zweit
+    */
+    const ordinalStamm =
+        sauber.replace(
+            /(e|en|er|em|es)$/i,
+            ""
+        );
+
+
+    if (
+        Object.prototype.hasOwnProperty.call(
+            datumsOrdinalStamm,
+            ordinalStamm
+        )
+    ) {
+
+        return datumsOrdinalStamm[
+            ordinalStamm
+        ];
+    }
+
+
+    return null;
+}
+
+
+function findeDatumDirektNachDeinDatum(text) {
+
+    const trigger =
+        "dein datum";
+
+    const triggerPosition =
+        text.indexOf(
+            trigger
+        );
+
+
+    if (
+        triggerPosition === -1
+    ) {
+
+        return null;
+    }
+
+
+    /*
+    Nur der Text NACH „DEIN DATUM“ wird untersucht.
+    Punkte und typische Datumstrenner werden als echte
+    Trennung behandelt, damit z. B. 03.02 -> 03 / 02 wird.
+    */
+    const nachDatum =
+        text
+            .substring(
+                triggerPosition +
+                trigger.length
+            )
+            .toLowerCase()
+            .replace(
+                /[.\/\\-]/g,
+                " "
+            )
+            .replace(
+                /[,!?;:]/g,
+                " "
+            );
+
+
+    const woerter =
+        nachDatum
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    const werte = [];
+
+
+    for (
+        const wort of woerter
+    ) {
+
+        const wert =
+            datumsWertAusWort(
+                wort
+            );
+
+
+        if (
+            wert !== null
+        ) {
+
+            werte.push(
+                wert
+            );
+
+
+            /*
+            Sobald zwei getrennte Werte vorliegen,
+            haben wir Tag und Monat.
+            */
+            if (
+                werte.length >= 2
+            ) {
+
+                break;
+            }
+        }
+    }
+
+
+    if (
+        werte.length < 2
+    ) {
+
+        return null;
+    }
+
+
+    const tag =
+        werte[0];
+
+    const monat =
+        werte[1];
+
+
+    if (
+        tag < 1 ||
+        tag > 31 ||
+        monat < 1 ||
+        monat > 12
+    ) {
+
+        return null;
+    }
+
+
+    return {
+        tag,
+        monat
+    };
 }
 
 
@@ -1517,103 +1743,49 @@ if (!SpeechRecognition) {
 
 
             /* --------------------------------------------
-               DATUM NACH „ERST ... DANN ...“
+               DATUM DIREKT NACH „DEIN DATUM“
                -------------------------------------------- */
 
             if (
                 geburtsTag === null
             ) {
 
-                const erstPosition =
-                    phase3Text.indexOf(
-                        "erst"
-                    );
-
-                const dannPosition =
-                    phase3Text.indexOf(
-                        "dann"
+                const erkanntesDatum =
+                    findeDatumDirektNachDeinDatum(
+                        phase3Text
                     );
 
 
                 if (
-                    erstPosition !== -1 &&
-                    dannPosition !== -1 &&
-                    dannPosition > erstPosition
+                    erkanntesDatum
                 ) {
 
-                    const nachErstBisDann =
-                        phase3Text.substring(
-                            erstPosition + 4,
-                            dannPosition
+                    geburtsTag =
+                        erkanntesDatum.tag;
+
+                    geburtsMonat =
+                        erkanntesDatum.monat;
+
+                    geburtsDatum =
+                        String(
+                            geburtsTag
+                        ).padStart(
+                            2,
+                            "0"
+                        ) +
+                        "." +
+                        String(
+                            geburtsMonat
+                        ).padStart(
+                            2,
+                            "0"
                         );
 
-                    const nachDann =
-                        phase3Text.substring(
-                            dannPosition + 4
-                        );
 
-                    const tagZahlen =
-                        findeZahlen(
-                            nachErstBisDann
-                        );
-
-                    const monatZahlen =
-                        findeZahlen(
-                            nachDann
-                        );
-
-
-                    if (
-                        tagZahlen.length >= 1 &&
-                        monatZahlen.length >= 1
-                    ) {
-
-                        const tag =
-                            tagZahlen[0];
-
-                        const monat =
-                            monatZahlen[0];
-
-
-                        if (
-                            tag >= 1 &&
-                            tag <= 31 &&
-                            monat >= 1 &&
-                            monat <= 12
-                        ) {
-
-                            geburtsTag =
-                                tag;
-
-                            geburtsMonat =
-                                monat;
-
-                            geburtsDatum =
-                                String(
-                                    tag
-                                ).padStart(
-                                    2,
-                                    "0"
-                                ) +
-                                "." +
-                                String(
-                                    monat
-                                ).padStart(
-                                    2,
-                                    "0"
-                                );
-
-
-                            logToConsole(
-                                "📅 DATUM: ERST " +
-                                tag +
-                                " / DANN " +
-                                monat +
-                                " → " +
-                                geburtsDatum
-                            );
-                        }
-                    }
+                    logToConsole(
+                        "📅 DATUM DIREKT NACH „DEIN DATUM“: " +
+                        geburtsDatum
+                    );
                 }
             }
 
@@ -1728,8 +1900,8 @@ if (!SpeechRecognition) {
 
 
                 /*
-                SPRACHLABOR 4.0:
-                „VERDECKT“ beendet nur die Programmlogik.
+                SPRACHLABOR 4.3:
+                „VERDECKT“ / „UNBEKANNT“ beendet nur die Programmlogik.
                 Der Test selbst läuft weiter, bis
                 TEST BEENDEN gedrückt wird.
                 */
