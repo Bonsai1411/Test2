@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Mystery Master – Geburtstagsanimation Labor 1.4</title>
+<title>Mystery Master – Geburtstagsanimation Labor 1.5</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial,sans-serif}
@@ -72,7 +72,7 @@ button:active{transform:scale(.97)}
 
 <script>
 /*
-MYSTERY MASTER – GEBURTSTAGSANIMATION LABOR 1.4
+MYSTERY MASTER – GEBURTSTAGSANIMATION LABOR 1.5
 
 Benötigte Dateien im selben Ordner:
   happy.gif
@@ -81,6 +81,13 @@ Benötigte Dateien im selben Ordner:
   fanfare.mp3
 sowie Karten unter:
   karten/<kartenname>.png
+
+Änderungen 1.5:
+  - feuerwerk.mp3 etwas leiser (25 %)
+  - feier.mp3 etwas leiser (30 %)
+  - fanfare.mp3 deutlicher (42 %)
+  - Aufblenden/Kartenreveal ca. 0,3–0,4 s später
+  - Optik und Partikel aus 1.4 unverändert
 
 Änderungen 1.4:
   - Namensbewegung auf halbe Geschwindigkeit
@@ -236,7 +243,7 @@ async function start(){
 
   status("0.0 s – Feuerwerk startet");
   happy.style.opacity=1; glow.style.opacity=1;
-  fireworks.volume=.30;
+  fireworks.volume=.25;
   try{await fireworks.play()}catch(e){status("Audio konnte nicht automatisch starten – erneut tippen.")}
 
   later(3000,()=>{
@@ -257,8 +264,8 @@ async function start(){
     if(!running)return;
     party.volume=0;
     try{await party.play()}catch(e){}
-    fadeAudio(fireworks,Math.min(.30,fireworks.volume),0,3300);
-    fadeAudio(party,0,.36,3300);
+    fadeAudio(fireworks,Math.min(.25,fireworks.volume),0,3300);
+    fadeAudio(party,0,.30,3300);
     status("10.5 s – Sound-Crossfade zu feier.mp3");
   });
 
@@ -279,23 +286,23 @@ async function start(){
     status("17.2 s – Kartenfläche ist vollständig mit Partikeln gefüllt");
   });
 
-  later(18200,()=>{
+  later(18500,()=>{
     if(!running)return;
     // Erst jetzt wird die ganze gefüllte Fläche zum Lichtblitz.
     silhouette.className="bright";
-    status("18.2 s – Gefüllte Partikelkarte blendet hell auf");
+    status("18.5 s – Gefüllte Partikelkarte blendet hell auf");
   });
 
-  later(19000,async()=>{
+  later(19400,async()=>{
     if(!running)return;
     card.className="show";
     silhouette.style.opacity=.18;
-    fanfare.volume=.28;
+    fanfare.volume=.42;
     try{await fanfare.play()}catch(e){}
     status("19.0 s – Karte erscheint / FANFARE");
   });
 
-  later(21000,()=>{
+  later(21400,()=>{
     if(!running)return;
     particles.forEach(p=>p.a*=.35);
     status("21.0 s – Karte bleibt stehen");
