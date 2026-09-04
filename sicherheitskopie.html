@@ -1866,7 +1866,13 @@ bewegen sich aber wesentlich langsamer.
 
 <script>
 /*
-MYSTERY MASTER – HAUPTCODE 1.7
+MYSTERY MASTER – HAUPTCODE 1.8
+
+Neu 1.8:
+- Ein echter Wisch startet jetzt immer ein Finale.
+- Ist die Sprachroutine vollständig (Phase 4), läuft die normale Vorhersage.
+- Ist sie noch nicht vollständig (Phase 0–3), erscheint automatisch die
+  Notlösung „Er ist der Zauberer …“.
 
 Korrektur 1.7:
 - TEST-Schalter von oben links nach unten links verschoben.
@@ -3913,6 +3919,30 @@ function resetAnimation() {
    FINALE
    ========================================================= */
 
+function startFallback() {
+
+    if (finaleGestartet) {
+        return;
+    }
+
+    if (recognition) {
+        try {
+            recognition.stop();
+        } catch (e) {}
+    }
+
+    resetAnimation();
+
+    finaleGestartet = true;
+    animationState = "FALLBACK";
+
+    stage.style.opacity = "0";
+
+    if (fallbackScreen) {
+        fallbackScreen.classList.add("visible");
+    }
+}
+
 async function startAnimation() {
 
     if (finaleGestartet) {
@@ -4284,14 +4314,23 @@ function handleTouchEnd(event) {
 
     /*
     Ein echter kurzer Wisch genügt.
+
+    Vollständige Sprachroutine (Phase 4): echtes Finale.
+    Noch nicht vollständig (Phase 0–3): automatische Notlösung.
+    Dadurch kann der Zuschauer im Ernstfall einfach wischen,
+    auch wenn zuvor ein Codewort nicht angekommen ist.
     */
     if (
-        phase >= 4 &&
         distance >= 30 &&
         duration <= 1500
     ) {
         versucheVollbild();
-        startAnimation();
+
+        if (phase >= 4) {
+            startAnimation();
+        } else {
+            startFallback();
+        }
     }
 }
 
