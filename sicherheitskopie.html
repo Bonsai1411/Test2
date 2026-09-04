@@ -1,5 +1,4335 @@
 <!DOCTYPE html>
+<html lang<!DOCTYPE html>
 <html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mystery Master – Hauptcode mit Finale 1.4</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: monospace;
+}
+
+/* =========================================================
+   NOT-AUS
+   ========================================================= */
+#emergency-exit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25%;
+    height: 25%;
+    z-index: 99999;
+}
+
+/* =========================================================
+   FINALE / VORFÜHRBÜHNE
+   ========================================================= */
+#stage {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: #000;
+    opacity: 0;
+}
+
+/* =========================================================
+   VERDECKTER DEBUG-BEREICH
+   Im Vorführmodus unsichtbar.
+   ========================================================= */
+#debug-console {
+    display: none;
+}
+
+/* =========================================================
+   WISCHEN-HINWEIS
+   ========================================================= */
+#ready-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: #000;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* =========================================================
+   NOTFALL-VORHERSAGE
+   ========================================================= */
+
+#fallback-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:
+        max(28px, env(safe-area-inset-top))
+        max(26px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(26px, env(safe-area-inset-left));
+    background: #000;
+    color: rgba(232, 211, 143, 0.96);
+    font-family: "Cinzel Decorative", Georgia, serif;
+    font-size: clamp(22px, 5vw, 48px);
+    line-height: 1.45;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.8s ease;
+}
+
+#fallback-screen.visible {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+
+/* =========================================================
+   GRUNDLAYOUT
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #000;
+
+    font-family:
+        "Cinzel Decorative",
+        "Palatino Linotype",
+        "Book Antiqua",
+        Georgia,
+        serif;
+}
+
+
+#stage {
+
+    position: fixed;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   WALD
+   ========================================================= */
+
+#forest {
+
+    position: absolute;
+
+    inset: -3%;
+
+    width: 106%;
+    height: 106%;
+
+    object-fit: cover;
+
+    opacity: 1;
+
+    transform: scale(1.02);
+
+    transition:
+        opacity 5s ease,
+        transform 10s ease;
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   DUNKELHEIT
+   ========================================================= */
+
+#darkness {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(0, 0, 0, 0.30);
+
+    opacity: 0;
+
+    transition:
+        opacity 5s ease;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   VORHERSAGE
+   ========================================================= */
+
+#prediction-wrap {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 8vw;
+
+    z-index: 20;
+
+    pointer-events: none;
+}
+
+
+#prediction {
+
+    max-width: 94%;
+
+    text-align: center;
+
+    color:
+        rgba(232, 211, 143, 0);
+
+    font-family:
+        "Cinzel Decorative",
+        "Palatino Linotype",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(24px, 5.2vw, 62px);
+
+    line-height:
+        1.35;
+
+    letter-spacing:
+        0.025em;
+
+    font-weight:
+        400;
+
+    white-space:
+        normal;
+
+    word-break:
+        normal;
+
+    overflow-wrap:
+        normal;
+
+    hyphens:
+        none;
+
+    text-shadow:
+        0 0 7px rgba(232, 211, 143, 0.30),
+        0 0 18px rgba(210, 185, 100, 0.22),
+        0 0 38px rgba(190, 160, 80, 0.10);
+
+    filter:
+        blur(12px);
+
+    transform:
+        scale(0.96);
+
+    opacity:
+        0;
+
+    transition:
+        opacity 2.5s ease,
+        filter 2.8s ease,
+        transform 3s ease;
+}
+
+
+/* =========================================================
+   LEBENDIGE GESAMTSCHRIFT
+   ========================================================= */
+
+#prediction.alive {
+
+    animation:
+        livingText 5.2s ease-in-out infinite alternate;
+}
+
+
+@keyframes livingText {
+
+    0% {
+
+        transform:
+            translate3d(-1px, 0px, 0)
+            scale(1.000);
+
+        text-shadow:
+            0 0 7px rgba(232, 211, 143, 0.25),
+            0 0 18px rgba(210, 185, 100, 0.16),
+            0 0 34px rgba(190, 160, 80, 0.08);
+    }
+
+    35% {
+
+        transform:
+            translate3d(1px, -1px, 0)
+            scale(1.008);
+
+        text-shadow:
+            0 0 10px rgba(232, 211, 143, 0.39),
+            0 0 25px rgba(210, 185, 100, 0.23),
+            0 0 45px rgba(190, 160, 80, 0.12);
+    }
+
+    70% {
+
+        transform:
+            translate3d(-1px, 1px, 0)
+            scale(1.004);
+
+        text-shadow:
+            0 0 8px rgba(232, 211, 143, 0.32),
+            0 0 22px rgba(210, 185, 100, 0.19);
+    }
+
+    100% {
+
+        transform:
+            translate3d(1px, 0px, 0)
+            scale(0.998);
+
+        text-shadow:
+            0 0 6px rgba(232, 211, 143, 0.23),
+            0 0 17px rgba(210, 185, 100, 0.12);
+    }
+}
+
+
+/* =========================================================
+   EINZELNE BUCHSTABEN
+   ========================================================= */
+
+.magic-word {
+
+    display: inline-block;
+
+    white-space: nowrap;
+}
+
+
+.magic-letter {
+
+    display: inline-block;
+
+    animation:
+        letterBreath var(--delay) ease-in-out infinite alternate;
+
+    opacity:
+        var(--opacity);
+
+    transform:
+        translateY(0)
+        scale(1);
+
+    text-shadow:
+        inherit;
+}
+
+
+@keyframes letterBreath {
+
+    0% {
+
+        opacity:
+            var(--opacity);
+
+        transform:
+            translate3d(
+                var(--x1),
+                1px,
+                0
+            )
+            scale(0.998);
+    }
+
+    30% {
+
+        opacity:
+            calc(var(--opacity) + 0.07);
+
+        transform:
+            translate3d(
+                var(--x2),
+                -1px,
+                0
+            )
+            scale(1.006);
+    }
+
+    65% {
+
+        opacity:
+            calc(var(--opacity) - 0.06);
+
+        transform:
+            translate3d(
+                var(--x3),
+                1px,
+                0
+            )
+            scale(0.997);
+    }
+
+    100% {
+
+        opacity:
+            var(--opacity);
+
+        transform:
+            translate3d(
+                var(--x4),
+                0px,
+                0
+            )
+            scale(1.004);
+    }
+}
+
+
+/* =========================================================
+   LESE-NEBEL
+   ========================================================= */
+
+#reading-fog {
+
+    position: absolute;
+
+    inset: -12%;
+
+    z-index: 25;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    /*
+    Weniger Blur auf dem gesamten Container.
+    Die einzelnen Wolken besitzen ihren eigenen Blur.
+    */
+
+    transition:
+        opacity 3.5s ease;
+}
+
+
+.fog-cloud {
+
+    position: absolute;
+
+    width: 58%;
+    height: 23%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(235, 235, 235, 0.17) 0%,
+            rgba(215, 215, 215, 0.09) 28%,
+            rgba(180, 180, 180, 0.035) 55%,
+            rgba(180, 180, 180, 0) 76%
+        );
+
+    filter:
+        blur(14px);
+
+    opacity:
+        0.75;
+
+    will-change:
+        transform;
+}
+
+
+.fog-cloud.one {
+
+    left: -20%;
+    top: 30%;
+
+    animation:
+        fogMoveOne 10s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveOne {
+
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(55vw, -3vh, 0)
+            scale(1.12);
+    }
+
+    100% {
+        transform:
+            translate3d(110vw, 2vh, 0)
+            scale(1.04);
+    }
+}
+
+
+.fog-cloud.two {
+
+    right: -25%;
+    top: 45%;
+
+    width: 68%;
+    height: 27%;
+
+    opacity:
+        0.60;
+
+    animation:
+        fogMoveTwo 13s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveTwo {
+
+    0% {
+        transform:
+            translate3d(0, 2vh, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(-48vw, -2vh, 0)
+            scale(1.15);
+    }
+
+    100% {
+        transform:
+            translate3d(-105vw, 3vh, 0)
+            scale(1.06);
+    }
+}
+
+
+.fog-cloud.three {
+
+    left: 15%;
+    top: 62%;
+
+    width: 70%;
+    height: 18%;
+
+    opacity:
+        0.40;
+
+    /*
+    Diese Wolke bewegt sich langsamer,
+    damit nicht zu viele große Layer
+    gleichzeitig stark animiert werden.
+    */
+
+    animation:
+        fogMoveThree 18s ease-in-out infinite;
+}
+
+
+@keyframes fogMoveThree {
+
+    0% {
+        transform:
+            translate3d(-8vw, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(12vw, -3vh, 0)
+            scale(1.14);
+    }
+
+    100% {
+        transform:
+            translate3d(-6vw, 2vh, 0)
+            scale(1.04);
+    }
+}
+
+
+/* =========================================================
+   VORDERGRUND-NEBEL
+   ========================================================= */
+
+#front-mist {
+
+    position: absolute;
+
+    inset: -8%;
+
+    z-index: 32;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background:
+
+        radial-gradient(
+            ellipse at 20% 15%,
+            rgba(225, 225, 225, 0.18) 0%,
+            rgba(200, 200, 200, 0.08) 28%,
+            rgba(200, 200, 200, 0) 58%
+        ),
+
+        radial-gradient(
+            ellipse at 78% 18%,
+            rgba(235, 235, 235, 0.16) 0%,
+            rgba(205, 205, 205, 0.07) 27%,
+            rgba(205, 205, 205, 0) 60%
+        ),
+
+        radial-gradient(
+            ellipse at 52% 45%,
+            rgba(235, 235, 235, 0.20) 0%,
+            rgba(210, 210, 210, 0.09) 30%,
+            rgba(210, 210, 210, 0) 68%
+        ),
+
+        radial-gradient(
+            ellipse at 35% 80%,
+            rgba(225, 225, 225, 0.18) 0%,
+            rgba(200, 200, 200, 0.07) 30%,
+            rgba(200, 200, 200, 0) 65%
+        );
+
+    filter:
+        blur(22px);
+
+    transform:
+        scale(1.02);
+
+    transition:
+        opacity 5s ease;
+
+    /*
+    Nur ein Layer wird bewegt.
+    */
+
+    will-change:
+        opacity;
+}
+
+
+#front-mist::before,
+#front-mist::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -8%;
+
+    background:
+
+        radial-gradient(
+            ellipse at 40% 30%,
+            rgba(245, 245, 245, 0.10) 0%,
+            rgba(220, 220, 220, 0.03) 30%,
+            transparent 65%
+        ),
+
+        radial-gradient(
+            ellipse at 70% 70%,
+            rgba(230, 230, 230, 0.08) 0%,
+            rgba(210, 210, 210, 0.025) 32%,
+            transparent 65%
+        );
+}
+
+
+#front-mist::before {
+
+    animation:
+        mistDriftA 24s ease-in-out infinite alternate;
+}
+
+
+#front-mist::after {
+
+    animation:
+        mistDriftB 29s ease-in-out infinite alternate;
+}
+
+
+@keyframes mistDriftA {
+
+    0% {
+        transform:
+            translate3d(-3%, 1%, 0)
+            scale(1);
+    }
+
+    100% {
+        transform:
+            translate3d(3%, -2%, 0)
+            scale(1.05);
+    }
+}
+
+
+@keyframes mistDriftB {
+
+    0% {
+        transform:
+            translate3d(3%, -1%, 0)
+            scale(1.02);
+    }
+
+    100% {
+        transform:
+            translate3d(-3%, 2%, 0)
+            scale(1.06);
+    }
+}
+
+
+/* =========================================================
+   FINALER GIF-NEBEL
+   ========================================================= */
+
+#fog-front {
+
+    position: absolute;
+
+    inset: -3%;
+
+    width: 106%;
+    height: 106%;
+
+    object-fit: cover;
+
+    z-index: 34;
+
+    opacity: 0;
+
+    /*
+    Nur sehr leichter Blur.
+    */
+
+    filter:
+        blur(1px);
+
+    transform:
+        scale(1.04);
+
+    mix-blend-mode:
+        screen;
+
+    pointer-events:
+        none;
+
+    transition:
+        opacity 5s ease;
+}
+
+
+/* =========================================================
+   FINALER DUNST
+   ========================================================= */
+
+#mist {
+
+    position: absolute;
+
+    inset: -6%;
+
+    z-index: 27;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 58%,
+            rgba(245, 245, 245, 0.25) 0%,
+            rgba(200, 200, 200, 0.14) 20%,
+            rgba(110, 110, 110, 0.06) 43%,
+            rgba(0, 0, 0, 0) 72%
+        );
+
+    filter:
+        blur(22px);
+
+    transition:
+        opacity 4.5s ease;
+}
+
+
+/* =========================================================
+   DICHTER ABSCHLUSSNEBEL
+   ========================================================= */
+
+#dense-fog {
+
+    position: absolute;
+
+    inset: -7%;
+
+    z-index: 45;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    /*
+    Mehr Tiefe statt einfach nur mehr Weiß.
+    */
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 43%,
+            rgba(235, 235, 235, 0.50) 0%,
+            rgba(205, 205, 205, 0.34) 24%,
+            rgba(160, 160, 160, 0.18) 48%,
+            rgba(95, 95, 95, 0.09) 72%,
+            rgba(0, 0, 0, 0.015) 100%
+        ),
+
+        radial-gradient(
+            ellipse at 12% 22%,
+            rgba(240, 240, 240, 0.30) 0%,
+            rgba(190, 190, 190, 0.12) 36%,
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse at 88% 25%,
+            rgba(240, 240, 240, 0.28) 0%,
+            rgba(190, 190, 190, 0.11) 36%,
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse at 30% 82%,
+            rgba(225, 225, 225, 0.22) 0%,
+            rgba(180, 180, 180, 0.08) 36%,
+            transparent 70%
+        );
+
+    filter:
+        blur(14px);
+
+    transition:
+        opacity 4.5s ease;
+}
+/* =========================================================
+   HELLER SCHLUSSNEBEL
+   Überblendet den Wald beim Erscheinen der Silhouette
+   ========================================================= */
+
+#white-fog {
+
+    position: absolute;
+
+    inset: -8%;
+
+    z-index: 44;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 50%,
+            rgba(255, 255, 255, 0.72) 0%,
+            rgba(248, 248, 248, 0.58) 28%,
+            rgba(235, 235, 235, 0.38) 52%,
+            rgba(220, 220, 220, 0.18) 72%,
+            rgba(210, 210, 210, 0) 100%
+        );
+
+    filter:
+        blur(18px);
+
+    transform:
+        scale(1.03);
+
+    transition:
+        opacity 3.5s ease;
+}
+
+
+/*
+Die zusätzlichen Nebelstrukturen bleiben,
+bewegen sich aber wesentlich langsamer.
+*/
+
+#dense-fog::before,
+#dense-fog::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -7%;
+
+    background:
+
+        radial-gradient(
+            ellipse at 35% 55%,
+            rgba(245, 245, 245, 0.17) 0%,
+            rgba(215, 215, 215, 0.07) 34%,
+            transparent 68%
+        ),
+
+        radial-gradient(
+            ellipse at 72% 42%,
+            rgba(235, 235, 235, 0.15) 0%,
+            rgba(205, 205, 205, 0.06) 34%,
+            transparent 70%
+        );
+}
+
+
+#dense-fog::before {
+
+    animation:
+        denseFogDriftA 22s ease-in-out infinite alternate;
+}
+
+
+#dense-fog::after {
+
+    animation:
+        denseFogDriftB 27s ease-in-out infinite alternate;
+}
+
+
+@keyframes denseFogDriftA {
+
+    0% {
+        transform:
+            translate3d(-2%, 1%, 0);
+    }
+
+    100% {
+        transform:
+            translate3d(3%, -2%, 0);
+    }
+}
+
+
+@keyframes denseFogDriftB {
+
+    0% {
+        transform:
+            translate3d(2%, -1%, 0);
+    }
+
+    100% {
+        transform:
+            translate3d(-3%, 2%, 0);
+    }
+}
+
+
+
+/* =========================================================
+   BLÄTTER
+   ========================================================= */
+
+#leaves {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 38;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    opacity: 0;
+}
+
+
+.leaf {
+
+    position: absolute;
+
+    width: 18px;
+    height: 10px;
+
+    border-radius:
+        100% 0 100% 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8f6f35 0%,
+            #6f4d22 55%,
+            #3d2915 100%
+        );
+
+    box-shadow:
+        0 0 3px rgba(0, 0, 0, 0.35);
+
+    opacity: 0;
+
+    /*
+    Leichte Unschärfe.
+    Nicht stärker machen, sonst werden die Blätter
+    auf kleinen Displays zu matschig.
+    */
+
+    filter:
+        blur(1px);
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+/* =========================================================
+   BLATTDETAIL
+   ========================================================= */
+
+.leaf::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 15%;
+    top: 48%;
+
+    width: 72%;
+    height: 1px;
+
+    background:
+        rgba(35, 22, 10, 0.40);
+
+    transform:
+        rotate(-12deg);
+
+    transform-origin:
+        left center;
+}
+
+
+/* =========================================================
+   BLATT 1
+   ========================================================= */
+
+.leaf.one {
+
+    left: -8%;
+    top: 17%;
+
+    width: 19px;
+    height: 11px;
+}
+
+
+/* =========================================================
+   BLATT 2
+   ========================================================= */
+
+.leaf.two {
+
+    right: -8%;
+    top: 29%;
+
+    width: 15px;
+    height: 9px;
+}
+
+
+/* =========================================================
+   BLATT 3
+   ========================================================= */
+
+.leaf.three {
+
+    left: 28%;
+    top: -7%;
+
+    width: 21px;
+    height: 12px;
+}
+
+
+/* =========================================================
+   BLATT-ANIMATIONEN
+   Schneller als vorher.
+   ========================================================= */
+
+.leaf.one.run {
+
+    animation:
+        leafOne 4.4s ease-in-out forwards;
+}
+
+
+.leaf.two.run {
+
+    animation:
+        leafTwo 4.8s ease-in-out forwards;
+}
+
+
+.leaf.three.run {
+
+    animation:
+        leafThree 4.6s ease-in-out forwards;
+}
+
+
+@keyframes leafOne {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(-20deg)
+            scale(0.75);
+    }
+
+    8% {
+        opacity: 0.82;
+    }
+
+    32% {
+        transform:
+            translate3d(30vw, 13vh, 0)
+            rotate(145deg)
+            scale(1);
+    }
+
+    60% {
+        transform:
+            translate3d(64vw, 27vh, 0)
+            rotate(275deg)
+            scale(0.94);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(112vw, 46vh, 0)
+            rotate(430deg)
+            scale(0.68);
+    }
+}
+
+
+@keyframes leafTwo {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(30deg)
+            scale(0.75);
+    }
+
+    8% {
+        opacity: 0.78;
+    }
+
+    30% {
+        transform:
+            translate3d(-25vw, 8vh, 0)
+            rotate(-90deg)
+            scale(1.05);
+    }
+
+    60% {
+        transform:
+            translate3d(-60vw, 26vh, 0)
+            rotate(-220deg)
+            scale(0.92);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(-116vw, 52vh, 0)
+            rotate(-420deg)
+            scale(0.66);
+    }
+}
+
+
+@keyframes leafThree {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotate(70deg)
+            scale(0.70);
+    }
+
+    8% {
+        opacity: 0.82;
+    }
+
+    32% {
+        transform:
+            translate3d(15vw, 20vh, 0)
+            rotate(180deg)
+            scale(1.08);
+    }
+
+    62% {
+        transform:
+            translate3d(-8vw, 48vh, 0)
+            rotate(325deg)
+            scale(0.90);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate3d(-30vw, 112vh, 0)
+            rotate(500deg)
+            scale(0.64);
+    }
+}
+
+
+/* =========================================================
+   SILHOUETTE
+   ========================================================= */
+
+#silhouette {
+
+    position: absolute;
+
+    z-index: 40;
+
+    left: 50%;
+    top: 50%;
+
+    width:
+        min(44vw, 270px);
+
+    aspect-ratio:
+        2 / 3;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.58);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(5, 5, 5, 0.90);
+
+    box-shadow:
+        0 0 35px rgba(255, 255, 255, 0.08),
+        0 0 100px rgba(255, 255, 255, 0.06);
+
+    opacity:
+        0;
+
+    filter:
+        blur(22px);
+
+    transition:
+        opacity 4s ease,
+        filter 4s ease,
+        transform 4.5s cubic-bezier(.2, .75, .2, 1);
+
+    pointer-events:
+        none;
+}
+
+
+#silhouette::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 5%;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius:
+        7px;
+}
+
+
+/* =========================================================
+   KARTE
+   ========================================================= */
+
+#card {
+
+    position: absolute;
+
+    z-index: 50;
+
+    left: 50%;
+    top: 50%;
+
+    width:
+        min(50vw, 310px);
+
+    aspect-ratio:
+        2 / 3;
+
+    object-fit:
+        contain;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.76);
+
+    opacity:
+        0;
+
+    /*
+    Blur nur für das Einblenden.
+    Danach wird er nicht mehr animiert.
+    */
+
+    filter:
+        blur(20px)
+        brightness(0.50);
+
+    transition:
+        opacity 4.5s ease,
+        filter 4.5s ease,
+        transform 5s cubic-bezier(.2, .75, .2, 1);
+
+    pointer-events:
+        none;
+}
+
+
+
+
+
+/* =========================================================
+   MOBILE PERFORMANCE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    /*
+    Auf dem Handy etwas weniger Blur.
+    Die optische Wirkung bleibt erhalten,
+    aber die GPU bekommt weniger Arbeit.
+    */
+
+    .fog-cloud {
+        filter: blur(11px);
+    }
+
+    #front-mist {
+        filter: blur(17px);
+    }
+
+    #mist {
+        filter: blur(17px);
+    }
+
+    #dense-fog {
+        filter: blur(11px);
+    }
+
+    .leaf {
+        filter: blur(0.8px);
+    }
+
+}
+
+
+
+/* =========================================================
+   GEBURTSTAGSFINALE – STAND LABOR 1.6
+   Eigene Bildsprache, kein Wald/Nebel.
+   ========================================================= */
+
+#birthday-stage {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    overflow: hidden;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#birthday-happy {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity .55s ease;
+}
+
+#birthday-glow {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255,255,255,.12),
+            rgba(0,0,0,0) 48%
+        );
+    opacity: 0;
+    transition: opacity .7s;
+}
+
+#birthday-name-wrap {
+    position: absolute;
+    left: 5vw;
+    right: 5vw;
+    top: 64%;
+    text-align: center;
+    z-index: 55;
+    pointer-events: none;
+}
+
+#birthday-name {
+    display: inline-block;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    font-size: clamp(68px,16vw,172px);
+    letter-spacing: .025em;
+    color: #ffd45a;
+    text-shadow:
+        0 0 5px #fff2b0,
+        0 0 18px rgba(255,205,55,.95),
+        0 0 44px rgba(255,150,20,.78);
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(.9);
+    transition:
+        opacity .8s,
+        filter .8s,
+        transform .8s;
+}
+
+#birthday-name.show {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+    animation:
+        birthdayNameWobble 5.6s ease-in-out infinite,
+        birthdayNameGlow 4.2s ease-in-out infinite;
+    transform-style: preserve-3d;
+}
+
+#birthday-name.dissolve {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(1.12);
+    transition:
+        opacity 1.5s,
+        filter 1.5s,
+        transform 1.5s;
+}
+
+#birthday-particle-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 57;
+    pointer-events: none;
+}
+
+#birthday-silhouette {
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    width: min(50vw,310px);
+    aspect-ratio: .714;
+    transform:
+        translate(-50%,-50%)
+        scale(.76);
+    border: 3px solid rgba(255,245,205,.95);
+    border-radius: 14px;
+    background: rgba(255,238,165,.10);
+    box-shadow:
+        0 0 20px rgba(255,240,180,.8),
+        0 0 60px rgba(255,190,70,.55);
+    opacity: 0;
+    filter: blur(8px);
+    z-index: 58;
+    transition:
+        opacity 1s,
+        filter 1s,
+        transform 1s;
+}
+
+#birthday-silhouette.bright {
+    opacity: 1;
+    filter: blur(1px) brightness(2.8);
+    transform:
+        translate(-50%,-50%)
+        scale(1.025);
+    background: rgba(255,250,220,.96);
+    box-shadow:
+        0 0 35px rgba(255,255,255,1),
+        0 0 95px rgba(255,220,120,.95),
+        0 0 150px rgba(255,170,40,.75);
+    transition: all .7s ease;
+}
+
+#birthday-card {
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    width: min(50vw,310px);
+    height: auto;
+    transform:
+        translate(-50%,-50%)
+        scale(.94);
+    opacity: 0;
+    filter: blur(10px) brightness(1.25);
+    z-index: 59;
+    border-radius: 12px;
+    box-shadow:
+        0 0 26px rgba(255,255,255,.7),
+        0 0 70px rgba(255,190,60,.55);
+    transition:
+        opacity .8s,
+        filter .8s,
+        transform .8s;
+}
+
+#birthday-card.show {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform:
+        translate(-50%,-50%)
+        scale(1);
+}
+
+@keyframes birthdayNameWobble {
+    0% {
+        transform:
+            perspective(650px)
+            scale(1)
+            rotateY(-14deg)
+            rotateZ(-1.4deg);
+    }
+    20% {
+        transform:
+            perspective(650px)
+            scale(1.035)
+            rotateY(10deg)
+            rotateZ(1deg);
+    }
+    43% {
+        transform:
+            perspective(650px)
+            scale(.99)
+            rotateY(-8deg)
+            rotateZ(-.7deg);
+    }
+    68% {
+        transform:
+            perspective(650px)
+            scale(1.045)
+            rotateY(13deg)
+            rotateZ(1.2deg);
+    }
+    100% {
+        transform:
+            perspective(650px)
+            scale(1)
+            rotateY(-14deg)
+            rotateZ(-1.4deg);
+    }
+}
+
+@keyframes birthdayNameGlow {
+    0%,100% {
+        color: #ffd45a;
+        filter: brightness(1);
+        text-shadow:
+            0 0 5px #fff2b0,
+            0 0 18px rgba(255,205,55,.95),
+            0 0 44px rgba(255,150,20,.78);
+    }
+    30% {
+        color: #ffe58b;
+        filter: brightness(1.25);
+        text-shadow:
+            0 0 9px #fff8d5,
+            0 0 28px rgba(255,220,90,1),
+            0 0 62px rgba(255,165,25,.92);
+    }
+    58% {
+        color: #ffc83d;
+        filter: brightness(.95);
+        text-shadow:
+            0 0 4px #ffe9a0,
+            0 0 15px rgba(255,190,45,.9),
+            0 0 38px rgba(255,135,10,.72);
+    }
+    82% {
+        color: #fff0ad;
+        filter: brightness(1.35);
+        text-shadow:
+            0 0 11px white,
+            0 0 32px rgba(255,225,105,1),
+            0 0 72px rgba(255,175,35,.95);
+    }
+}
+
+/* =========================================================
+   SICHERHEITS- UND VORFÜHRSTEUERUNG
+   ========================================================= */
+
+#stage,
+#stage * {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+@media (max-width: 600px) {
+    #prediction-wrap {
+        padding: 8vw;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="emergency-exit"></div>
+
+<div id="stage">
+
+    <img
+        id="forest"
+        src="wald.gif"
+        alt=""
+    >
+
+    <div id="darkness"></div>
+
+
+    <div id="reading-fog">
+
+        <div class="fog-cloud one"></div>
+
+        <div class="fog-cloud two"></div>
+
+        <div class="fog-cloud three"></div>
+
+    </div>
+
+
+    <div id="mist"></div>
+
+
+    <div id="front-mist"></div>
+
+
+    <div id="prediction-wrap">
+
+        <div id="prediction"></div>
+
+    </div>
+
+
+    <img
+        id="fog-front"
+        src="wald.gif"
+        alt=""
+    >
+
+
+    <div id="dense-fog"></div>
+
+
+    <div id="leaves">
+
+        <div class="leaf one"></div>
+
+        <div class="leaf two"></div>
+
+        <div class="leaf three"></div>
+
+    </div>
+
+<div id="white-fog"></div>
+
+    <div id="silhouette"></div>
+
+
+    <img
+        id="card"
+        src=""
+        alt="Vorhersagekarte"
+    >
+
+
+    <!-- ==================================================
+         GEBURTSTAGSFINALE – eigener Layer
+         ================================================== -->
+    <div id="birthday-stage">
+
+        <img
+            id="birthday-happy"
+            src="happy.gif"
+            alt=""
+        >
+
+        <div id="birthday-glow"></div>
+
+        <div id="birthday-name-wrap">
+            <div id="birthday-name"></div>
+        </div>
+
+        <canvas id="birthday-particle-canvas"></canvas>
+
+        <div id="birthday-silhouette"></div>
+
+        <img
+            id="birthday-card"
+            src=""
+            alt="Geburtstags-Vorhersagekarte"
+        >
+
+    </div>
+
+</div>
+</div>
+
+<div id="debug-console"></div>
+
+<div id="fallback-screen">
+    Er ist der Zauberer.<br><br>
+    Warum soll ich seine Arbeit machen?<br><br>
+    Er soll gefälligst die Vorhersage selbst machen.
+</div>
+
+<script>
+/*
+MYSTERY MASTER – HAUPTCODE 1.4
+
+Integriert:
+- Sprachlabor 4.3:
+  Datum direkt nach „DEIN DATUM“
+  inklusive Ziffern / Zahlwörtern / Ordinalformen.
+- Abschluss über „VERDECKT“ ODER „UNBEKANNT“.
+- Geburtstagsanimation Labor 1.6 als eigener Finale-Zweig.
+  Kein Wald/Nebel im Geburtstagsfall.
+*/
+
+/* =========================================================
+   GRUNDVARIABLEN
+   ========================================================= */
+
+let phase = 0;
+
+let kartenFarbe = "";
+let kartenWert = 0;
+
+let zuschauerName = "";
+
+let geburtsTag = null;
+let geburtsMonat = null;
+let geburtsDatum = "";
+
+let istGeburtstag = false;
+
+let phase1Text = "";
+let phase2Text = "";
+let phase3Text = "";
+
+let verarbeitetesResultat = 0;
+
+/* =========================================================
+   FINALE STATUSWERTE
+   ========================================================= */
+
+let finaleGestartet = false;
+let animationState = "IDLE";
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+
+let clickTimes = [];
+const CLICK_WINDOW = 700;
+
+/* =========================================================
+   DEBUG
+   ========================================================= */
+
+const consoleDiv =
+    document.getElementById("debug-console");
+
+function logToConsole(text) {
+    if (consoleDiv) {
+        consoleDiv.innerHTML += "<br>" + text;
+    }
+}
+
+/* =========================================================
+   DEUTSCHE ZAHLEN
+   ========================================================= */
+
+const deutscheZahlen = {
+    "null": 0,
+    "eins": 1, "ein": 1,
+    "zwei": 2,
+    "drei": 3,
+    "vier": 4,
+    "fünf": 5, "funf": 5,
+    "sechs": 6,
+    "sieben": 7,
+    "acht": 8,
+    "neun": 9,
+    "zehn": 10,
+    "elf": 11,
+    "zwölf": 12, "zwolf": 12,
+    "dreizehn": 13,
+    "vierzehn": 14,
+    "fünfzehn": 15, "funfzehn": 15,
+    "sechzehn": 16,
+    "siebzehn": 17,
+    "achtzehn": 18,
+    "neunzehn": 19,
+    "zwanzig": 20,
+    "einundzwanzig": 21,
+    "zweiundzwanzig": 22,
+    "dreiundzwanzig": 23,
+    "vierundzwanzig": 24,
+    "fünfundzwanzig": 25, "funfundzwanzig": 25,
+    "sechsundzwanzig": 26,
+    "siebenundzwanzig": 27,
+    "achtundzwanzig": 28,
+    "neunundzwanzig": 29,
+    "dreißig": 30, "dreissig": 30,
+    "einunddreißig": 31, "einunddreissig": 31
+};
+
+function findeZahlen(text) {
+    let zahlen = [];
+
+    let gesaeubert = text.replace(/\./g, " ");
+
+    const mitZiffern = gesaeubert.match(/\d+/g);
+
+    if (mitZiffern) {
+        for (const zahl of mitZiffern) {
+            const wert = parseInt(zahl, 10);
+            if (!isNaN(wert)) {
+                zahlen.push(wert);
+            }
+        }
+    }
+
+    const woerter = gesaeubert
+        .toLowerCase()
+        .replace(/[.,!?;:]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+
+    for (const wort of woerter) {
+        if (Object.prototype.hasOwnProperty.call(deutscheZahlen, wort)) {
+            zahlen.push(deutscheZahlen[wort]);
+        }
+    }
+
+    return zahlen;
+}
+
+
+/* =========================================================
+   DATUM DIREKT NACH „DEIN DATUM“ – SPRACHLABOR 4.3
+   Unterstützt z. B.:
+   03.02 / 2.01 / erste zweite
+   Eine einzelne Zahl wie "11" wird NICHT als 1.1 geraten.
+   ========================================================= */
+
+const datumsOrdinalStamm = {
+    "erst": 1,
+    "zweit": 2,
+    "dritt": 3,
+    "viert": 4,
+    "fünft": 5, "funft": 5,
+    "sechst": 6,
+    "siebt": 7,
+    "acht": 8,
+    "neunt": 9,
+    "zehnt": 10,
+    "elft": 11,
+    "zwölft": 12, "zwolft": 12,
+    "dreizehnt": 13,
+    "vierzehnt": 14,
+    "fünfzehnt": 15, "funfzehnt": 15,
+    "sechzehnt": 16,
+    "siebzehnt": 17,
+    "achtzehnt": 18,
+    "neunzehnt": 19,
+    "zwanzigst": 20,
+    "einundzwanzigst": 21,
+    "zweiundzwanzigst": 22,
+    "dreiundzwanzigst": 23,
+    "vierundzwanzigst": 24,
+    "fünfundzwanzigst": 25, "funfundzwanzigst": 25,
+    "sechsundzwanzigst": 26,
+    "siebenundzwanzigst": 27,
+    "achtundzwanzigst": 28,
+    "neunundzwanzigst": 29,
+    "dreißigst": 30, "dreissigst": 30,
+    "einunddreißigst": 31, "einunddreissigst": 31
+};
+
+function datumsWertAusWort(wort) {
+
+    const sauber =
+        wort
+            .toLowerCase()
+            .replace(/^[^a-zäöüß0-9]+|[^a-zäöüß0-9]+$/g, "");
+
+    if (/^\d{1,2}$/.test(sauber)) {
+        return parseInt(sauber, 10);
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(
+            deutscheZahlen,
+            sauber
+        )
+    ) {
+        return deutscheZahlen[sauber];
+    }
+
+    const ordinalStamm =
+        sauber.replace(
+            /(e|en|er|em|es)$/i,
+            ""
+        );
+
+    if (
+        Object.prototype.hasOwnProperty.call(
+            datumsOrdinalStamm,
+            ordinalStamm
+        )
+    ) {
+        return datumsOrdinalStamm[ordinalStamm];
+    }
+
+    return null;
+}
+
+function findeDatumDirektNachDeinDatum(text) {
+
+    const trigger = "dein datum";
+    const triggerPosition = text.indexOf(trigger);
+
+    if (triggerPosition === -1) {
+        return null;
+    }
+
+    const nachDatum =
+        text
+            .substring(triggerPosition + trigger.length)
+            .toLowerCase()
+            .replace(/[.\/\\-]/g, " ")
+            .replace(/[,!?;:]/g, " ");
+
+    const woerter =
+        nachDatum
+            .split(/\s+/)
+            .filter(Boolean);
+
+    const werte = [];
+
+    for (const wort of woerter) {
+
+        const wert =
+            datumsWertAusWort(wort);
+
+        if (wert !== null) {
+            werte.push(wert);
+
+            if (werte.length >= 2) {
+                break;
+            }
+        }
+    }
+
+    if (werte.length < 2) {
+        return null;
+    }
+
+    const tag = werte[0];
+    const monat = werte[1];
+
+    if (
+        tag < 1 ||
+        tag > 31 ||
+        monat < 1 ||
+        monat > 12
+    ) {
+        return null;
+    }
+
+    return { tag, monat };
+}
+
+/* =========================================================
+   CODEWÖRTER
+   ========================================================= */
+
+function verarbeiteCodewoerter(text) {
+
+    let etwasGefunden = false;
+
+    text = text
+        .toLowerCase()
+        .replace(/\bein\s+mal\b/g, "einmal")
+        .replace(/\bzwei\s+mal\b/g, "zweimal")
+        .replace(/\bdrei\s+mal\b/g, "dreimal")
+        .replace(/\bvier\s+mal\b/g, "viermal");
+
+    if (/\bhänden\b/.test(text) || /\bhaenden\b/.test(text)) {
+        kartenWert += 10;
+        etwasGefunden = true;
+        logToConsole("[CODE] HÄNDEN +10");
+    }
+
+    if (/\beinmal\b/.test(text)) {
+        kartenWert += 1;
+        etwasGefunden = true;
+    }
+
+    if (/\bzweimal\b/.test(text)) {
+        kartenWert += 2;
+        etwasGefunden = true;
+    }
+
+    if (/\bdreimal\b/.test(text)) {
+        kartenWert += 3;
+        etwasGefunden = true;
+    }
+
+    if (/\bviermal\b/.test(text)) {
+        kartenWert += 4;
+        etwasGefunden = true;
+    }
+
+    if (
+        !/\bhänden\b/.test(text) &&
+        !/\bhaenden\b/.test(text) &&
+        /\bhand\b/.test(text)
+    ) {
+        kartenWert += 5;
+        etwasGefunden = true;
+    }
+
+    if (etwasGefunden) {
+        logToConsole("[CODE] Kartenwert aktuell: " + kartenWert);
+    }
+}
+
+/* =========================================================
+   SPEECH RECOGNITION
+   ========================================================= */
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+
+if (!SpeechRecognition) {
+
+    logToConsole(
+        "FEHLER: SpeechRecognition nicht verfügbar."
+    );
+
+} else {
+
+    recognition = new SpeechRecognition();
+
+    recognition.lang = "de-DE";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+        logToConsole("SPRACHERKENNUNG GESTARTET");
+    };
+
+    recognition.onaudiostart = () => {
+        logToConsole("AUDIO AKTIV");
+    };
+
+    recognition.onspeechstart = () => {
+        logToConsole("SPRACHE ERKANNT");
+    };
+
+    recognition.onerror = (event) => {
+
+        logToConsole(
+            "SPRACHFEHLER: " + event.error
+        );
+
+        if (
+            (event.error === "no-speech" ||
+             event.error === "aborted") &&
+            phase < 4 &&
+            !finaleGestartet
+        ) {
+            setTimeout(() => {
+                try {
+                    recognition.start();
+                } catch (e) {}
+            }, 250);
+        }
+    };
+
+    recognition.onresult = (event) => {
+
+        for (
+            let i = verarbeitetesResultat;
+            i < event.results.length;
+            i++
+        ) {
+
+            const result = event.results[i];
+
+            if (!result || !result[0]) {
+                continue;
+            }
+
+            let roherText =
+                result[0].transcript;
+
+            if (!roherText) {
+                continue;
+            }
+
+            roherText =
+                roherText
+                    .toLowerCase()
+                    .trim();
+
+            verarbeitetesResultat = i + 1;
+
+            let text =
+                roherText
+                    .replace(/ein\s+mal/g, "einmal")
+                    .replace(/zwei\s+mal/g, "zweimal")
+                    .replace(/drei\s+mal/g, "dreimal")
+                    .replace(/vier\s+mal/g, "viermal")
+                    .replace(/reihem\s+folge/g, "reihenfolge")
+                    .replace(/reihen\s+folge/g, "reihenfolge")
+                    .replace(/garten/g, "reihenfolge")
+                    .replace(/kartendeckt/g, "reihenfolge")
+                    .replace(/deckels/g, "reihenfolge")
+                    .replace(/beachte/g, "14")
+                    .replace(/achte/g, "8")
+                    .replace(/ranz/g, "franz")
+                    .replace(/wolf/g, "12")
+                    .replace(/dein\s+datum/g, "dein datum");
+
+            logToConsole("[GEHÖRT] " + roherText);
+
+            verarbeiteSprache(text);
+        }
+    };
+
+    function verarbeiteSprache(text) {
+
+        /* ================================================
+           PHASE 0 – ZWEI ALTERNATIVE STARTWÖRTER
+           ================================================ */
+
+        if (phase === 0) {
+
+            const startDurchZusammen =
+                text.includes("zusammen");
+
+            const startDurchDieseStelle =
+                text.includes("dieser stelle") ||
+                text.includes("an dieser stelle") ||
+                (
+                    text.includes("dieser") &&
+                    text.includes("stelle")
+                );
+
+            if (
+                startDurchZusammen ||
+                startDurchDieseStelle
+            ) {
+
+                phase = 1;
+                phase1Text = "";
+
+                logToConsole(
+                    startDurchZusammen
+                        ? "START: ZUSAMMEN"
+                        : "START: DIESER STELLE"
+                );
+
+                return;
+            }
+
+            return;
+        }
+
+        /* ================================================
+           PHASE 1 – KARTENFARBE
+           ================================================ */
+
+        if (phase === 1) {
+
+            phase1Text += " " + text;
+
+            phase1Text =
+                phase1Text.replace(
+                    /reihen\s+folge/g,
+                    "reihenfolge"
+                );
+
+            if (phase1Text.includes("passiert")) {
+                kartenFarbe = "Pik";
+            }
+            else if (phase1Text.includes("geschehen")) {
+                kartenFarbe = "Herz";
+            }
+            else if (phase1Text.includes("gewesen")) {
+                kartenFarbe = "Kreuz";
+            }
+            else if (phase1Text.includes("gehabt")) {
+                kartenFarbe = "Karo";
+            }
+
+            if (kartenFarbe !== "") {
+
+                logToConsole(
+                    "KARTENFARBE: " + kartenFarbe
+                );
+
+                phase = 2;
+                phase2Text = "";
+
+                return;
+            }
+
+            return;
+        }
+
+        /* ================================================
+           PHASE 2 – KARTENWERT
+           ================================================ */
+
+        if (phase === 2) {
+
+            phase2Text += " " + text;
+
+            phase2Text =
+                phase2Text.replace(
+                    /reihen\s+folge/g,
+                    "reihenfolge"
+                );
+
+            verarbeiteCodewoerter(text);
+
+            const reihenfolgeErkannt =
+                phase2Text.includes("reihenfolge");
+
+            const folgeKartenErkannt =
+                phase2Text.includes("folge") &&
+                phase2Text.includes("karten") &&
+                phase2Text.includes("bestimmt");
+
+            const kartenDeckBestimmt =
+                phase2Text.includes("karten") &&
+                phase2Text.includes("deck") &&
+                phase2Text.includes("bestimmt");
+
+            if (
+                reihenfolgeErkannt ||
+                folgeKartenErkannt ||
+                kartenDeckBestimmt
+            ) {
+
+                phase = 3;
+                phase3Text = "";
+
+                logToConsole(
+                    "KARTENWERT FESTGESETZT: " +
+                    kartenWert
+                );
+
+                return;
+            }
+
+            return;
+        }
+
+        /* ================================================
+           PHASE 3 – NAME / DATUM / HEUTE / VERDECKT
+           ================================================ */
+
+        if (phase === 3) {
+
+            phase3Text += " " + text;
+
+            const datumPosition =
+                phase3Text.indexOf("dein datum");
+
+            if (
+                datumPosition > 0 &&
+                zuschauerName === ""
+            ) {
+
+                let nameTeil =
+                    phase3Text
+                        .substring(0, datumPosition)
+                        .trim();
+
+                const woerter =
+                    nameTeil.split(/\s+/);
+
+                if (woerter.length > 0) {
+
+                    nameTeil =
+                        woerter[
+                            woerter.length - 1
+                        ].replace(
+                            /^[,.:;!? ]+|[,.:;!? ]+$/g,
+                            ""
+                        );
+
+                    if (
+                        nameTeil !== "" &&
+                        nameTeil.toLowerCase() !== "name"
+                    ) {
+
+                        zuschauerName =
+                            nameTeil
+                                .charAt(0)
+                                .toUpperCase() +
+                            nameTeil.slice(1);
+
+                        logToConsole(
+                            "NAME: " + zuschauerName
+                        );
+                    }
+                }
+            }
+
+            if (
+                geburtsTag === null &&
+                phase3Text.includes("heute")
+            ) {
+
+                const heute = new Date();
+
+                geburtsTag = heute.getDate();
+                geburtsMonat = heute.getMonth() + 1;
+
+                geburtsDatum =
+                    String(geburtsTag).padStart(2, "0") +
+                    "." +
+                    String(geburtsMonat).padStart(2, "0");
+            }
+
+            if (geburtsTag === null) {
+
+                const erkanntesDatum =
+                    findeDatumDirektNachDeinDatum(
+                        phase3Text
+                    );
+
+                if (erkanntesDatum) {
+
+                    geburtsTag =
+                        erkanntesDatum.tag;
+
+                    geburtsMonat =
+                        erkanntesDatum.monat;
+
+                    geburtsDatum =
+                        String(geburtsTag).padStart(2, "0") +
+                        "." +
+                        String(geburtsMonat).padStart(2, "0");
+
+                    logToConsole(
+                        "DATUM DIREKT NACH DEIN DATUM: " +
+                        geburtsDatum
+                    );
+                }
+            }
+
+            if (
+                phase3Text.includes("verdeckt") ||
+                phase3Text.includes("unbekannt")
+            ) {
+
+                phase = 4;
+
+                const heute = new Date();
+
+                istGeburtstag =
+                    geburtsTag === heute.getDate() &&
+                    geburtsMonat === heute.getMonth() + 1;
+
+                if (recognition) {
+                    try {
+                        recognition.stop();
+                    } catch (e) {}
+                }
+
+                logToConsole(
+                    "VERDECKT / UNBEKANNT – SPRACHERKENNUNG ENDE"
+                );
+
+                return;
+            }
+
+            return;
+        }
+    }
+
+    let neustartTimer = null;
+    let antiLoopSperre = false;
+
+    recognition.onend = () => {
+
+        if (
+            phase >= 4 ||
+            finaleGestartet
+        ) {
+            return;
+        }
+
+        if (antiLoopSperre) {
+            return;
+        }
+
+        antiLoopSperre = true;
+
+        if (neustartTimer) {
+            clearTimeout(neustartTimer);
+        }
+
+        neustartTimer =
+            setTimeout(() => {
+
+                try {
+
+                    verarbeitetesResultat = 0;
+                    recognition.start();
+
+                    setTimeout(() => {
+                        antiLoopSperre = false;
+                    }, 1000);
+
+                } catch (e) {
+                    antiLoopSperre = false;
+                }
+
+            }, 800);
+    };
+
+    try {
+        recognition.start();
+    } catch (e) {}
+}
+
+/* =========================================================
+   ANIMATION – ELEMENTE
+   ========================================================= */
+
+const stage =
+    document.getElementById("stage");
+
+const forest =
+    document.getElementById("forest");
+
+const darkness =
+    document.getElementById("darkness");
+
+const readingFog =
+    document.getElementById("reading-fog");
+
+const mist =
+    document.getElementById("mist");
+
+const frontMist =
+    document.getElementById("front-mist");
+
+const fogFront =
+    document.getElementById("fog-front");
+
+const denseFog =
+    document.getElementById("dense-fog");
+
+const whiteFog =
+    document.getElementById("white-fog");
+
+const leaves =
+    document.getElementById("leaves");
+
+const leafOne =
+    document.querySelector(".leaf.one");
+
+const leafTwo =
+    document.querySelector(".leaf.two");
+
+const leafThree =
+    document.querySelector(".leaf.three");
+
+const prediction =
+    document.getElementById("prediction");
+
+const silhouette =
+    document.getElementById("silhouette");
+
+const card =
+    document.getElementById("card");
+
+const fallbackScreen =
+    document.getElementById("fallback-screen");
+
+
+/* =========================================================
+   GEBURTSTAGSFINALE – ELEMENTE
+   ========================================================= */
+
+const birthdayStage =
+    document.getElementById("birthday-stage");
+
+const birthdayHappy =
+    document.getElementById("birthday-happy");
+
+const birthdayGlow =
+    document.getElementById("birthday-glow");
+
+const birthdayName =
+    document.getElementById("birthday-name");
+
+const birthdayCanvas =
+    document.getElementById("birthday-particle-canvas");
+
+const birthdayCtx =
+    birthdayCanvas.getContext("2d");
+
+const birthdaySilhouette =
+    document.getElementById("birthday-silhouette");
+
+const birthdayCard =
+    document.getElementById("birthday-card");
+
+
+
+/* =========================================================
+   AUDIO
+   ========================================================= */
+
+const forestAudio =
+    new Audio("waldaudio.mp3");
+
+const windAudio =
+    new Audio("wind.mp3");
+
+const windAudio2 =
+    new Audio("wind.mp3");
+
+const musicAudio =
+    new Audio("musik.mp3");
+
+forestAudio.loop = true;
+windAudio.loop = false;
+windAudio2.loop = false;
+musicAudio.loop = true;
+
+
+const birthdayFireworks =
+    new Audio("feuerwerk.mp3");
+
+const birthdayParty =
+    new Audio("feier.mp3");
+
+const birthdayFanfare =
+    new Audio("fanfare.mp3");
+
+birthdayFireworks.loop = false;
+birthdayParty.loop = false;
+birthdayFanfare.loop = false;
+
+birthdayFireworks.volume = 0;
+birthdayParty.volume = 0;
+birthdayFanfare.volume = 0;
+
+forestAudio.volume = 0;
+windAudio.volume = 0;
+windAudio2.volume = 0;
+musicAudio.volume = 0;
+
+function fadeVolume(audio, target, duration) {
+
+    const start = audio.volume;
+    const difference = target - start;
+    const startTime = performance.now();
+
+    function step(now) {
+
+        const progress =
+            Math.min(
+                (now - startTime) / duration,
+                1
+            );
+
+        let volume =
+            start + difference * progress;
+
+        volume =
+            Math.max(
+                0,
+                Math.min(1, volume)
+            );
+
+        audio.volume = volume;
+
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    }
+
+    requestAnimationFrame(step);
+}
+
+function resetAudio() {
+
+    forestAudio.pause();
+    windAudio.pause();
+    windAudio2.pause();
+    musicAudio.pause();
+
+    birthdayFireworks.pause();
+    birthdayParty.pause();
+    birthdayFanfare.pause();
+
+    forestAudio.currentTime = 0;
+    windAudio.currentTime = 0;
+    windAudio2.currentTime = 0;
+    musicAudio.currentTime = 0;
+
+    birthdayFireworks.currentTime = 0;
+    birthdayParty.currentTime = 0;
+    birthdayFanfare.currentTime = 0;
+
+    forestAudio.volume = 0;
+    windAudio.volume = 0;
+    windAudio2.volume = 0;
+    musicAudio.volume = 0;
+
+    birthdayFireworks.volume = 0;
+    birthdayParty.volume = 0;
+    birthdayFanfare.volume = 0;
+}
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+let timerIds = [];
+
+function wait(ms) {
+
+    return new Promise(
+        resolve => {
+
+            const id =
+                setTimeout(
+                    resolve,
+                    ms
+                );
+
+            timerIds.push(id);
+        }
+    );
+}
+
+function clearTimers() {
+
+    timerIds.forEach(
+        clearTimeout
+    );
+
+    timerIds = [];
+}
+
+/* =========================================================
+   KARTENNAME
+   ========================================================= */
+
+function ermittleKartenDatei() {
+
+    if (
+        !kartenFarbe ||
+        !Number.isInteger(kartenWert) ||
+        kartenWert < 1 ||
+        kartenWert > 13
+    ) {
+        return "";
+    }
+
+    return (
+        "karten/" +
+        kartenFarbe.toLowerCase() +
+        "_" +
+        kartenWert +
+        ".png"
+    );
+}
+
+/* =========================================================
+   VORHERSAGETEXT
+   ========================================================= */
+
+function ermittleVorhersagetext() {
+
+    if (
+        zuschauerName &&
+        geburtsDatum
+    ) {
+
+        return (
+            zuschauerName +
+            ", du wirst den " +
+            geburtsDatum +
+            " als Datum nennen."
+        );
+    }
+
+    if (geburtsDatum) {
+
+        return (
+            "Du wirst den " +
+            geburtsDatum +
+            " als Datum nennen."
+        );
+    }
+
+    if (zuschauerName) {
+
+        return (
+            zuschauerName +
+            ", dies ist deine persönliche Vorhersage."
+        );
+    }
+
+    return (
+        "Dies ist deine persönliche Vorhersage."
+    );
+}
+
+/* =========================================================
+   LEBENDIGE SCHRIFT
+   ========================================================= */
+
+function createLivingText(text) {
+
+    prediction.innerHTML = "";
+
+    const words =
+        text.trim().split(/\s+/);
+
+    words.forEach(
+        word => {
+
+            const wordSpan =
+                document.createElement("span");
+
+            wordSpan.className =
+                "magic-word";
+
+            wordSpan.style.whiteSpace =
+                "nowrap";
+
+            for (
+                let i = 0;
+                i < word.length;
+                i++
+            ) {
+
+                const span =
+                    document.createElement("span");
+
+                span.className =
+                    "magic-letter";
+
+                span.textContent =
+                    word[i];
+
+                const delay =
+                    (
+                        3.0 +
+                        Math.random() * 3.0
+                    ).toFixed(2) +
+                    "s";
+
+                const opacity =
+                    (
+                        0.82 +
+                        Math.random() * 0.18
+                    ).toFixed(2);
+
+                const x1 =
+                    (
+                        -1 +
+                        Math.random() * 2
+                    ).toFixed(1) +
+                    "px";
+
+                const x2 =
+                    (
+                        -2 +
+                        Math.random() * 4
+                    ).toFixed(1) +
+                    "px";
+
+                const x3 =
+                    (
+                        -2 +
+                        Math.random() * 4
+                    ).toFixed(1) +
+                    "px";
+
+                const x4 =
+                    (
+                        -1 +
+                        Math.random() * 2
+                    ).toFixed(1) +
+                    "px";
+
+                span.style.setProperty(
+                    "--delay",
+                    delay
+                );
+
+                span.style.setProperty(
+                    "--opacity",
+                    opacity
+                );
+
+                span.style.setProperty(
+                    "--x1",
+                    x1
+                );
+
+                span.style.setProperty(
+                    "--x2",
+                    x2
+                );
+
+                span.style.setProperty(
+                    "--x3",
+                    x3
+                );
+
+                span.style.setProperty(
+                    "--x4",
+                    x4
+                );
+
+                wordSpan.appendChild(span);
+            }
+
+            prediction.appendChild(
+                wordSpan
+            );
+
+            prediction.appendChild(
+                document.createTextNode(" ")
+            );
+        }
+    );
+}
+
+/* =========================================================
+   GEBURTSTAGSFINALE – LABOR 1.6
+   0.0 s   happy.gif + Feuerwerk
+   3.0 s   Name
+   10.0 s  Partikelregen
+   10.5 s  Crossfade Feuerwerk -> Feier
+   14.0 s  Verdichtung
+   18.5 s  helles Aufblenden
+   19.4 s  Karte
+   19.75 s Fanfare
+   ========================================================= */
+
+let birthdayParticles = [];
+let birthdayRaf = 0;
+let birthdayGather = 0;
+
+function birthdayLater(ms, fn) {
+
+    const id =
+        setTimeout(
+            fn,
+            ms
+        );
+
+    timerIds.push(id);
+
+    return id;
+}
+
+function resizeBirthdayCanvas() {
+
+    if (!birthdayCanvas || !birthdayCtx) {
+        return;
+    }
+
+    const ratio =
+        window.devicePixelRatio || 1;
+
+    birthdayCanvas.width =
+        window.innerWidth * ratio;
+
+    birthdayCanvas.height =
+        window.innerHeight * ratio;
+
+    birthdayCtx.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+    );
+}
+
+window.addEventListener(
+    "resize",
+    resizeBirthdayCanvas
+);
+
+function birthdayFadeAudio(
+    audio,
+    from,
+    to,
+    duration
+) {
+
+    from =
+        Math.max(
+            0,
+            Math.min(1, from)
+        );
+
+    to =
+        Math.max(
+            0,
+            Math.min(1, to)
+        );
+
+    const started =
+        performance.now();
+
+    audio.volume = from;
+
+    function tick(now) {
+
+        const progress =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    (now - started) /
+                    duration
+                )
+            );
+
+        const volume =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    from +
+                    (to - from) *
+                    progress
+                )
+            );
+
+        audio.volume = volume;
+
+        if (
+            progress < 1 &&
+            animationState === "RUNNING"
+        ) {
+            requestAnimationFrame(tick);
+        } else if (to === 0) {
+            audio.pause();
+        }
+    }
+
+    requestAnimationFrame(tick);
+}
+
+function resetBirthdayAnimation() {
+
+    if (birthdayRaf) {
+        cancelAnimationFrame(
+            birthdayRaf
+        );
+    }
+
+    birthdayRaf = 0;
+    birthdayGather = 0;
+    birthdayParticles = [];
+
+    resizeBirthdayCanvas();
+
+    if (birthdayCtx) {
+        birthdayCtx.clearRect(
+            0,
+            0,
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+
+    birthdayStage.style.opacity = "0";
+
+    birthdayHappy.style.opacity = "0";
+    birthdayGlow.style.opacity = "0";
+
+    birthdayName.className = "";
+    birthdayName.textContent = "";
+
+    birthdaySilhouette.className = "";
+    birthdaySilhouette.style.opacity = "0";
+
+    birthdayCard.className = "";
+    birthdayCard.style.opacity = "0";
+    birthdayCard.src = "";
+}
+
+function birthdayMakeParticles(
+    count = 2300
+) {
+
+    birthdayParticles = [];
+
+    const cx =
+        window.innerWidth / 2;
+
+    const cy =
+        window.innerHeight * .54;
+
+    const cardW =
+        Math.min(
+            window.innerWidth * .50,
+            310
+        );
+
+    const cardH =
+        cardW / .714;
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        let tx;
+        let ty;
+
+        const zielTyp =
+            Math.random();
+
+        const margin = 5;
+
+        if (zielTyp < .70) {
+
+            const rx =
+                (
+                    Math.random() +
+                    Math.random()
+                ) / 2;
+
+            const ry =
+                (
+                    Math.random() +
+                    Math.random()
+                ) / 2;
+
+            tx =
+                cx -
+                cardW / 2 +
+                margin +
+                rx *
+                (cardW - margin * 2);
+
+            ty =
+                cy -
+                cardH / 2 +
+                margin +
+                ry *
+                (cardH - margin * 2);
+
+        } else if (
+            zielTyp < .96
+        ) {
+
+            tx =
+                cx -
+                cardW / 2 +
+                margin +
+                Math.random() *
+                (cardW - margin * 2);
+
+            ty =
+                cy -
+                cardH / 2 +
+                margin +
+                Math.random() *
+                (cardH - margin * 2);
+
+        } else {
+
+            const edge =
+                Math.floor(
+                    Math.random() * 4
+                );
+
+            if (edge === 0) {
+                tx =
+                    cx -
+                    cardW / 2 +
+                    Math.random() *
+                    cardW;
+                ty =
+                    cy -
+                    cardH / 2;
+
+            } else if (edge === 1) {
+                tx =
+                    cx +
+                    cardW / 2;
+                ty =
+                    cy -
+                    cardH / 2 +
+                    Math.random() *
+                    cardH;
+
+            } else if (edge === 2) {
+                tx =
+                    cx -
+                    cardW / 2 +
+                    Math.random() *
+                    cardW;
+                ty =
+                    cy +
+                    cardH / 2;
+
+            } else {
+                tx =
+                    cx -
+                    cardW / 2;
+                ty =
+                    cy -
+                    cardH / 2 +
+                    Math.random() *
+                    cardH;
+            }
+        }
+
+        birthdayParticles.push({
+            x:
+                i % 3 === 0
+                    ? -30 -
+                      Math.random() * 120
+                    : (
+                        i % 3 === 1
+                            ? window.innerWidth +
+                              30 +
+                              Math.random() * 120
+                            : Math.random() *
+                              window.innerWidth
+                    ),
+            y:
+                i % 3 === 2
+                    ? -40 -
+                      Math.random() *
+                      window.innerHeight *
+                      .75
+                    : Math.random() *
+                      window.innerHeight *
+                      .72,
+            vx:
+                i % 3 === 0
+                    ? 1.0 +
+                      Math.random() * 1.5
+                    : (
+                        i % 3 === 1
+                            ? -1.0 -
+                              Math.random() * 1.5
+                            : (
+                                Math.random() -
+                                .5
+                              ) * .8
+                    ),
+            vy:
+                i % 3 === 2
+                    ? .45 +
+                      Math.random() * 1.0
+                    : .15 +
+                      Math.random() * .55,
+            r:
+                .7 +
+                Math.random() * 2.4,
+            a:
+                .38 +
+                Math.random() * .62,
+            tw:
+                Math.random() *
+                Math.PI * 2,
+            tx,
+            ty
+        });
+    }
+}
+
+function birthdayAnimateParticles() {
+
+    birthdayCtx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    for (
+        const p of birthdayParticles
+    ) {
+
+        if (
+            birthdayGather > 0
+        ) {
+
+            const pull =
+                .0025 +
+                .024 *
+                birthdayGather;
+
+            p.vx +=
+                (p.tx - p.x) *
+                pull;
+
+            p.vy +=
+                (p.ty - p.y) *
+                pull;
+
+            p.vx *= .82;
+            p.vy *= .82;
+
+        } else {
+
+            p.vy += .004;
+
+            if (
+                p.y >
+                window.innerHeight + 20
+            ) {
+                p.y = -20;
+                p.x =
+                    Math.random() *
+                    window.innerWidth;
+            }
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.tw += .07;
+
+        const shimmer =
+            .78 +
+            .22 *
+            Math.sin(p.tw);
+
+        birthdayCtx.beginPath();
+
+        birthdayCtx.arc(
+            p.x,
+            p.y,
+            p.r *
+            (
+                birthdayGather > .55
+                    ? 1.18
+                    : 1
+            ),
+            0,
+            Math.PI * 2
+        );
+
+        birthdayCtx.fillStyle =
+            "rgba(255," +
+            (
+                210 +
+                Math.floor(
+                    Math.random() * 40
+                )
+            ) +
+            "," +
+            (
+                115 +
+                Math.floor(
+                    Math.random() * 100
+                )
+            ) +
+            "," +
+            Math.min(
+                1,
+                p.a *
+                shimmer +
+                (
+                    birthdayGather > .72
+                        ? .18
+                        : 0
+                )
+            ) +
+            ")";
+
+        birthdayCtx.shadowBlur =
+            birthdayGather > .55
+                ? 19
+                : 10;
+
+        birthdayCtx.shadowColor =
+            "rgba(255,215,105,.9)";
+
+        birthdayCtx.fill();
+
+        if (
+            birthdayGather > .72
+        ) {
+
+            birthdayCtx.beginPath();
+
+            birthdayCtx.arc(
+                p.x,
+                p.y,
+                Math.max(
+                    .45,
+                    p.r * .38
+                ),
+                0,
+                Math.PI * 2
+            );
+
+            birthdayCtx.fillStyle =
+                "rgba(255,250,220,.88)";
+
+            birthdayCtx.fill();
+        }
+    }
+
+    birthdayCtx.shadowBlur = 0;
+
+    if (
+        animationState === "RUNNING" &&
+        istGeburtstag
+    ) {
+        birthdayRaf =
+            requestAnimationFrame(
+                birthdayAnimateParticles
+            );
+    }
+}
+
+async function startBirthdayAnimation(
+    cardFile
+) {
+
+    /*
+    Normalen Mystery-Layer vollständig ausblenden.
+    Geburtstagsanimation ist eine eigene visuelle Welt.
+    */
+    forest.style.opacity = "0";
+    darkness.style.opacity = "0";
+    readingFog.style.opacity = "0";
+    mist.style.opacity = "0";
+    frontMist.style.opacity = "0";
+    fogFront.style.opacity = "0";
+
+    if (denseFog) {
+        denseFog.style.opacity = "0";
+    }
+
+    if (whiteFog) {
+        whiteFog.style.opacity = "0";
+    }
+
+    if (leaves) {
+        leaves.style.opacity = "0";
+    }
+
+    prediction.style.opacity = "0";
+    silhouette.style.opacity = "0";
+    card.style.opacity = "0";
+
+    resetBirthdayAnimation();
+
+    birthdayStage.style.opacity = "1";
+
+    birthdayName.textContent =
+        zuschauerName || "";
+
+    birthdayCard.src =
+        cardFile;
+
+    birthdayHappy.style.opacity = "1";
+    birthdayGlow.style.opacity = "1";
+
+    birthdayFireworks.currentTime = 0;
+    birthdayFireworks.volume = .21;
+
+    birthdayFireworks
+        .play()
+        .catch(() => {});
+
+    birthdayLater(
+        3000,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            if (birthdayName.textContent) {
+                birthdayName.className =
+                    "show";
+            }
+        }
+    );
+
+    birthdayLater(
+        10000,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            birthdayName.className =
+                "dissolve";
+
+            birthdayMakeParticles();
+
+            birthdayAnimateParticles();
+        }
+    );
+
+    birthdayLater(
+        10500,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            birthdayParty.volume = 0;
+            birthdayParty.currentTime = 0;
+
+            birthdayParty
+                .play()
+                .catch(() => {});
+
+            birthdayFadeAudio(
+                birthdayFireworks,
+                Math.min(
+                    .21,
+                    birthdayFireworks.volume
+                ),
+                0,
+                3300
+            );
+
+            birthdayFadeAudio(
+                birthdayParty,
+                0,
+                .25,
+                3300
+            );
+        }
+    );
+
+    birthdayLater(
+        14000,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            birthdayGather = .25;
+        }
+    );
+
+    birthdayLater(
+        15300,
+        () => {
+
+            if (
+                animationState === "RUNNING"
+            ) {
+                birthdayGather = .58;
+            }
+        }
+    );
+
+    birthdayLater(
+        16500,
+        () => {
+
+            if (
+                animationState === "RUNNING"
+            ) {
+                birthdayGather = 1.35;
+            }
+        }
+    );
+
+    birthdayLater(
+        18500,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            birthdaySilhouette.className =
+                "bright";
+        }
+    );
+
+    birthdayLater(
+        19400,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            birthdayCard.className =
+                "show";
+
+            birthdaySilhouette.style.opacity =
+                ".18";
+
+            birthdayLater(
+                350,
+                () => {
+
+                    if (
+                        animationState !== "RUNNING"
+                    ) {
+                        return;
+                    }
+
+                    birthdayFanfare.currentTime = 0;
+                    birthdayFanfare.volume = .42;
+
+                    birthdayFanfare
+                        .play()
+                        .catch(() => {});
+                }
+            );
+        }
+    );
+
+    birthdayLater(
+        21400,
+        () => {
+
+            if (
+                animationState !== "RUNNING"
+            ) {
+                return;
+            }
+
+            birthdayParticles.forEach(
+                p => {
+                    p.a *= .35;
+                }
+            );
+
+            animationState = "RESULT";
+        }
+    );
+}
+
+
+
+/* =========================================================
+   BLÄTTER
+   ========================================================= */
+
+function showLeaves() {
+
+    if (!leaves) {
+        return;
+    }
+
+    leaves.style.opacity = "1";
+
+    if (leafOne) {
+        leafOne.style.animationPlayState = "running";
+    }
+
+    if (leafTwo) {
+        leafTwo.style.animationPlayState = "running";
+    }
+
+    if (leafThree) {
+        leafThree.style.animationPlayState = "running";
+    }
+}
+
+/* =========================================================
+   ANIMATION RESET
+   ========================================================= */
+
+function resetAnimation() {
+
+    clearTimers();
+    resetAudio();
+    resetBirthdayAnimation();
+
+    animationState = "IDLE";
+
+    forest.style.opacity = "1";
+    forest.style.transform = "scale(1.02)";
+
+    darkness.style.opacity = "0";
+
+    readingFog.style.opacity = "0";
+
+    mist.style.opacity = "0";
+    mist.style.transform = "scale(1)";
+
+    frontMist.style.opacity = "0";
+    frontMist.style.transform = "scale(1.05)";
+
+    fogFront.style.opacity = "0";
+    fogFront.style.transform = "scale(1.08)";
+
+    if (denseFog) {
+        denseFog.style.opacity = "0";
+    }
+
+    if (whiteFog) {
+        whiteFog.style.opacity = "0";
+    }
+
+    if (leaves) {
+        leaves.style.opacity = "0";
+    }
+
+    prediction.classList.remove("alive");
+
+    prediction.innerHTML = "";
+
+    prediction.style.opacity = "0";
+    prediction.style.color =
+        "rgba(232, 211, 143, 0)";
+    prediction.style.filter = "blur(12px)";
+    prediction.style.transform = "scale(0.96)";
+
+    silhouette.style.opacity = "0";
+    silhouette.style.filter = "blur(22px)";
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.58)";
+
+    card.style.opacity = "0";
+    card.style.filter =
+        "blur(20px) brightness(0.50)";
+    card.style.transform =
+        "translate(-50%, -50%) scale(0.76)";
+    card.src = "";
+
+    if (fallbackScreen) {
+        fallbackScreen.classList.remove("visible");
+    }
+
+    /*
+    resetAnimation wird auch beim Programmstart und bei
+    einer neuen Runde benutzt. Deshalb bleibt die eigentliche
+    Bühne bis zum Wischen unsichtbar.
+    */
+    stage.style.opacity = "0";
+}
+
+/* =========================================================
+   FINALE
+   ========================================================= */
+
+async function startAnimation() {
+
+    if (finaleGestartet) {
+        return;
+    }
+
+    if (recognition) {
+        try {
+            recognition.stop();
+        } catch (e) {}
+    }
+
+    /*
+    Erst die Animation in Grundstellung bringen.
+    WICHTIG: resetAnimation() setzt animationState auf IDLE.
+    Deshalb RUNNING erst DANACH setzen.
+    */
+    resetAnimation();
+
+    finaleGestartet = true;
+    animationState = "RUNNING";
+
+    /*
+    Bis zum Wischen war die Bühne komplett schwarz.
+    Jetzt wird der Wald sichtbar.
+    */
+    stage.style.opacity = "1";
+
+    const cardFile =
+        ermittleKartenDatei();
+
+    /*
+    Nur bei gültigem Kartenwert und gültiger Farbe
+    wird die echte Vorhersagekarte gezeigt.
+    */
+    if (!cardFile) {
+
+        animationState = "FALLBACK";
+
+        stage.style.opacity = "0";
+
+        if (fallbackScreen) {
+            fallbackScreen.classList.add("visible");
+        }
+
+        return;
+    }
+
+    if (istGeburtstag) {
+
+        await startBirthdayAnimation(
+            cardFile
+        );
+
+        return;
+    }
+
+    card.src = cardFile;
+
+    const predictionText =
+        ermittleVorhersagetext();
+
+    /* 0 SEKUNDEN */
+    forestAudio.currentTime = 0;
+    forestAudio.play().catch(() => {});
+
+    fadeVolume(
+        forestAudio,
+        0.40,
+        2500
+    );
+
+    await wait(1000);
+
+    if (animationState !== "RUNNING") {
+        return;
+    }
+
+    /* 1 SEKUNDE */
+    createLivingText(
+        predictionText
+    );
+
+    prediction.style.color =
+        "rgba(232, 211, 143, 1)";
+
+    prediction.style.opacity = "1";
+    prediction.style.filter = "blur(0px)";
+    prediction.style.transform = "scale(1)";
+
+    await wait(2000);
+
+    if (animationState !== "RUNNING") {
+        return;
+    }
+
+    /* 3 SEKUNDEN */
+    prediction.classList.add("alive");
+
+    await wait(500);
+
+    /* 3.5 SEKUNDEN */
+    readingFog.style.opacity = "1";
+
+    await wait(5000);
+
+    if (animationState !== "RUNNING") {
+        return;
+    }
+
+    /* 8.5 SEKUNDEN */
+    windAudio.currentTime = 0;
+    windAudio.play().catch(() => {});
+
+    fadeVolume(
+        forestAudio,
+        0.12,
+        4500
+    );
+
+    fadeVolume(
+        windAudio,
+        0.14,
+        4500
+    );
+
+    const windRestartId =
+        setTimeout(
+            () => {
+
+                windAudio2.currentTime = 0;
+                windAudio2.play().catch(() => {});
+
+                fadeVolume(
+                    windAudio,
+                    0,
+                    1200
+                );
+
+                fadeVolume(
+                    windAudio2,
+                    0.14,
+                    1200
+                );
+
+            },
+            9200
+        );
+
+    timerIds.push(windRestartId);
+
+    prediction.classList.remove("alive");
+    prediction.style.opacity = "0.25";
+    prediction.style.filter = "blur(10px)";
+    readingFog.style.opacity = "0.62";
+
+    forest.style.opacity = "0.34";
+    darkness.style.opacity = "0.44";
+    mist.style.opacity = "0.50";
+    fogFront.style.opacity = "0.34";
+
+    showLeaves();
+
+    await wait(900);
+
+    /* 9.4 SEKUNDEN */
+    mist.style.opacity = "0.76";
+    fogFront.style.opacity = "0.54";
+    frontMist.style.opacity = "0.40";
+
+    if (denseFog) {
+        denseFog.style.opacity = "0.26";
+    }
+
+    forest.style.opacity = "0.22";
+
+    await wait(1000);
+
+    /* 10.4 SEKUNDEN */
+    readingFog.style.opacity = "0.68";
+    mist.style.opacity = "0.92";
+    fogFront.style.opacity = "0.70";
+    frontMist.style.opacity = "0.58";
+
+    if (denseFog) {
+        denseFog.style.opacity = "0.48";
+    }
+
+    forest.style.opacity = "0.08";
+    darkness.style.opacity = "0.55";
+
+    await wait(1000);
+
+    windAudio2.currentTime = 0;
+    windAudio2.play().catch(() => {});
+
+    fadeVolume(
+        windAudio,
+        0,
+        1200
+    );
+
+    fadeVolume(
+        windAudio2,
+        0.16,
+        1200
+    );
+
+    /* Karte langsam als Silhouette */
+    silhouette.style.opacity = "0.55";
+    silhouette.style.filter = "blur(15px)";
+    silhouette.style.transform =
+        "translate(-50%, -50%) scale(0.88)";
+
+    await wait(1500);
+
+    /* 18 SEKUNDEN */
+    card.style.opacity = "0.72";
+    card.style.filter =
+        "blur(6px) brightness(0.82)";
+    card.style.transform =
+        "translate(-50%, -50%) scale(1.02)";
+
+    await wait(1500);
+
+    /* 19.5 SEKUNDEN – KARTE KLAR */
+    musicAudio.currentTime = 0;
+    musicAudio.play().catch(() => {});
+
+    fadeVolume(
+        musicAudio,
+        0.42,
+        5000
+    );
+
+    card.style.opacity = "1";
+    card.style.filter =
+        "blur(1.2px) brightness(0.94)";
+    card.style.transform =
+        "translate(-50%, -50%) scale(1.10)";
+
+    /*
+    Endzustand exakt wie in der getesteten Animation:
+    der Wald bleibt verschwunden und der Nebel bleibt vor
+    der Karte.
+    */
+    fogFront.style.opacity = "0.96";
+    frontMist.style.opacity = "0.96";
+    mist.style.opacity = "1";
+
+    if (denseFog) {
+        denseFog.style.opacity = "0.94";
+    }
+
+    if (whiteFog) {
+        whiteFog.style.opacity = "0.82";
+    }
+
+    forest.style.opacity = "0";
+    darkness.style.opacity = "0.72";
+
+    await wait(3000);
+
+    fadeVolume(
+        musicAudio,
+        0,
+        10000
+    );
+
+    fadeVolume(
+        windAudio,
+        0,
+        3500
+    );
+
+    fadeVolume(
+        windAudio2,
+        0,
+        3500
+    );
+
+    fadeVolume(
+        forestAudio,
+        0,
+        5000
+    );
+
+    animationState = "RESULT";
+}
+
+/* =========================================================
+   VOLLBILD
+   ========================================================= */
+
+function versucheVollbild() {
+
+    const element = document.documentElement;
+
+    if (document.fullscreenElement) {
+        return;
+    }
+
+    if (element.requestFullscreen) {
+        try {
+            const result =
+                element.requestFullscreen({
+                    navigationUI: "hide"
+                });
+
+            if (result && result.catch) {
+                result.catch(() => {});
+            }
+        } catch (e) {}
+    }
+}
+
+
+/* =========================================================
+   WISCHEN
+   ========================================================= */
+
+function handleTouchStart(event) {
+
+    if (finaleGestartet) {
+        return;
+    }
+
+    if (!event.touches || !event.touches[0]) {
+        return;
+    }
+
+    touchStartX =
+        event.touches[0].clientX;
+
+    touchStartY =
+        event.touches[0].clientY;
+
+    touchStartTime =
+        Date.now();
+}
+
+function handleTouchEnd(event) {
+
+    if (finaleGestartet) {
+        return;
+    }
+
+    if (!event.changedTouches || !event.changedTouches[0]) {
+        return;
+    }
+
+    const endX =
+        event.changedTouches[0].clientX;
+
+    const endY =
+        event.changedTouches[0].clientY;
+
+    const dx =
+        endX - touchStartX;
+
+    const dy =
+        endY - touchStartY;
+
+    const distance =
+        Math.sqrt(dx * dx + dy * dy);
+
+    const duration =
+        Date.now() - touchStartTime;
+
+    /*
+    Ein echter kurzer Wisch genügt.
+    */
+    if (
+        phase >= 4 &&
+        distance >= 30 &&
+        duration <= 1500
+    ) {
+        versucheVollbild();
+        startAnimation();
+    }
+}
+
+document.addEventListener(
+    "touchstart",
+    handleTouchStart,
+    { passive: true }
+);
+
+document.addEventListener(
+    "touchend",
+    handleTouchEnd,
+    { passive: true }
+);
+
+/* =========================================================
+   TOP-RECHTS: DOPPELKLICK / DREIFACHKLICK
+   ========================================================= */
+
+function inTopRight(event) {
+
+    const x =
+        event.clientX;
+
+    const y =
+        event.clientY;
+
+    return (
+        x > window.innerWidth * 0.72 &&
+        y < window.innerHeight * 0.28
+    );
+}
+
+function processTopRightClick(event) {
+
+    if (!inTopRight(event)) {
+        return;
+    }
+
+    const now = Date.now();
+
+    clickTimes =
+        clickTimes.filter(
+            time =>
+                now - time < CLICK_WINDOW
+        );
+
+    clickTimes.push(now);
+
+    if (clickTimes.length >= 3) {
+
+        clickTimes = [];
+
+        /*
+        DREIFACHKLICK:
+        komplette neue Runde.
+        */
+        resetAudio();
+
+        finaleGestartet = false;
+        animationState = "IDLE";
+
+        phase = 0;
+
+        kartenFarbe = "";
+        kartenWert = 0;
+
+        zuschauerName = "";
+
+        geburtsTag = null;
+        geburtsMonat = null;
+        geburtsDatum = "";
+
+        istGeburtstag = false;
+
+        phase1Text = "";
+        phase2Text = "";
+        phase3Text = "";
+
+        verarbeitetesResultat = 0;
+
+        resetAnimation();
+
+        /*
+        Sprach­erkennung wieder bereit machen.
+        */
+        if (recognition) {
+            try {
+                recognition.start();
+            } catch (e) {}
+        }
+
+        return;
+    }
+
+    setTimeout(
+        () => {
+
+            if (
+                clickTimes.length === 2
+            ) {
+
+                clickTimes = [];
+
+                /*
+                DOPPELKLICK:
+                Animation sofort beenden und
+                schwarzen Bildschirm herstellen.
+                */
+                clearTimers();
+                resetAudio();
+
+                animationState = "ENDED";
+
+                if (fallbackScreen) {
+                    fallbackScreen.classList.remove("visible");
+                }
+
+                stage.style.opacity = "0";
+
+                forest.style.opacity = "0";
+                readingFog.style.opacity = "0";
+                mist.style.opacity = "0";
+                frontMist.style.opacity = "0";
+                fogFront.style.opacity = "0";
+
+                if (denseFog) {
+                    denseFog.style.opacity = "0";
+                }
+
+                if (whiteFog) {
+                    whiteFog.style.opacity = "0";
+                }
+
+                if (leaves) {
+                    leaves.style.opacity = "0";
+                }
+
+                prediction.style.opacity = "0";
+                silhouette.style.opacity = "0";
+                card.style.opacity = "0";
+
+                resetBirthdayAnimation();
+            }
+
+        },
+        CLICK_WINDOW
+    );
+}
+
+document.addEventListener(
+    "click",
+    processTopRightClick
+);
+
+/* =========================================================
+   NOT-AUS – 3 SEKUNDEN OBEN LINKS
+   ========================================================= */
+
+let exitTimer = null;
+
+document
+    .getElementById("emergency-exit")
+    .addEventListener(
+        "touchstart",
+        () => {
+
+            exitTimer =
+                setTimeout(
+                    () => {
+                        location.reload();
+                    },
+                    3000
+                );
+        }
+    );
+
+document
+    .getElementById("emergency-exit")
+    .addEventListener(
+        "touchend",
+        () => {
+            clearTimeout(exitTimer);
+        }
+    );
+
+/* =========================================================
+   INITIALISIERUNG
+   ========================================================= */
+
+resetAnimation();
+
+</script>
+
+</body>
+</html>
+="de">
 
 <head>
 
