@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Mystery Master – Hauptcode mit Finale 1.5</title>
+<title>Mystery Master – Hauptcode mit Finale 1.6</title>
 
 <style>
 html, body {
@@ -1669,10 +1669,91 @@ bewegen sich aber wesentlich langsamer.
         padding: 8vw;
     }
 }
+
+/* =========================================================
+   EIN-/AUSBLENDBARES SPRACH-TESTCENTER
+   Nur Diagnose – greift nicht in die Erkennungslogik ein.
+   ========================================================= */
+#diag-toggle {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 10020;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 9px;
+    padding: 8px 11px;
+    background: rgba(0,0,0,.72);
+    color: rgba(255,255,255,.78);
+    font: 600 12px/1.2 Arial,sans-serif;
+    letter-spacing: .04em;
+    opacity: .62;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+#diag-toggle:active { opacity: 1; }
+
+#diag-panel {
+    position: fixed;
+    left: 10px;
+    top: 52px;
+    z-index: 10019;
+    width: min(88vw, 430px);
+    max-height: 62vh;
+    overflow: auto;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(0,0,0,.88);
+    color: #eee;
+    font: 13px/1.42 Arial,sans-serif;
+    box-shadow: 0 8px 30px rgba(0,0,0,.45);
+    display: none;
+    pointer-events: auto;
+}
+#diag-panel.show { display: block; }
+
+.diag-row {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 8px;
+    margin: 3px 0;
+}
+.diag-label {
+    color: #aaa;
+    font-weight: 700;
+}
+#diag-last {
+    margin-top: 9px;
+    padding-top: 9px;
+    border-top: 1px solid rgba(255,255,255,.14);
+    word-break: break-word;
+}
+#diag-hint {
+    margin-top: 9px;
+    color: #d5bd78;
+    font-size: 12px;
+}
+
 </style>
 </head>
 
 <body>
+
+<button id="diag-toggle" type="button">TEST</button>
+
+<div id="diag-panel">
+    <div class="diag-row"><span class="diag-label">Mikro</span><span id="diag-mic">–</span></div>
+    <div class="diag-row"><span class="diag-label">Phase</span><span id="diag-phase">0</span></div>
+    <div class="diag-row"><span class="diag-label">Farbe</span><span id="diag-suit">–</span></div>
+    <div class="diag-row"><span class="diag-label">Wert</span><span id="diag-value">–</span></div>
+    <div class="diag-row"><span class="diag-label">Name</span><span id="diag-name">–</span></div>
+    <div class="diag-row"><span class="diag-label">Datum</span><span id="diag-date">–</span></div>
+    <div id="diag-last"><span class="diag-label">Zuletzt erkannt:</span><br><span id="diag-text">–</span></div>
+    <div id="diag-hint">TEST blendet nur diese Anzeige ein/aus. Die eigentliche Sprachlogik bleibt unverändert.</div>
+</div>
+
 
 <div id="emergency-exit"></div>
 
@@ -1785,7 +1866,12 @@ bewegen sich aber wesentlich langsamer.
 
 <script>
 /*
-MYSTERY MASTER – HAUPTCODE 1.5
+MYSTERY MASTER – HAUPTCODE 1.6
+
+Neu 1.6:
+- Kleines Sprach-Testcenter oben links per TEST ein-/ausblendbar.
+- Zeigt Mikrostatus, Phase, Farbe, Wert, Name, Datum und zuletzt erkannten Text.
+- Testcenter verändert die eigentliche Sprachlogik nicht.
 
 Korrektur 1.5:
 - Unsichtbarer Finale-/Test-Layer blockiert keine Touch-Eingaben mehr.
@@ -1800,6 +1886,60 @@ Integriert:
 - Geburtstagsanimation Labor 1.6 als eigener Finale-Zweig.
   Kein Wald/Nebel im Geburtstagsfall.
 */
+
+
+/* =========================================================
+   TESTCENTER – DIAGNOSE
+   ========================================================= */
+const diagToggle = document.getElementById("diag-toggle");
+const diagPanel = document.getElementById("diag-panel");
+const diagMic = document.getElementById("diag-mic");
+const diagPhase = document.getElementById("diag-phase");
+const diagSuit = document.getElementById("diag-suit");
+const diagValue = document.getElementById("diag-value");
+const diagName = document.getElementById("diag-name");
+const diagDate = document.getElementById("diag-date");
+const diagText = document.getElementById("diag-text");
+
+let diagLastText = "–";
+let diagMicState = "wartet";
+
+diagToggle.addEventListener("click", (event) => {
+    event.stopPropagation();
+    diagPanel.classList.toggle("show");
+    diagToggle.textContent =
+        diagPanel.classList.contains("show")
+            ? "TEST ×"
+            : "TEST";
+    updateDiag();
+});
+
+diagPanel.addEventListener("click", event => event.stopPropagation());
+diagPanel.addEventListener("touchstart", event => event.stopPropagation(), {passive:true});
+
+function updateDiag() {
+    if (!diagPanel) return;
+
+    diagMic.textContent = diagMicState;
+    diagPhase.textContent =
+        typeof phase !== "undefined" ? phase : "–";
+
+    diagSuit.textContent =
+        (typeof farbe !== "undefined" && farbe) ? farbe : "–";
+
+    diagValue.textContent =
+        (typeof wert !== "undefined" && wert !== null) ? wert : "–";
+
+    diagName.textContent =
+        (typeof zuschauerName !== "undefined" && zuschauerName) ? zuschauerName : "–";
+
+    diagDate.textContent =
+        (typeof geburtsDatum !== "undefined" && geburtsDatum) ? geburtsDatum : "–";
+
+    diagText.textContent = diagLastText || "–";
+}
+
+setInterval(updateDiag, 250);
 
 /* =========================================================
    GRUNDVARIABLEN
@@ -2212,6 +2352,9 @@ if (!SpeechRecognition) {
                     .replace(/ranz/g, "franz")
                     .replace(/wolf/g, "12")
                     .replace(/dein\s+datum/g, "dein datum");
+
+            diagLastText = text;
+            updateDiag();
 
             logToConsole("[GEHÖRT] " + roherText);
 
