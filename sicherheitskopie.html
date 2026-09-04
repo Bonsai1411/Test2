@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Mystery Master – Hauptcode mit Finale 1.6</title>
+<title>Mystery Master – Hauptcode mit Finale 1.7</title>
 
 <style>
 html, body {
@@ -1677,7 +1677,7 @@ bewegen sich aber wesentlich langsamer.
 #diag-toggle {
     position: fixed;
     left: 10px;
-    top: 10px;
+    bottom: 10px;
     z-index: 10020;
     border: 1px solid rgba(255,255,255,.28);
     border-radius: 9px;
@@ -1696,7 +1696,7 @@ bewegen sich aber wesentlich langsamer.
 #diag-panel {
     position: fixed;
     left: 10px;
-    top: 52px;
+    bottom: 52px;
     z-index: 10019;
     width: min(88vw, 430px);
     max-height: 62vh;
@@ -1866,10 +1866,15 @@ bewegen sich aber wesentlich langsamer.
 
 <script>
 /*
-MYSTERY MASTER – HAUPTCODE 1.6
+MYSTERY MASTER – HAUPTCODE 1.7
+
+Korrektur 1.7:
+- TEST-Schalter von oben links nach unten links verschoben.
+- Grund: Der unsichtbare NOT-AUS belegt absichtlich das obere linke Viertel
+  mit z-index 99999 und fing dort die Klicks ab.
 
 Neu 1.6:
-- Kleines Sprach-Testcenter oben links per TEST ein-/ausblendbar.
+- Kleines Sprach-Testcenter per TEST ein-/ausblendbar.
 - Zeigt Mikrostatus, Phase, Farbe, Wert, Name, Datum und zuletzt erkannten Text.
 - Testcenter verändert die eigentliche Sprachlogik nicht.
 
